@@ -1,8 +1,8 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.0.0
-  title: Hello World
+  version: 1.0
+  title: Individuals Foreign Income (MTD)
 
 servers:
   - url: https://test-api.service.hmrc.gov.uk/hello-world
@@ -30,11 +30,11 @@ paths:
       description: |
         An endpoint that returns "Hello world"
       tags:
-        - individuals-foreign-income-api
+        - sa-individual-details-api
       parameters:
         - $ref: '#/components/parameters/acceptHeader'
       responses:
-        200:
+        "200":
           description: "OK Response"
           content:
             application/json:
@@ -44,6 +44,4 @@ paths:
                   message:
                     type: string
               example:
-                "Hello world"
-      security:
-        - {}
+                { "message":  "Hello world" }
