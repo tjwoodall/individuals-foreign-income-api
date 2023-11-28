@@ -49,7 +49,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
        |   "api":{
        |      "name":"Individuals Foreign Income (MTD)",
        |      "description":"An API for providing individual foreign income data",
-       |      "context":"individuals/person",
+       |      "context":"individuals/foreign-income",
        |      "categories":[
        |         "INCOME_TAX_MTD"
        |      ],
