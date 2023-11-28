@@ -55,7 +55,7 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     resolvers += Resolver.jcenterRepo
   )
-  .settings(PlayKeys.playDefaultPort := 7790)
+  .settings(PlayKeys.playDefaultPort := 7760)
 
 Global / excludeLintKeys += update / evictionWarningOptions
 
