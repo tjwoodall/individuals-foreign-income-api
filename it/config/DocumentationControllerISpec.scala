@@ -57,7 +57,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
        |      {
        |            "version":"1.0",
        |            "status":"BETA",
-       |            "endpointsEnabled":false
+       |            "endpointsEnabled":true
        |       }
        |      ]
        |   }

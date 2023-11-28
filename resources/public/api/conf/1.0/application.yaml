@@ -30,7 +30,7 @@ paths:
       description: |
         An endpoint that returns "Hello world"
       tags:
-        - sa-individual-details-api
+        - individuals-foreign-income-api
       parameters:
         - $ref: '#/components/parameters/acceptHeader'
       responses:
@@ -44,4 +44,6 @@ paths:
                   message:
                     type: string
               example:
-                { "message":  "Hello world" }
+                "Hello world"
+      security:
+        - {}
