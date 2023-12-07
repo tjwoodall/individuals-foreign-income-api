@@ -1,13 +1,12 @@
 import play.core.PlayVersion
 import play.sbt.PlayImport._
-import sbt.Keys.libraryDependencies
 import sbt._
 
 object AppDependencies {
 
   private val bootstrapPlayVersion = "7.23.0"
 
-  val compile: Seq[ModuleID] = Seq(
+  val compile: Seq[ModuleID] = List(
     ws,
     "uk.gov.hmrc"                  %% "bootstrap-backend-play-28" % bootstrapPlayVersion,
     "org.typelevel"                %% "cats-core"                 % "2.9.0",
@@ -16,7 +15,7 @@ object AppDependencies {
     "com.fasterxml.jackson.module" %% "jackson-module-scala"      % "2.14.2"
   )
 
-  def test(scope: String = "test, it"): Seq[ModuleID] = Seq(
+  def test(scope: String = "test, it"): Seq[ModuleID] = List(
     "org.scalatest"          %% "scalatest"              % "3.2.15"             % "test, it",
     "org.scalatestplus"      %% "scalacheck-1-15"        % "3.2.11.0"           % scope,
     "com.vladsch.flexmark"    % "flexmark-all"           % "0.64.6"             % "test, it",

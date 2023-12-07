@@ -38,17 +38,17 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) {
 
   lazy val definition: Definition =
     Definition(
-      scopes = Seq(
-        Scope(
-          key = readScope,
-          name = "View your Self Assessment information",
-          description = "Allow read access to self assessment data",
-          confidenceLevel = confidenceLevel
-        ),
-        Scope(
-          key = writeScope,
-          name = "Change your Self Assessment information",
-          description = "Allow write access to self assessment data",
+    scopes = List(
+      Scope(
+        key = readScope,
+        name = "View your Self Assessment information",
+        description = "Allow read access to self assessment data",
+        confidenceLevel = confidenceLevel
+      ),
+      Scope(
+        key = writeScope,
+        name = "Change your Self Assessment information",
+        description = "Allow write access to self assessment data",
           confidenceLevel = confidenceLevel
         )
       ),
@@ -56,8 +56,8 @@ class ApiDefinitionFactory @Inject() (appConfig: AppConfig) {
         name = "Individuals Foreign Income (MTD)",
         description = "An API for providing individual foreign income data",
         context = appConfig.apiGatewayContext,
-        categories = Seq("INCOME_TAX_MTD"),
-        versions = Seq(
+        categories = List("INCOME_TAX_MTD"),
+        versions = List(
           APIVersion(
             version = VERSION_1,
             status = buildAPIStatus(VERSION_1),

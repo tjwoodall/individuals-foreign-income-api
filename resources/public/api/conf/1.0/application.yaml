@@ -1,13 +1,36 @@
 openapi: "3.0.3"
 
 info:
-  version: 1.0
+  version: "1.0"
   title: Individuals Foreign Income (MTD)
+  description: |
+    # Send fraud prevention data
+    HMRC monitors transactions to help protect your customers' confidential data from criminals and fraudsters. 
+
+    <div class="govuk-warning-text warning-icon-fix">
+      <span class="govuk-warning-text__icon warning-icon-ui-fix" aria-hidden="true">!</span>
+      <strong class="govuk-warning-text__text">
+        <span class="govuk-warning-text__assistive">Warning</span>
+        You are required by law to submit header data for this API. This includes all associated APIs and endpoints.
+      </strong>
+    </div>
+
+    [Check the data you need to send](/guides/fraud-prevention/). You can also use the [Test API](/api-documentation/docs/api/service/txm-fph-validator-api/1.0) during initial development and as part of your quality assurance checks.
+
+    # Changelog
+    You can find the changelog in the [income-tax-mtd-changelog](https://github.com/hmrc/income-tax-mtd-changelog/#readme) GitHub wiki.
+    
+    
+    # Support
+    
+    * Raise non-technical or platform-related issues with the [Software Development Support Team (SDST)](https://developer.service.hmrc.gov.uk/developer/support).
+    * Raise technical issues on the [income-tax-mtd-changelog](https://github.com/hmrc/income-tax-mtd-changelog/issues) GitHub page.
+    * <a href="/contact/report-technical-problem?newTab=true&service=api-documentation-frontend" target="_blank">Is this page not working properly? (opens in new tab)</a>
 
 servers:
-  - url: https://test-api.service.hmrc.gov.uk/hello-world
+  - url: https://test-api.service.hmrc.gov.uk
     description: Sandbox
-  - url: https://api.service.hmrc.gov.uk/hello-world
+  - url: https://api.service.hmrc.gov.uk
     description: Production
 
 components:
@@ -18,32 +41,28 @@ components:
       schema:
         type: string
         enum: [
-          "application/vnd.hmrc.1.0+json",
-          "application/vnd.hmrc.1.0+xml"
+            "application/vnd.hmrc.1.0+json",
+            "application/vnd.hmrc.1.0+xml"
         ]
       required: true
 
 paths:
-  /hello-world:
+  /{nino}/{taxYear}:
     get:
-      summary: Placeholder hello world endpoint
-      description: |
-        An endpoint that returns "Hello world"
-      tags:
-        - individuals-foreign-income-api
-      parameters:
-        - $ref: '#/components/parameters/acceptHeader'
-      responses:
-        "200":
-          description: "OK Response"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                "Hello world"
+      $ref: "./retrieve.yaml"
+      summary: Retrieve Foreign Income
       security:
-        - {}
+        - User-Restricted:
+            - read:self-assessment
+    put:
+      $ref: "./create_amend.yaml"
+      summary: Create and Amend Foreign Income
+      security:
+        - User-Restricted:
+            - write:self-assessment
+    delete:
+      $ref: "./delete.yaml"
+      summary: Delete Foreign Income
+      security:
+        - User-Restricted:
+            - write:self-assessment

@@ -17,6 +17,7 @@
 package utils
 
 import play.api.libs.json._
+import shared.utils.JsonUtils
 import support.UnitSpec
 
 class JsonUtilsSpec extends UnitSpec with JsonUtils {
@@ -25,7 +26,7 @@ class JsonUtilsSpec extends UnitSpec with JsonUtils {
     val reads = __.readNullable[Seq[String]].mapEmptySeqToNone
 
     "map non-empty sequence to Some(non-empty sequence)" in {
-      JsArray(Seq(JsString("value0"), JsString("value1"))).as(reads) shouldBe Some(Seq("value0", "value1"))
+        JsArray(List(JsString("value0"), JsString("value1"))).as(reads) shouldBe Some(List("value0", "value1"))
     }
 
     "map empty sequence to None" in {
