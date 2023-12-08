@@ -1,0 +1,18 @@
+put:
+  $ref: "./create_amend.yaml"
+  summary: Create and Amend Foreign Income
+  security:
+    - User-Restricted:
+        - write:self-assessment
+get:
+  $ref: "./retrieve.yaml"
+  summary: Retrieve Foreign Income
+  security:
+    - User-Restricted:
+        - read:self-assessment
+delete:
+  $ref: "./delete.yaml"
+  summary: Delete Foreign Income
+  security:
+    - User-Restricted:
+        - write:self-assessment
