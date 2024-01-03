@@ -16,22 +16,23 @@
 
 package shared.controllers.requestParsers.validators.validations
 
-import org.joda.time.DateTime
-import org.joda.time.format.{DateTimeFormat, DateTimeFormatter}
 import org.scalamock.handlers.CallHandler
 import shared.models.errors._
-import shared.utils.{CurrentDateTime, MockCurrentDateTime}
+import shared.utils.{CurrentDate, MockCurrentDate}
 import support.UnitSpec
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class TaxYearNotEndedValidationSpec extends UnitSpec {
 
-  class Test extends MockCurrentDateTime {
-    implicit val dateTimeProvider: CurrentDateTime = mockCurrentDateTime
-    val dateTimeFormatter: DateTimeFormatter       = DateTimeFormat.forPattern("yyyy-MM-dd")
+  class Test extends MockCurrentDate {
+    implicit val dateProvider: CurrentDate = mockCurrentDate
+    val dateFormatter: DateTimeFormatter       = DateTimeFormatter.ofPattern("yyyy-MM-dd")
 
-    def setupTimeProvider(date: String): CallHandler[DateTime] =
-      MockCurrentDateTime.getDateTime
-        .returns(DateTime.parse(date, dateTimeFormatter))
+    def setupTimeProvider(date: String): CallHandler[LocalDate] =
+      MockCurrentDate.getLocalDate
+        .returns(LocalDate.parse(date, dateFormatter))
 
   }
 

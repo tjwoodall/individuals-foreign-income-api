@@ -9,7 +9,7 @@ The Individuals Foreign Income API allows a developer to create, amend, retrieve
 
 - Scala 2.13.x
 - Java 11
-- sbt 1.7.x
+- sbt 1.9.7
 - [Service Manager](https://github.com/hmrc/service-manager)
 
 ## Development Setup

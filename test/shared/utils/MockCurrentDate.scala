@@ -16,14 +16,17 @@
 
 package shared.utils
 
-import org.joda.time.{DateTime, DateTimeZone}
+import org.scalamock.handlers.CallHandler
+import org.scalamock.scalatest.MockFactory
 
 import java.time.LocalDate
-import javax.inject.Singleton
 
-@Singleton
-class CurrentDateTime {
-  def getDateTime: DateTime = DateTime.now(DateTimeZone.UTC)
+trait MockCurrentDate extends MockFactory {
 
-  def getLocalDate: LocalDate = LocalDate.now()
+  val mockCurrentDate: CurrentDate = mock[CurrentDate]
+
+  object MockCurrentDate {
+    def getLocalDate: CallHandler[LocalDate] = (() => mockCurrentDate.getLocalDate).expects()
+  }
+
 }
