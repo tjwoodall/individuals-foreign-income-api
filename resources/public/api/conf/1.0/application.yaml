@@ -52,5 +52,5 @@ tags:
     description: Resources relating to an individual's employments
 
 paths:
-  /{nino}/{taxYear}:
+  /individuals/foreign-income/{nino}/{taxYear}:
     $ref: "./group.yaml"
