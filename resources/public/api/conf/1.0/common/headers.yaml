@@ -56,7 +56,7 @@ components:
       in: header
       type: string
       description: |
-        Unique ID for operation tracking
+        Unique ID for operation tracking.
         String, 36 characters.
       schema:
         type: string
