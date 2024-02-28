@@ -7,7 +7,6 @@
     "submittedOn": {"$ref": "definitions.json#/definitions/submittedOn"},
     "foreignEarnings": {"$ref": "definitions.json#/definitions/foreignEarnings"},
     "unremittableForeignIncome": {"$ref": "definitions.json#/definitions/unremittableForeignIncome"},
-    "links": {"$ref": "definitions.json#/definitions/links"}
   },
   "required": ["submittedOn"]
 }
