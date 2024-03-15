@@ -19,6 +19,7 @@ package v1.controllers
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.mocks.MockAppConfig
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
@@ -37,7 +38,8 @@ class DeleteForeignControllerSpec
     with ControllerTestRunner
     with MockAuditService
     with MockDeleteForeignService
-    with MockDeleteForeignRequestParser {
+    with MockDeleteForeignRequestParser
+    with MockAppConfig {
 
   val taxYear: String = "2019-20"
 

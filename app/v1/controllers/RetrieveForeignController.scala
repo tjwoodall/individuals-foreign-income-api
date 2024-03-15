@@ -16,6 +16,7 @@
 
 package v1.controllers
 
+import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
@@ -33,7 +34,7 @@ class RetrieveForeignController @Inject() (val authService: EnrolmentsAuthServic
                                            parser: RetrieveForeignRequestParser,
                                            service: RetrieveForeignService,
                                            cc: ControllerComponents,
-                                           val idGenerator: IdGenerator)(implicit ec: ExecutionContext)
+                                           val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =

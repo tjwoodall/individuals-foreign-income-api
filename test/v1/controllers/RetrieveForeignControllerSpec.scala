@@ -18,6 +18,7 @@ package v1.controllers
 
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import shared.mocks.MockAppConfig
 import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -35,7 +36,8 @@ class RetrieveForeignControllerSpec
     extends ControllerBaseSpec
     with ControllerTestRunner
     with MockRetrieveForeignService
-    with MockRetrieveForeignRequestParser {
+    with MockRetrieveForeignRequestParser
+    with MockAppConfig {
 
   private val taxYear: String = "2019-20"
 

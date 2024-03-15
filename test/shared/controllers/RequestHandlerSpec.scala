@@ -22,6 +22,7 @@ import play.api.libs.json.{JsString, Json, OWrites}
 import play.api.mvc.AnyContent
 import play.api.test.{FakeRequest, ResultExtractors}
 import shared.controllers.requestParsers.RequestParser
+import shared.mocks.MockAppConfig
 import shared.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.auth.UserDetails
 import shared.models.errors.{ErrorWrapper, NinoFormatError}
@@ -32,10 +33,18 @@ import support.UnitSpec
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
-class RequestHandlerSpec extends UnitSpec with MockAuditService with MockIdGenerator with Status with HeaderNames with ResultExtractors {
+class RequestHandlerSpec
+    extends UnitSpec
+    with MockAuditService
+    with MockIdGenerator
+    with Status
+    with HeaderNames
+    with ResultExtractors
+    with MockAppConfig {
+
+  private implicit val ec: ExecutionContextExecutor = ExecutionContext.global
 
   private val successResponseJson = Json.obj("result" -> "SUCCESS!")
   private val successCode         = Status.ACCEPTED
@@ -64,15 +73,15 @@ class RequestHandlerSpec extends UnitSpec with MockAuditService with MockIdGener
   private val mockService = mock[DummyService]
 
   private def service =
-    (mockService.service(_: Input.type)(_: RequestContext, _: ExecutionContext)).expects(Input, *, *)
+    (mockService.service(_: Input.type)(_: RequestContext, _: ExecutionContext)).expects(Input, *, *).anyNumberOfTimes()
 
   private val mockParser = mock[RequestParser[InputRaw.type, Input.type]]
 
   private def parseRequest =
-    (mockParser.parseRequest(_: InputRaw.type)(_: String)).expects(InputRaw, *)
+    (mockParser.parseRequest(_: InputRaw.type)(_: String)).expects(InputRaw, *).anyNumberOfTimes()
 
   "RequestHandler" when {
-    "a request is successful" must {
+    "given a request" must {
       "return the correct response" in {
         val requestHandler = RequestHandler
           .withParser(mockParser)
@@ -104,6 +113,56 @@ class RequestHandlerSpec extends UnitSpec with MockAuditService with MockIdGener
         header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
         status(result) shouldBe NO_CONTENT
       }
+    }
+
+    "given a request with a RequestCannotBeFulfilled gov-test-scenario header" when {
+      "allowed in config" should {
+        "return RuleRequestCannotBeFulfilled error" in {
+          val requestHandler = RequestHandler
+            .withParser(mockParser)
+            .withService(mockService.service)
+            .withNoContentResult()
+
+          MockedAppConfig.allowRequestCannotBeFulfilledHeader.returns(true).anyNumberOfTimes()
+
+          val ctx2: RequestContext = ctx.copy(hc = hc.copy(otherHeaders = List("Gov-Test-Scenario" -> "REQUEST_CANNOT_BE_FULFILLED")))
+
+          val result = requestHandler.handleRequest(InputRaw)(ctx2, userRequest, mockAppConfig, ec)
+
+          status(result) shouldBe 422
+          header("X-CorrelationId", result) shouldBe Some(generatedCorrelationId)
+          contentAsJson(result) shouldBe Json.parse(
+            """
+              |{
+              |  "code":"RULE_REQUEST_CANNOT_BE_FULFILLED",
+              |  "message":"Custom (will vary in production depending on the actual error)"
+              |}
+              |""".stripMargin
+          )
+        }
+      }
+
+      "not allowed in config" should {
+        "return success response" in {
+          val requestHandler = RequestHandler
+            .withParser(mockParser)
+            .withService(mockService.service)
+            .withPlainJsonResult(successCode)
+
+          parseRequest returns Right(Input)
+          service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
+          MockedAppConfig.allowRequestCannotBeFulfilledHeader.returns(false).anyNumberOfTimes()
+
+          val ctx2: RequestContext = ctx.copy(hc = hc.copy(otherHeaders = List("Gov-Test-Scenario" -> "REQUEST_CANNOT_BE_FULFILLED")))
+
+          val result = requestHandler.handleRequest(InputRaw)(ctx2, userRequest, mockAppConfig, ec)
+
+          contentAsJson(result) shouldBe successResponseJson
+          header("X-CorrelationId", result) shouldBe Some(serviceCorrelationId)
+          status(result) shouldBe successCode
+        }
+      }
+
     }
 
     "a request fails with validation errors" must {
