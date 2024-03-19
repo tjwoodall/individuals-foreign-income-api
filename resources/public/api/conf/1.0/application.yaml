@@ -53,4 +53,4 @@ tags:
 
 paths:
   /individuals/foreign-income/{nino}/{taxYear}:
-    $ref: "./group.yaml"
+    $ref: "./foreign.yaml"
