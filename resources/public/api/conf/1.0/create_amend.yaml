@@ -8,10 +8,11 @@ description: |
   ###  Test data
   Scenario simulation using Gov-Test-Scenario headers is only available in the sandbox environment.
   
-  | Header Value (Gov-Test-Scenario) | Scenario                              |
-  |----------------------------------|---------------------------------------|
-  | N/A - DEFAULT                    | Simulates success response.           |
-  | STATEFUL                         | Performs a stateful create or update. |  
+  | Header Value (Gov-Test-Scenario) | Scenario                                                         |
+  | -------------------------------- | ---------------------------------------------------------------- |
+  | N/A - DEFAULT                    | Simulates success response.                                      |
+  | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request could not be processed. |
+  | STATEFUL                         | Performs a stateful create or update.                            |
 
 tags:
   - Foreign Income
