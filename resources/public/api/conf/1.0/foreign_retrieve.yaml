@@ -1,5 +1,4 @@
-summary:
-  Retrieve Foreign Income
+summary: Retrieve Foreign Income [Test only]
 description: |
   This endpoint enables you to retrieve foreign income:
   foreign earnings and unremittable foreign income.
