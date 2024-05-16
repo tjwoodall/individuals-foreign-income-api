@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package v1.models.response
 
 import play.api.libs.json.{JsError, Json}
 import shared.models.domain.Timestamp
-import support.UnitSpec
+import shared.UnitSpec
 import v1.models.response.retrieve.{ForeignEarnings, RetrieveForeignResponse, UnremittableForeignIncome}
 
 class RetrieveForeignResponseSpec extends UnitSpec {

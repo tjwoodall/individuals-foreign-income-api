@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 package v1.controllers.requestParsers.validators
 
-import config.AppConfig
+import common.models.errors.CountryCodeRuleError
+import config.MockForeignIncomeConfig
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.AnyContentAsJson
+import shared.UnitSpec
 import shared.controllers.requestParsers.validators.validations.ValueFormatErrorMessages
-import shared.mocks.MockAppConfig
 import shared.models.errors._
-import support.UnitSpec
 import v1.models.errors.CustomerRefFormatError
 import v1.models.request.createAmend
 
@@ -247,15 +247,11 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with ValueFormatErrorMess
   private val invalidAmountTaxPaidRequestBody           = AnyContentAsJson(invalidAmountTaxPaidRequestBodyJson)
   private val allInvalidValueRawRequestBody             = AnyContentAsJson(allInvalidValueRawRequestBodyJson)
 
-  class Test extends MockAppConfig {
+  class Test extends MockForeignIncomeConfig {
+    val taxYear: Int = 2019
+    val validator    = new CreateAmendForeignValidator()
 
-    implicit val appConfig: AppConfig = mockAppConfig
-
-    val validator = new CreateAmendForeignValidator()
-
-    MockedAppConfig.minimumPermittedTaxYear
-      .returns(2019)
-      .anyNumberOfTimes()
+    MockedForeignIncomeConfig.minimumPermittedTaxYear().returns(taxYear).anyNumberOfTimes()
 
   }
 

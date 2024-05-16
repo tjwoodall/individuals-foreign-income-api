@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
-import config.AppConfig
+import config.ForeignIncomeConfig
 import shared.controllers.requestParsers.validators.Validator
 import shared.controllers.requestParsers.validators.validations._
 import shared.models.errors.MtdError
@@ -25,7 +25,7 @@ import v1.models.request.delete.DeleteForeignRawData
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class DeleteForeignValidator @Inject() (implicit appConfig: AppConfig) extends Validator[DeleteForeignRawData] {
+class DeleteForeignValidator @Inject() (implicit foreignIncomeConfig: ForeignIncomeConfig) extends Validator[DeleteForeignRawData] {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation)
 
@@ -40,7 +40,7 @@ class DeleteForeignValidator @Inject() (implicit appConfig: AppConfig) extends V
 
   private def parameterRuleValidation: DeleteForeignRawData => Seq[Seq[MtdError]] = (data: DeleteForeignRawData) => {
     List(
-      TaxYearNotSupportedValidation.validate(data.taxYear, appConfig.minimumPermittedTaxYear)
+      TaxYearNotSupportedValidation.validate(data.taxYear, foreignIncomeConfig.minimumPermittedTaxYear())
     )
   }
 

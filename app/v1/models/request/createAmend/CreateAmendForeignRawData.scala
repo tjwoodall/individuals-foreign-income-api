@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package v1.models.request.createAmend
 
+import common.models.request.RawData
 import play.api.mvc.AnyContentAsJson
-import shared.models.request.RawData
 
 case class CreateAmendForeignRawData(nino: String, taxYear: String, body: AnyContentAsJson) extends RawData

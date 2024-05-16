@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ object DownstreamErrorCode {
 
 sealed trait DownstreamError
 
-case class DownstreamErrors(errors: List[DownstreamErrorCode]) extends DownstreamError
+case class DownstreamErrors(errors: Seq[DownstreamErrorCode]) extends DownstreamError
 
 object DownstreamErrors {
   def single(error: DownstreamErrorCode): DownstreamErrors = DownstreamErrors(List(error))

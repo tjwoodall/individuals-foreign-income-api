@@ -1,4 +1,4 @@
-summary: Delete Foreign Income [Test only]
+summary: Delete Foreign Income
 description: |
   This endpoint enables you to delete foreign income:
   foreign earnings and unremittable foreign income.
@@ -14,7 +14,7 @@ description: |
   | STATEFUL                         | Performs a stateful delete.                                      |
 
 tags:
-  - Foreign Income
+  - Delete Foreign Income
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
   - $ref: './common/pathParameters.yaml#/components/parameters/taxYearMinimum2021'

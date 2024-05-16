@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import play.api.http.Status._
 import play.api.mvc.Results._
 import play.api.mvc._
 import shared.models.errors._
+import shared.routing.Versions
 import uk.gov.hmrc.auth.core.AuthorisationException
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
@@ -33,11 +34,11 @@ import scala.concurrent._
 
 @Singleton
 class ErrorHandler @Inject() (
-                               config: Configuration,
-                               auditConnector: AuditConnector,
-                               httpAuditEvent: HttpAuditEvent
-                             )(implicit ec: ExecutionContext)
-  extends JsonErrorHandler(auditConnector, httpAuditEvent, config) {
+    config: Configuration,
+    auditConnector: AuditConnector,
+    httpAuditEvent: HttpAuditEvent
+)(implicit ec: ExecutionContext)
+    extends JsonErrorHandler(auditConnector, httpAuditEvent, config) {
 
   import httpAuditEvent.dataEvent
 
@@ -48,18 +49,25 @@ class ErrorHandler @Inject() (
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     logger.warn(
-      s"[ErrorHandler][onClientError] error in version 1, for (${request.method}) [${request.uri}] with status:" +
+      message = s"[ErrorHandler][onClientError] error in version " +
+        s"${versionIfSpecified(request)}, " +
+        s"for (${request.method}) [${request.uri}] with status: " +
         s" $statusCode and message: $message")
+
     statusCode match {
+
       case BAD_REQUEST =>
         auditConnector.sendEvent(dataEvent("ServerValidationError", "Request bad format exception", request))
         Future.successful(BadRequest(BadRequestError.asJson))
+
       case NOT_FOUND =>
         auditConnector.sendEvent(dataEvent("ResourceNotFound", "Resource Endpoint Not Found", request))
         Future.successful(NotFound(NotFoundError.asJson))
+
       case _ =>
         val errorCode = statusCode match {
           case UNAUTHORIZED           => ClientNotAuthenticatedError
+          case METHOD_NOT_ALLOWED     => InvalidHttpMethodError
           case UNSUPPORTED_MEDIA_TYPE => InvalidBodyTypeError
           case _                      => MtdError("INVALID_REQUEST", message, BAD_REQUEST)
         }
@@ -67,31 +75,38 @@ class ErrorHandler @Inject() (
         auditConnector.sendEvent(
           dataEvent(
             eventType = "ClientError",
-            transactionName = s"A client error occurred, status: $statusCode",
+            transactionName = s"A client error occurred, status: ${errorCode.httpStatus}",
             request = request,
             detail = Map.empty
           )
         )
 
-        Future.successful(Status(statusCode)(errorCode.asJson))
+        Future.successful(Status(errorCode.httpStatus)(errorCode.asJson))
     }
   }
+
+  private def versionIfSpecified(request: RequestHeader): String = Versions.getFromRequest(request).map(_.name).getOrElse("<unspecified>")
 
   override def onServerError(request: RequestHeader, ex: Throwable): Future[Result] = {
     implicit val headerCarrier: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    logger.warn(s"[ErrorHandler][onServerError] Internal server error in version 1, for (${request.method}) [${request.uri}] -> ", ex)
+    logger.warn(
+      message = s"[ErrorHandler][onServerError] Internal server error in version " +
+        s"${versionIfSpecified(request)}, " +
+        s"for (${request.method}) [${request.uri}] -> ",
+      ex
+    )
 
-    val (status, errorCode, eventType) = ex match {
-      case _: NotFoundException      => (NOT_FOUND, NotFoundError, "ResourceNotFound")
-      case _: AuthorisationException => (UNAUTHORIZED, ClientNotAuthenticatedError, "ClientError")
-      case _: JsValidationException  => (BAD_REQUEST, BadRequestError, "ServerValidationError")
-      case e: HttpException          => (e.responseCode, BadRequestError, "ServerValidationError")
+    val (errorCode, eventType) = ex match {
+      case _: NotFoundException      => (NotFoundError, "ResourceNotFound")
+      case _: AuthorisationException => (ClientNotAuthenticatedError, "ClientError")
+      case _: JsValidationException  => (BadRequestError, "ServerValidationError")
+      case e: HttpException          => (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream4xxResponse.unapply(e).isDefined =>
-        (e.reportAs, BadRequestError, "ServerValidationError")
+        (BadRequestError, "ServerValidationError")
       case e: UpstreamErrorResponse if UpstreamErrorResponse.Upstream5xxResponse.unapply(e).isDefined =>
-        (e.reportAs, InternalError, "ServerInternalError")
-      case _ => (INTERNAL_SERVER_ERROR, InternalError, "ServerInternalError")
+        (InternalError, "ServerInternalError")
+      case _ => (InternalError, "ServerInternalError")
     }
 
     auditConnector.sendEvent(
@@ -103,7 +118,7 @@ class ErrorHandler @Inject() (
       )
     )
 
-    Future.successful(Status(status)(errorCode.asJson))
+    Future.successful(Status(errorCode.httpStatus)(errorCode.asJson))
   }
 
 }

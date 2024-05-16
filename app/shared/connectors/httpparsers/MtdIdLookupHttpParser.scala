@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package shared.connectors.httpparsers
 
+import shared.connectors.MtdIdLookupOutcome
 import shared.models.errors.{InternalError, InvalidBearerTokenError, NinoFormatError}
 import play.api.http.Status.{FORBIDDEN, OK, UNAUTHORIZED}
-import play.api.libs.json.{Reads, __}
-import shared.connectors.MtdIdLookupOutcome
+import play.api.libs.json._
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object MtdIdLookupHttpParser extends HttpParser {

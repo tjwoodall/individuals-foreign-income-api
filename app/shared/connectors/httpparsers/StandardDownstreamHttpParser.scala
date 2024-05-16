@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 package shared.connectors.httpparsers
 
+import shared.connectors.DownstreamOutcome
 import shared.models.errors.{InternalError, OutboundError}
 import shared.models.outcomes.ResponseWrapper
 import play.api.http.Status._
 import play.api.libs.json.Reads
-import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.{HttpReads, HttpResponse}
 
 object StandardDownstreamHttpParser extends HttpParser {

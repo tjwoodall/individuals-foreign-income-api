@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ object TaxYear {
   def fromMtd(taxYear: String): TaxYear =
     TaxYear(taxYear.take(2) + taxYear.drop(5))
 
-  def now(implicit clock: Clock = Clock.systemUTC): TaxYear            = TaxYear.containing(LocalDate.now(clock))
+  def now(implicit clock: Clock = Clock.systemUTC): TaxYear = TaxYear.containing(LocalDate.now(clock))
   def currentTaxYear(implicit clock: Clock = Clock.systemUTC): TaxYear = TaxYear.now
 
   /** @param date
@@ -114,6 +114,7 @@ object TaxYear {
 
   def fromDownstreamInt(taxYear: Int): TaxYear =
     new TaxYear(taxYear.toString)
+
 
   implicit val ordering: Ordering[TaxYear] = Ordering.by(_.year)
 

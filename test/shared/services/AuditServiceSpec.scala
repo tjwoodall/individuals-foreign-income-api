@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ class AuditServiceSpec extends ServiceSpec {
           .expects(*, *, *)
           .returns(expected)
 
-        val event: AuditEvent[String] = AuditEvent(auditType, transactionName, eventDetails)
+        val event = AuditEvent(auditType, transactionName, eventDetails)
         target.auditEvent(event) shouldBe expected
       }
 
@@ -68,7 +68,7 @@ class AuditServiceSpec extends ServiceSpec {
           )
           .returns(expected)
 
-        val event: AuditEvent[String] = AuditEvent(auditType, transactionName, eventDetails)
+        val event = AuditEvent(auditType, transactionName, eventDetails)
 
         target.auditEvent(event)
       }
@@ -83,7 +83,7 @@ class AuditServiceSpec extends ServiceSpec {
           )
           .returns(expected)
 
-        val event: AuditEvent[String] = AuditEvent(auditType, transactionName, eventDetails)
+        val event = AuditEvent(auditType, transactionName, eventDetails)
 
         target.auditEvent(event)
       }
@@ -98,7 +98,7 @@ class AuditServiceSpec extends ServiceSpec {
           )
           .returns(expected)
 
-        val event: AuditEvent[String] = AuditEvent(auditType, transactionName, eventDetails)
+        val event = AuditEvent(auditType, transactionName, eventDetails)
 
         target.auditEvent(event)
       }
@@ -113,7 +113,7 @@ class AuditServiceSpec extends ServiceSpec {
           )
           .returns(expected)
 
-        val event: AuditEvent[String] = AuditEvent(auditType, transactionName, eventDetails)
+        val event = AuditEvent(auditType, transactionName, eventDetails)
 
         target.auditEvent(event)
       }

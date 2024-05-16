@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,46 +16,39 @@
 
 package shared.connectors
 
-import config.DownstreamConfig
 import org.scalamock.handlers.CallHandler
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import shared.mocks.{MockAppConfig, MockHttpClient}
-import support.UnitSpec
+import shared.UnitSpec
+import shared.config.{DownstreamConfig, MockAppConfig}
+import shared.mocks.MockHttpClient
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames {
 
-  lazy val baseUrl = "http://test-BaseUrl"
-
+  lazy val baseUrl                   = "http://test-BaseUrl"
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
-  implicit val hc: HeaderCarrier     = HeaderCarrier()
-  implicit val ec: ExecutionContext  = scala.concurrent.ExecutionContext.global
 
   val otherHeaders: Seq[(String, String)] = List(
     "Gov-Test-Scenario" -> "DEFAULT",
     "AnotherHeader"     -> "HeaderValue"
   )
 
-  val dummyIfsHeaderCarrierConfig: HeaderCarrier.Config =
-    HeaderCarrier.Config(
-      List("^not-test-BaseUrl?$".r),
-      Seq.empty[String],
-      Some("individuals-income-received-api")
-    )
+  implicit val hc: HeaderCarrier    = HeaderCarrier(otherHeaders = otherHeaders)
+  implicit val ec: ExecutionContext = scala.concurrent.ExecutionContext.global
 
   val dummyHeaderCarrierConfig: HeaderCarrier.Config =
     HeaderCarrier.Config(
       List("^not-test-BaseUrl?$".r),
       Seq.empty[String],
-      Some("individuals-income-received-api")
+      Some("this-api")
     )
 
   val requiredDesHeaders: Seq[(String, String)] = List(
     "Authorization"     -> "Bearer des-token",
     "Environment"       -> "des-environment",
-    "User-Agent"        -> "individuals-income-received-api",
+    "User-Agent"        -> "this-api",
     "CorrelationId"     -> correlationId,
     "Gov-Test-Scenario" -> "DEFAULT"
   )
@@ -70,9 +63,11 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   )
 
   val requiredIfsHeaders: Seq[(String, String)] = List(
-    "Environment"   -> "ifs-environment",
-    "Authorization" -> s"Bearer ifs-token",
-    "CorrelationId" -> s"$correlationId"
+    "Authorization"     -> "Bearer ifs-token",
+    "Environment"       -> "ifs-environment",
+    "User-Agent"        -> "this-api",
+    "CorrelationId"     -> correlationId,
+    "Gov-Test-Scenario" -> "DEFAULT"
   )
 
   val allowedIfsHeaders: Seq[String] = List(
@@ -85,9 +80,11 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   )
 
   val requiredTysIfsHeaders: Seq[(String, String)] = List(
-    "Environment"   -> "TYS-IFS-environment",
-    "Authorization" -> s"Bearer TYS-IFS-token",
-    "CorrelationId" -> s"$correlationId"
+    "Authorization"     -> "Bearer TYS-IFS-token",
+    "Environment"       -> "TYS-IFS-environment",
+    "User-Agent"        -> "this-api",
+    "CorrelationId"     -> correlationId,
+    "Gov-Test-Scenario" -> "DEFAULT"
   )
 
   val allowedTysIfsHeaders: Seq[String] = List(
@@ -106,7 +103,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     protected val requiredHeaders: Seq[(String, String)]
 
-    protected def willGet[T](url: String, parameters: Seq[(String, String)] = List()): CallHandler[Future[T]] =
+    protected def willGet[T](url: String, parameters: Seq[(String, String)] = Nil): CallHandler[Future[T]] = {
       MockedHttpClient
         .get(
           url = url,
@@ -115,8 +112,9 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
           requiredHeaders = requiredHeaders,
           excludedHeaders = List("AnotherHeader" -> "HeaderValue")
         )
+    }
 
-    protected def willPost[BODY, T](url: String, body: BODY): CallHandler[Future[T]] =
+    protected def willPost[BODY, T](url: String, body: BODY): CallHandler[Future[T]] = {
       MockedHttpClient
         .post(
           url = url,
@@ -125,8 +123,9 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
           requiredHeaders = requiredHeaders ++ List("Content-Type" -> "application/json"),
           excludedHeaders = List("AnotherHeader" -> "HeaderValue")
         )
+    }
 
-    protected def willPut[BODY, T](url: String, body: BODY): CallHandler[Future[T]] =
+    protected def willPut[BODY, T](url: String, body: BODY): CallHandler[Future[T]] = {
       MockedHttpClient
         .put(
           url = url,
@@ -135,17 +134,9 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
           requiredHeaders = requiredHeaders ++ List("Content-Type" -> "application/json"),
           excludedHeaders = List("AnotherHeader" -> "HeaderValue")
         )
+    }
 
-    protected def willPut[T](url: String): CallHandler[Future[T]] =
-      MockedHttpClient
-        .put(
-          url = url,
-          config = dummyHeaderCarrierConfig,
-          body = "",
-          excludedHeaders = List("AnotherHeader" -> "HeaderValue")
-        )
-
-    protected def willDelete[T](url: String): CallHandler[Future[T]] =
+    protected def willDelete[T](url: String): CallHandler[Future[T]] = {
       MockedHttpClient
         .delete(
           url = url,
@@ -153,23 +144,42 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
           requiredHeaders = requiredHeaders,
           excludedHeaders = List("AnotherHeader" -> "HeaderValue")
         )
+    }
 
+  }
+
+  protected trait DesTest extends ConnectorTest {
+
+    protected lazy val requiredHeaders: Seq[(String, String)] = requiredDesHeaders
+
+    MockAppConfig.desBaseUrl returns this.baseUrl
+    MockAppConfig.desToken returns "des-token"
+    MockAppConfig.desEnvironment returns "des-environment"
+    MockAppConfig.desEnvironmentHeaders returns Some(allowedDesHeaders)
+    MockAppConfig.desDownstreamConfig.anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "des-environment", "des-token", Some(allowedDesHeaders))
   }
 
   protected trait IfsTest extends ConnectorTest {
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredIfsHeaders
 
-    MockedAppConfig.ifsDownstreamConfig
-      .anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "ifs-environment", "ifs-token", Some(allowedIfsHeaders))
-
+    MockAppConfig.ifsBaseUrl returns this.baseUrl
+    MockAppConfig.ifsToken returns "ifs-token"
+    MockAppConfig.ifsEnvironment returns "ifs-environment"
+    MockAppConfig.ifsEnvironmentHeaders returns Some(allowedIfsHeaders)
+    MockAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "ifs-environment", "ifs-token", Some(allowedIfsHeaders))
   }
 
   protected trait TysIfsTest extends ConnectorTest {
 
     protected lazy val requiredHeaders: Seq[(String, String)] = requiredTysIfsHeaders
 
-    MockedAppConfig.tysIfsDownstreamConfig
+    MockAppConfig.tysIfsBaseUrl returns this.baseUrl
+    MockAppConfig.tysIfsToken returns "TYS-IFS-token"
+    MockAppConfig.tysIfsEnvironment returns "TYS-IFS-environment"
+    MockAppConfig.tysIfsEnvironmentHeaders returns Some(allowedTysIfsHeaders)
+
+    MockAppConfig.tysIfsDownstreamConfig
       .anyNumberOfTimes() returns DownstreamConfig(this.baseUrl, "TYS-IFS-environment", "TYS-IFS-token", Some(allowedTysIfsHeaders))
 
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ package v1.controllers
 
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.mocks.MockAppConfig
+import shared.config.MockAppConfig
+import shared.controllers.{OldControllerBaseSpec, OldControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
@@ -34,8 +34,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteForeignControllerSpec
-    extends ControllerBaseSpec
-    with ControllerTestRunner
+    extends OldControllerBaseSpec
+    with OldControllerTestRunner
     with MockAuditService
     with MockDeleteForeignService
     with MockDeleteForeignRequestParser
@@ -113,10 +113,11 @@ class DeleteForeignControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
+          versionNumber="1.0",
           params = Map("nino" -> nino, "taxYear" -> taxYear),
-          request = None,
+          requestBody = None,
           `X-CorrelationId` = correlationId,
-          response = auditResponse
+          auditResponse = auditResponse
         )
       )
 

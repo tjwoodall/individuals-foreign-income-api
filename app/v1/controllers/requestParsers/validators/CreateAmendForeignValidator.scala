@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
-import config.AppConfig
+import config.ForeignIncomeConfig
 import shared.controllers.requestParsers.validators.Validator
 import shared.controllers.requestParsers.validators.validations._
 import shared.models.errors.MtdError
@@ -26,7 +26,9 @@ import v1.models.request.createAmend.{CreateAmendForeignRawData, CreateAmendFore
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateAmendForeignValidator @Inject() (implicit val appConfig: AppConfig) extends Validator[CreateAmendForeignRawData] with ValueFormatErrorMessages {
+class CreateAmendForeignValidator @Inject() (implicit val appConfig: ForeignIncomeConfig)
+    extends Validator[CreateAmendForeignRawData]
+    with ValueFormatErrorMessages {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation, bodyFormatValidator, bodyValueValidator)
 
@@ -43,7 +45,7 @@ class CreateAmendForeignValidator @Inject() (implicit val appConfig: AppConfig) 
 
   private def parameterRuleValidation: CreateAmendForeignRawData => Seq[Seq[MtdError]] = (data: CreateAmendForeignRawData) => {
     List(
-      TaxYearNotSupportedValidation.validate(data.taxYear, appConfig.minimumPermittedTaxYear)
+      TaxYearNotSupportedValidation.validate(data.taxYear, appConfig.minimumPermittedTaxYear())
     )
   }
 

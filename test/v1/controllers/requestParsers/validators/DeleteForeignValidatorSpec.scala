@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 
 package v1.controllers.requestParsers.validators
 
-import config.AppConfig
-import shared.mocks.MockAppConfig
+import config.MockForeignIncomeConfig
+import shared.UnitSpec
 import shared.models.errors._
-import support.UnitSpec
 import v1.models.request.delete.DeleteForeignRawData
 
 class DeleteForeignValidatorSpec extends UnitSpec {
@@ -27,15 +26,12 @@ class DeleteForeignValidatorSpec extends UnitSpec {
   private val validNino    = "AA123456A"
   private val validTaxYear = "2020-21"
 
-  class Test extends MockAppConfig {
-
-    implicit val appConfig: AppConfig = mockAppConfig
+  class Test extends MockForeignIncomeConfig {
+    val taxYear: Int = 2021
 
     val validator = new DeleteForeignValidator()
 
-    MockedAppConfig.minimumPermittedTaxYear
-      .returns(2021)
-      .anyNumberOfTimes()
+    MockedForeignIncomeConfig.minimumPermittedTaxYear().returns(taxYear).anyNumberOfTimes()
 
   }
 

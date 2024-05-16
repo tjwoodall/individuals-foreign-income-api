@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package v1.controllers.requestParsers.validators
 
-import config.AppConfig
+import config.ForeignIncomeConfig
 import shared.controllers.requestParsers.validators.Validator
 import shared.controllers.requestParsers.validators.validations._
 import shared.models.errors.MtdError
@@ -25,7 +25,7 @@ import v1.models.request.retrieve.RetrieveForeignRawData
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class RetrieveForeignValidator @Inject() (implicit appConfig: AppConfig) extends Validator[RetrieveForeignRawData] {
+class RetrieveForeignValidator @Inject() (implicit appConfig: ForeignIncomeConfig) extends Validator[RetrieveForeignRawData] {
 
   private val validationSet = List(parameterFormatValidation, parameterRuleValidation)
 
@@ -35,6 +35,6 @@ class RetrieveForeignValidator @Inject() (implicit appConfig: AppConfig) extends
     (data: RetrieveForeignRawData) => List(NinoValidation.validate(data.nino), TaxYearValidation.validate(data.taxYear))
 
   private def parameterRuleValidation: RetrieveForeignRawData => Seq[Seq[MtdError]] =
-    (data: RetrieveForeignRawData) => List(TaxYearNotSupportedValidation.validate(data.taxYear, appConfig.minimumPermittedTaxYear))
+    (data: RetrieveForeignRawData) => List(TaxYearNotSupportedValidation.validate(data.taxYear, appConfig.minimumPermittedTaxYear()))
 
 }

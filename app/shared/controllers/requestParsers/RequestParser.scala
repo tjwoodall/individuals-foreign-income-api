@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package shared.controllers.requestParsers
 
+import common.models.request.RawData
 import shared.controllers.requestParsers.validators.Validator
 import shared.models.errors.{BadRequestError, ErrorWrapper}
-import shared.models.request.RawData
 import shared.utils.Logging
 
 trait RequestParser[Raw <: RawData, Request] extends Logging {

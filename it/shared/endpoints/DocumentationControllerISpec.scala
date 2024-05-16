@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,18 +16,21 @@
 
 package shared.endpoints
 
-import config.AppConfig
+
 import io.swagger.v3.parser.OpenAPIV3Parser
 import play.api.http.Status
+import play.api.http.Status.OK
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.WSResponse
+import shared.config.AppConfig
+import shared.routing.Version1
 import support.IntegrationBaseSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
-
+  private val apiTitle = "Individuals Foreign Income (MTD)"
   val config: AppConfig                = app.injector.instanceOf[AppConfig]
   val confidenceLevel: ConfidenceLevel = config.confidenceLevelConfig.confidenceLevel
 
@@ -76,24 +79,43 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
   }
 
   "an OAS documentation request" must {
-    def version(version: String): Unit = {
-      s"return the documentation that passes OAS V$version parser" in {
-        val response: WSResponse = await(buildRequest(s"/api/conf/${version}.0/application.yaml").get())
+    List(Version1).foreach { version =>
+      s"return the documentation for $version" in {
+        val response = get(s"/api/conf/$version/application.yaml")
         response.status shouldBe Status.OK
 
-        val contents     = response.body[String]
-        val parserResult = Try(new OpenAPIV3Parser().readContents(contents))
+        val body = response.body[String]
+        val parserResult = Try(new OpenAPIV3Parser().readContents(body))
         parserResult.isSuccess shouldBe true
 
-        val openAPI = Option(parserResult.get.getOpenAPI)
-        openAPI.isEmpty shouldBe false
-        openAPI.get.getOpenapi shouldBe "3.0.3"
-        openAPI.get.getInfo.getTitle shouldBe "Individuals Foreign Income (MTD) [Test only]"
-        openAPI.get.getInfo.getVersion shouldBe s"${version}.0"
+        val openAPI = Option(parserResult.get.getOpenAPI).getOrElse(fail("openAPI wasn't defined"))
+        openAPI.getOpenapi shouldBe "3.0.3"
+        withClue(s"If v${version.name} endpoints are enabled in application.conf, remove the [test only] from this test: ") {
+          openAPI.getInfo.getTitle shouldBe apiTitle
+        }
+        openAPI.getInfo.getVersion shouldBe version.name
+      }
+
+      s"return the documentation with the correct accept header for version $version" in {
+        val response = get(s"/api/conf/${version.name}/common/headers.yaml")
+        response.status shouldBe Status.OK
+
+        val body = response.body[String]
+        val headerRegex = """(?s).*?application/vnd\.hmrc\.(\d+\.\d+)\+json.*?""".r
+        val header = headerRegex.findFirstMatchIn(body)
+        header.isDefined shouldBe true
+
+        val versionFromHeader = header.get.group(1)
+        versionFromHeader shouldBe version.name
+
       }
     }
-      val versions: Seq[String] = List("1")
-    versions.foreach(v => version(v))
+  }
+
+  private def get(path: String): WSResponse = {
+    val response: WSResponse = await(buildRequest(path).get())
+    response.status shouldBe OK
+    response
   }
 
 }

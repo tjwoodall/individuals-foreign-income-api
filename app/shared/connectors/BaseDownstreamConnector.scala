@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package shared.connectors
 
-import config.AppConfig
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.Writes
+import shared.config.AppConfig
 import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
 import shared.utils.Logging
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
@@ -32,10 +32,10 @@ trait BaseDownstreamConnector extends Logging {
   private val jsonContentTypeHeader = HeaderNames.CONTENT_TYPE -> MimeTypes.JSON
 
   def post[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp])(implicit
-      ec: ExecutionContext,
-      hc: HeaderCarrier,
-      httpReads: HttpReads[DownstreamOutcome[Resp]],
-      correlationId: String): Future[DownstreamOutcome[Resp]] = {
+                                                                     ec: ExecutionContext,
+                                                                     hc: HeaderCarrier,
+                                                                     httpReads: HttpReads[DownstreamOutcome[Resp]],
+                                                                     correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
     def doPost(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
       http.POST(getBackendUri(uri), body)
@@ -45,10 +45,10 @@ trait BaseDownstreamConnector extends Logging {
   }
 
   def get[Resp](uri: DownstreamUri[Resp])(implicit
-      ec: ExecutionContext,
-      hc: HeaderCarrier,
-      httpReads: HttpReads[DownstreamOutcome[Resp]],
-      correlationId: String): Future[DownstreamOutcome[Resp]] = {
+                                          ec: ExecutionContext,
+                                          hc: HeaderCarrier,
+                                          httpReads: HttpReads[DownstreamOutcome[Resp]],
+                                          correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
     def doGet(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] =
       http.GET(getBackendUri(uri))
@@ -57,10 +57,10 @@ trait BaseDownstreamConnector extends Logging {
   }
 
   def get[Resp](uri: DownstreamUri[Resp], queryParams: Seq[(String, String)])(implicit
-      ec: ExecutionContext,
-      hc: HeaderCarrier,
-      httpReads: HttpReads[DownstreamOutcome[Resp]],
-      correlationId: String): Future[DownstreamOutcome[Resp]] = {
+                                                                              ec: ExecutionContext,
+                                                                              hc: HeaderCarrier,
+                                                                              httpReads: HttpReads[DownstreamOutcome[Resp]],
+                                                                              correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
     def doGet(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] =
       http.GET(getBackendUri(uri), queryParams)
@@ -69,10 +69,10 @@ trait BaseDownstreamConnector extends Logging {
   }
 
   def delete[Resp](uri: DownstreamUri[Resp])(implicit
-      ec: ExecutionContext,
-      hc: HeaderCarrier,
-      httpReads: HttpReads[DownstreamOutcome[Resp]],
-      correlationId: String): Future[DownstreamOutcome[Resp]] = {
+                                             ec: ExecutionContext,
+                                             hc: HeaderCarrier,
+                                             httpReads: HttpReads[DownstreamOutcome[Resp]],
+                                             correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
     def doDelete(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
       http.DELETE(getBackendUri(uri))
@@ -82,10 +82,10 @@ trait BaseDownstreamConnector extends Logging {
   }
 
   def put[Body: Writes, Resp](body: Body, uri: DownstreamUri[Resp])(implicit
-      ec: ExecutionContext,
-      hc: HeaderCarrier,
-      httpReads: HttpReads[DownstreamOutcome[Resp]],
-      correlationId: String): Future[DownstreamOutcome[Resp]] = {
+                                                                    ec: ExecutionContext,
+                                                                    hc: HeaderCarrier,
+                                                                    httpReads: HttpReads[DownstreamOutcome[Resp]],
+                                                                    correlationId: String): Future[DownstreamOutcome[Resp]] = {
 
     def doPut(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
       http.PUT(getBackendUri(uri), body)

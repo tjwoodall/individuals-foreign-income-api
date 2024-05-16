@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,40 +22,32 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.{JsValue, Json}
 import play.api.libs.ws.{WSClient, WSRequest, WSResponse}
 import play.api.{Application, Environment, Mode}
+import shared.UnitSpec
 
-trait IntegrationBaseSpec extends UnitSpec with GuiceOneServerPerSuite with WireMockHelper with BeforeAndAfterEach with BeforeAndAfterAll {
-
-  val mockHost: String = WireMockHelper.host
-  val mockPort: String = WireMockHelper.wireMockPort.toString
-
+trait IntegrationBaseSpec extends UnitSpec with WireMockHelper with GuiceOneServerPerSuite with BeforeAndAfterEach with BeforeAndAfterAll {
   lazy val client: WSClient = app.injector.instanceOf[WSClient]
 
+  lazy val mockHost: String = WireMockHelper.host
+  lazy val mockPort: String = WireMockHelper.wireMockPort.toString
+
   def servicesConfig: Map[String, Any] = Map(
-    "metrics.jvm"                                  -> false,
-    "metrics.logback"                              -> false,
-    "microservice.services.des.host"               -> mockHost,
-    "microservice.services.des.port"               -> mockPort,
-    "microservice.services.des.env"                -> "TEST",
-    "microservice.services.ifs.host"               -> mockHost,
-    "microservice.services.ifs.port"               -> mockPort,
-    "microservice.services.tys-ifs.host"           -> mockHost,
-    "microservice.services.tys-ifs.port"           -> mockPort,
-    "microservice.services.mtd-id-lookup.host"     -> mockHost,
-    "microservice.services.mtd-id-lookup.port"     -> mockPort,
-    "microservice.services.auth.host"              -> mockHost,
-    "microservice.services.auth.port"              -> mockPort,
-    "auditing.consumer.baseUri.port"               -> mockPort,
-    "minimumPermittedTaxYear"                      -> 2020,
-    "feature-switch.opw.enabled"                   -> "true",
-    "feature-switch.postCessationReceipts.enabled" -> "true"
+    "microservice.services.des.host"           -> mockHost,
+    "microservice.services.des.port"           -> mockPort,
+    "microservice.services.ifs.host"           -> mockHost,
+    "microservice.services.ifs.port"           -> mockPort,
+    "microservice.services.tys-ifs.host"       -> mockHost,
+    "microservice.services.tys-ifs.port"       -> mockPort,
+    "microservice.services.mtd-id-lookup.host" -> mockHost,
+    "microservice.services.mtd-id-lookup.port" -> mockPort,
+    "microservice.services.auth.host"          -> mockHost,
+    "microservice.services.auth.port"          -> mockPort,
+    "auditing.consumer.baseUri.port"           -> mockPort
   )
 
-  override implicit lazy val app: Application = {
-    new GuiceApplicationBuilder()
-      .in(Environment.simple(mode = Mode.Dev))
-      .configure(servicesConfig)
-      .build()
-  }
+  override implicit lazy val app: Application = new GuiceApplicationBuilder()
+    .in(Environment.simple(mode = Mode.Dev))
+    .configure(servicesConfig)
+    .build()
 
   override def beforeAll(): Unit = {
     super.beforeAll()

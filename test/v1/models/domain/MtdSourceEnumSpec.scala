@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 
 package v1.models.domain
 
-import support.UnitSpec
-import utils.enums.EnumJsonSpecSupport
+import shared.UnitSpec
+import shared.utils.enums.EnumJsonSpecSupport
 
 class MtdSourceEnumSpec extends UnitSpec with EnumJsonSpecSupport {
 

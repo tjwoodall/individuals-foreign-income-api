@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,58 +16,64 @@
 
 package shared.models.audit
 
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsPath, JsValue, OWrites}
 import shared.controllers.{AuditHandler, RequestContext}
 import shared.models.auth.UserDetails
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, JsValue, OWrites}
+import shared.routing.Version
 
 case class GenericAuditDetail(userType: String,
                               agentReferenceNumber: Option[String],
+                              versionNumber: String,
                               params: Map[String, String],
-                              request: Option[JsValue],
+                              requestBody: Option[JsValue],
                               `X-CorrelationId`: String,
-                              response: AuditResponse)
+                              auditResponse: AuditResponse)
 
 object GenericAuditDetail {
 
   implicit val writes: OWrites[GenericAuditDetail] = (
     (JsPath \ "userType").write[String] and
       (JsPath \ "agentReferenceNumber").writeNullable[String] and
+      (JsPath \ "versionNumber").write[String] and
       JsPath.write[Map[String, String]] and
       (JsPath \ "request").writeNullable[JsValue] and
       (JsPath \ "X-CorrelationId").write[String] and
       (JsPath \ "response").write[AuditResponse]
-    )(unlift(GenericAuditDetail.unapply))
+  )(unlift(GenericAuditDetail.unapply))
+
+  def auditDetailCreator(apiVersion: Version, params: Map[String, String]): AuditHandler.AuditDetailCreator[GenericAuditDetail] =
+    new AuditHandler.AuditDetailCreator[GenericAuditDetail] {
+
+      def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(implicit
+          ctx: RequestContext): GenericAuditDetail =
+        GenericAuditDetail(
+          userDetails = userDetails,
+          apiVersion = apiVersion.name,
+          params = params,
+          requestBody = requestBody,
+          `X-CorrelationId` = ctx.correlationId,
+          auditResponse = auditResponse
+        )
+
+    }
 
   def apply(userDetails: UserDetails,
+            apiVersion: String,
             params: Map[String, String],
-            request: Option[JsValue],
+            requestBody: Option[JsValue],
             `X-CorrelationId`: String,
-            response: AuditResponse): GenericAuditDetail = {
+            auditResponse: AuditResponse): GenericAuditDetail = {
 
     GenericAuditDetail(
       userType = userDetails.userType,
       agentReferenceNumber = userDetails.agentReferenceNumber,
+      versionNumber = apiVersion,
       params = params,
-      request = request,
+      requestBody = requestBody,
       `X-CorrelationId` = `X-CorrelationId`,
-      response = response
+      auditResponse = auditResponse
     )
   }
-
-  def auditDetailCreator(params: Map[String, String]): AuditHandler.AuditDetailCreator[GenericAuditDetail] =
-    new AuditHandler.AuditDetailCreator[GenericAuditDetail] {
-
-      def createAuditDetail(userDetails: UserDetails, request: Option[JsValue], response: AuditResponse)(implicit
-                                                                                                         ctx: RequestContext): GenericAuditDetail =
-        GenericAuditDetail(
-          userDetails = userDetails,
-          params = params,
-          request = request,
-          `X-CorrelationId` = ctx.correlationId,
-          response = response
-        )
-
-    }
 
 }

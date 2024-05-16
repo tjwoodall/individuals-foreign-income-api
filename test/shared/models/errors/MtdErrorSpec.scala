@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,18 @@ package shared.models.errors
 
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.Json
-import support.UnitSpec
+import shared.UnitSpec
 
 class MtdErrorSpec extends UnitSpec {
 
-  val dummyError: MtdError = MtdError("SOME_CODE", "some message", BAD_REQUEST)
+  private val error = MtdError("CODE", "some message", BAD_REQUEST)
 
   "writes" should {
     "generate the correct JSON" in {
-      Json.toJson(dummyError) shouldBe Json.parse(
+      Json.toJson(error) shouldBe Json.parse(
         """
           |{
-          |   "code": "SOME_CODE",
+          |   "code": "CODE",
           |   "message": "some message"
           |}
         """.stripMargin
@@ -37,19 +37,29 @@ class MtdErrorSpec extends UnitSpec {
     }
   }
 
+  "maybeWithExtraPath" should {
+    "add an extra path to the error" when {
+      "a path is provided" in {
+        val result = error.maybeWithExtraPath(Some("extra path")).paths
+        result shouldBe Some(List("extra path"))
+      }
+    }
+  }
+
   "withExtraPath" when {
     "paths are undefined" should {
       "create a new error with paths" in {
-        dummyError.withExtraPath("aPath") shouldBe dummyError.copy(paths = Some(List("aPath")))
+        val result = error.withExtraPath("aPath")
+        result shouldBe error.withPath("aPath")
       }
     }
 
     "paths are defined" should {
       "add the new path to the existing list of paths" in {
-        val dummyErrorWithPaths: MtdError = dummyError.copy(paths = Some(List("aPath")))
+        val dummyErrorWithPaths: MtdError = error.withPath("aPath")
 
-        dummyErrorWithPaths.withExtraPath("aPath2") shouldBe
-          dummyErrorWithPaths.copy(paths = Some(List("aPath", "aPath2")))
+        val result = dummyErrorWithPaths.withExtraPath("aPath2")
+        result shouldBe dummyErrorWithPaths.withPaths(List("aPath", "aPath2"))
       }
     }
   }

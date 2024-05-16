@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 package shared.controllers.requestParsers.validators.validations
 
-import shared.models.domain.Nino
+import shared.controllers.validators.resolvers.ResolveNino
 import shared.models.errors.{MtdError, NinoFormatError}
 
 object NinoValidation {
@@ -26,7 +26,7 @@ object NinoValidation {
       "[KT][A-CEGHJ-MPR-TW-Z]|N[A-CEGHJL-NPR-SW-Z]|Z[A-CEGHJ-NPR-TW-Y])[0-9]{6}[A-D ]?$"
 
   def validate(nino: String): List[MtdError] = {
-    if (Nino.isValid(nino) && nino.matches(ninoRegex)) NoValidationErrors else List(NinoFormatError)
+    if (ResolveNino.isValid(nino) && nino.matches(ninoRegex)) NoValidationErrors else List(NinoFormatError)
   }
 
 }

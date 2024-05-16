@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package v1.controllers
 
-import config.AppConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
+import shared.config.AppConfig
+import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandlerOld}
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
 import v1.controllers.requestParsers.RetrieveForeignRequestParser
@@ -50,7 +50,7 @@ class RetrieveForeignController @Inject() (val authService: EnrolmentsAuthServic
       val rawData: RetrieveForeignRawData = RetrieveForeignRawData(nino = nino, taxYear = taxYear)
 
       val requestHandler =
-        RequestHandler
+        RequestHandlerOld
           .withParser(parser)
           .withService(service.retrieve)
           .withPlainJsonResult()

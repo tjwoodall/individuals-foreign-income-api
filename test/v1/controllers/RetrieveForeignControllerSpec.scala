@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 package v1.controllers
 
 import play.api.mvc.Result
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.mocks.MockAppConfig
+import shared.config.MockAppConfig
+import shared.controllers.{OldControllerBaseSpec, OldControllerTestRunner}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
@@ -33,14 +33,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveForeignControllerSpec
-    extends ControllerBaseSpec
-    with ControllerTestRunner
+    extends OldControllerBaseSpec
+    with OldControllerTestRunner
     with MockRetrieveForeignService
     with MockRetrieveForeignRequestParser
     with MockAppConfig {
 
-  private val taxYear: String = "2019-20"
-
+  private val taxYear: String                 = "2019-20"
   private val rawData: RetrieveForeignRawData = RetrieveForeignRawData(nino = nino, taxYear = taxYear)
 
   private val requestData: RetrieveForeignRequest = retrieve.RetrieveForeignRequest(
