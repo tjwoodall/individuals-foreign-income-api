@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,12 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package shared.controllers.validators.validations
 
-import cats.data.Validated
-import shared.models.domain.BusinessId
-import shared.models.errors.{BusinessIdFormatError, MtdError}
+trait ValueFormatErrorMessages {
 
-object ResolveBusinessId extends ResolverSupport {
-
-  private val businessIdRegex = "^X[A-Z0-9]{1}IS[0-9]{11}$".r
-
-  val resolver: Resolver[String, BusinessId] =
-    ResolveStringPattern(businessIdRegex, BusinessIdFormatError).resolver.map(BusinessId)
-
-  def apply(value: String): Validated[Seq[MtdError], BusinessId] = resolver(value)
-
+  val ZERO_MINIMUM_INCLUSIVE             = "The value must be between 0 and 99999999999.99"
+  val ZERO_MINIMUM_INTEGER_INCLUSIVE     = "The value must be between 0 and 99"
+  val ZERO_MINIMUM_BIG_INTEGER_INCLUSIVE = "The value must be 0 or more"
+  val BIG_DECIMAL_MINIMUM_INCLUSIVE      = "The value must be between -99999999999.99 and 99999999999.99"
 }

@@ -16,7 +16,6 @@
 
 package v1.endpoints
 
-import common.models.errors.CountryCodeRuleError
 import play.api.http.HeaderNames.ACCEPT
 import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
@@ -25,7 +24,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
 import shared.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import support.IntegrationBaseSpec
-import v1.models.errors.CustomerRefFormatError
+import v1.models.errors.{CountryCodeRuleError, CustomerRefFormatError}
 
 class CreateAmendForeignControllerISpec extends IntegrationBaseSpec {
 

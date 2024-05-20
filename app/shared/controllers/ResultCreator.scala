@@ -16,7 +16,6 @@
 
 package shared.controllers
 
-import common.models.request.RawData
 import play.api.http.{HttpEntity, Status}
 import play.api.libs.json.{JsValue, Json, Writes}
 import play.api.mvc.{ResponseHeader, Result, Results}
@@ -44,22 +43,5 @@ object ResultCreator {
 
   def plainJson[Input, Output](successStatus: Int = Status.OK)(implicit ws: Writes[Output]): ResultCreator[Input, Output] =
     (_: Input, output: Output) => ResultWrapper(successStatus, Some(Json.toJson(output)))
-
-}
-
-//TODO: remove
-trait ResultCreatorOld[InputRaw <: RawData, Input, Output] {
-
-  def createResult(raw: InputRaw, input: Input, output: Output): ResultWrapper
-}
-
-object ResultCreatorOld {
-
-  def noContent[InputRaw <: RawData, Input, Output](successStatus: Int = Status.NO_CONTENT): ResultCreatorOld[InputRaw, Input, Output] =
-    (_: InputRaw, _: Input, _: Output) => ResultWrapper(successStatus, None)
-
-  def plainJson[InputRaw <: RawData, Input, Output](successStatus: Int = Status.OK)(implicit
-                                                                                    ws: Writes[Output]): ResultCreatorOld[InputRaw, Input, Output] =
-    (_: InputRaw, _: Input, output: Output) => ResultWrapper(successStatus, Some(Json.toJson(output)))
 
 }

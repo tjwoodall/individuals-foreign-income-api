@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package v1.controllers.validators
 
-import cats.data.Validated
-import shared.models.domain.BusinessId
-import shared.models.errors.{BusinessIdFormatError, MtdError}
+import org.scalamock.handlers.CallHandler
+import shared.controllers.validators.{MockValidatorFactory, Validator}
+import v1.models.request.retrieve.RetrieveForeignRequest
 
-object ResolveBusinessId extends ResolverSupport {
+trait MockRetrieveForeignValidatorFactory extends MockValidatorFactory[RetrieveForeignRequest] {
 
-  private val businessIdRegex = "^X[A-Z0-9]{1}IS[0-9]{11}$".r
+  val mockRetrieveForeignValidatorFactory: RetrieveForeignValidatorFactory = mock[RetrieveForeignValidatorFactory]
 
-  val resolver: Resolver[String, BusinessId] =
-    ResolveStringPattern(businessIdRegex, BusinessIdFormatError).resolver.map(BusinessId)
-
-  def apply(value: String): Validated[Seq[MtdError], BusinessId] = resolver(value)
+  def validator(): CallHandler[Validator[RetrieveForeignRequest]] =
+    (mockRetrieveForeignValidatorFactory.validator(_: String, _: String)).expects(*, *)
 
 }

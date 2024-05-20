@@ -16,27 +16,29 @@
 
 package v1.controllers
 
+import config.ForeignIncomeConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.AppConfig
 import shared.controllers._
 import shared.routing.Version1
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v1.controllers.requestParsers.DeleteForeignRequestParser
-import v1.models.request.delete.DeleteForeignRawData
+import v1.controllers.validators.DeleteForeignValidatorFactory
 import v1.services.DeleteForeignService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class DeleteForeignController @Inject() (val authService: EnrolmentsAuthService,
-                                         val lookupService: MtdIdLookupService,
-                                         parser: DeleteForeignRequestParser,
-                                         service: DeleteForeignService,
-                                         auditService: AuditService,
-                                         cc: ControllerComponents,
-                                         val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class DeleteForeignController @Inject() (
+    val authService: EnrolmentsAuthService,
+    val lookupService: MtdIdLookupService,
+    validatorFactory: DeleteForeignValidatorFactory,
+    service: DeleteForeignService,
+    auditService: AuditService,
+    cc: ControllerComponents,
+    val idGenerator: IdGenerator,
+    foreignIncomeConfig: ForeignIncomeConfig)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -48,11 +50,10 @@ class DeleteForeignController @Inject() (val authService: EnrolmentsAuthService,
   def deleteForeign(nino: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
+      val validator                    = validatorFactory.validator(nino, taxYear)
 
-      val rawData: DeleteForeignRawData = DeleteForeignRawData(nino = nino, taxYear = taxYear)
-
-      val requestHandler = RequestHandlerOld
-        .withParser(parser)
+      val requestHandler = RequestHandler
+        .withValidator(validator)
         .withService(service.deleteForeign)
         .withAuditing(AuditHandler(
           auditService = auditService,
@@ -63,7 +64,7 @@ class DeleteForeignController @Inject() (val authService: EnrolmentsAuthService,
           requestBody = None
         ))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

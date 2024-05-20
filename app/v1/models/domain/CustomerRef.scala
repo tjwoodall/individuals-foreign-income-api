@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,8 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package v1.models.domain
 
-import cats.data.Validated
-import shared.models.domain.BusinessId
-import shared.models.errors.{BusinessIdFormatError, MtdError}
-
-object ResolveBusinessId extends ResolverSupport {
-
-  private val businessIdRegex = "^X[A-Z0-9]{1}IS[0-9]{11}$".r
-
-  val resolver: Resolver[String, BusinessId] =
-    ResolveStringPattern(businessIdRegex, BusinessIdFormatError).resolver.map(BusinessId)
-
-  def apply(value: String): Validated[Seq[MtdError], BusinessId] = resolver(value)
-
+case class CustomerRef(customerRef: String) {
+  override def toString: String = customerRef
 }

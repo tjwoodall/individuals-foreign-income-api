@@ -28,7 +28,7 @@ import shared.config.MockAppConfig
 import shared.models.audit.{AuditError, AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.Nino
 import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
-import shared.routing.{Version, Version4}
+import shared.routing.{Version, Version1}
 import shared.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import shared.utils.MockIdGenerator
 import uk.gov.hmrc.http.HeaderCarrier
@@ -44,7 +44,7 @@ class ControllerBaseSpec
     with MockAuditService
     with MockAppConfig {
 
-  val apiVersion: Version = Version4
+  val apiVersion: Version = Version1
 
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest().withHeaders(HeaderNames.ACCEPT -> s"application/vnd.hmrc.${apiVersion.name}+json")

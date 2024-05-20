@@ -14,27 +14,18 @@
  * limitations under the License.
  */
 
-package shared.services
+package v1.controllers.validators
 
 import org.scalamock.handlers.CallHandler
-import org.scalamock.scalatest.MockFactory
-import shared.connectors.MtdIdLookupOutcome
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.JsValue
+import shared.controllers.validators.{MockValidatorFactory, Validator}
+import v1.models.request.createAmend.CreateAmendForeignRequest
 
-import scala.concurrent.{ExecutionContext, Future}
+trait MockCreateAmendForeignValidatorFactory extends MockValidatorFactory[CreateAmendForeignRequest] {
 
-trait MockMtdIdLookupService extends MockFactory {
+  val mockCreateAmendForeignValidatorFactory: CreateAmendForeignValidatorFactory = mock[CreateAmendForeignValidatorFactory]
 
-  val mockMtdIdLookupService: MtdIdLookupService = mock[MtdIdLookupService]
-
-  object MockedMtdIdLookupService {
-
-    def lookup(nino: String): CallHandler[Future[MtdIdLookupOutcome]] = {
-      (mockMtdIdLookupService
-        .lookup(_: String)(_: HeaderCarrier, _: ExecutionContext))
-        .expects(nino, *, *)
-    }
-
-  }
+  def validator(): CallHandler[Validator[CreateAmendForeignRequest]] =
+    (mockCreateAmendForeignValidatorFactory.validator(_: String, _: String, _: JsValue)).expects(*, *, *)
 
 }

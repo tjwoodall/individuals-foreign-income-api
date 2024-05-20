@@ -16,7 +16,7 @@
 
 package utils
 
-import common.utils.JsonUtils
+import api.utils.JsonUtils
 import play.api.libs.json._
 import shared.UnitSpec
 

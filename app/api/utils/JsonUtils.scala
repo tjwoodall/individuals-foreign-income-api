@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,24 @@
  * limitations under the License.
  */
 
-package shared.controllers.validators.resolvers
+package api.utils
 
-import cats.data.Validated
-import shared.models.domain.BusinessId
-import shared.models.errors.{BusinessIdFormatError, MtdError}
+import play.api.libs.json.Reads
 
-object ResolveBusinessId extends ResolverSupport {
+trait JsonUtils {
 
-  private val businessIdRegex = "^X[A-Z0-9]{1}IS[0-9]{11}$".r
+  /** Extension methods for reads of a optional sequence
+    */
+  implicit class OptSeqReadsOps[A](reads: Reads[Option[Seq[A]]]) {
 
-  val resolver: Resolver[String, BusinessId] =
-    ResolveStringPattern(businessIdRegex, BusinessIdFormatError).resolver.map(BusinessId)
+    /** Returns a Reads that maps the sequence to itself unless it is empty
+      */
+    def mapEmptySeqToNone: Reads[Option[Seq[A]]] =
+      reads.map {
+        case Some(Nil) => None
+        case other     => other
+      }
 
-  def apply(value: String): Validated[Seq[MtdError], BusinessId] = resolver(value)
+  }
 
 }

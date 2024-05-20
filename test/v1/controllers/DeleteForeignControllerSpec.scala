@@ -16,49 +16,46 @@
 
 package v1.controllers
 
+import config.MockForeignIncomeConfig
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
-import shared.config.MockAppConfig
-import shared.controllers.{OldControllerBaseSpec, OldControllerTestRunner}
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
-import v1.controllers.requestParsers.MockDeleteForeignRequestParser
+import shared.utils.MockIdGenerator
+import v1.controllers.validators.MockDeleteForeignValidatorFactory
 import v1.models.request.delete
-import v1.models.request.delete.{DeleteForeignRawData, DeleteForeignRequest}
+import v1.models.request.delete.DeleteForeignRequest
 import v1.services.MockDeleteForeignService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DeleteForeignControllerSpec
-    extends OldControllerBaseSpec
-    with OldControllerTestRunner
+    extends ControllerBaseSpec
+    with ControllerTestRunner
     with MockAuditService
     with MockDeleteForeignService
-    with MockDeleteForeignRequestParser
-    with MockAppConfig {
+    with MockDeleteForeignValidatorFactory
+    with MockIdGenerator
+    with MockForeignIncomeConfig {
 
+  val minTaxYear: Int = 2019
   val taxYear: String = "2019-20"
 
-  val rawData: DeleteForeignRawData = DeleteForeignRawData(
-    nino = nino,
-    taxYear = taxYear
-  )
-
   val requestData: DeleteForeignRequest = delete.DeleteForeignRequest(
-    nino = Nino(nino),
+    nino = Nino(validNino),
     taxYear = TaxYear.fromMtd(taxYear)
   )
 
   "DeleteForeignController" should {
     "return a successful response with status 204 (No Content)" when {
       "happy path" in new Test {
-        MockDeleteForeignRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+
+        willUseValidator(returningSuccess(requestData))
 
         MockedDeleteForeignService
           .deleteForeign(requestData)
@@ -70,18 +67,14 @@ class DeleteForeignControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockDeleteForeignRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTestWithAudit(NinoFormatError)
 
       }
 
       "service returns an error" in new Test {
-        MockDeleteForeignRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockedDeleteForeignService
           .deleteForeign(requestData)
@@ -92,19 +85,21 @@ class DeleteForeignControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
+  trait Test extends ControllerTest with AuditEventChecking {
 
     val controller = new DeleteForeignController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockDeleteForeignRequestParser,
+      validatorFactory = mockDeleteForeignValidatorFactory,
       service = mockDeleteForeignService,
       auditService = mockAuditService,
       cc = cc,
-      idGenerator = mockIdGenerator
+      idGenerator = mockIdGenerator,
+      mockForeignIncomeConfig
     )
 
-    protected def callController(): Future[Result] = controller.deleteForeign(nino, taxYear)(fakeDeleteRequest)
+    protected def callController(): Future[Result] =
+      controller.deleteForeign(validNino, taxYear)(fakeRequest)
 
     def event(auditResponse: AuditResponse, requestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -113,8 +108,8 @@ class DeleteForeignControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          versionNumber="1.0",
-          params = Map("nino" -> nino, "taxYear" -> taxYear),
+          versionNumber = "1.0",
+          params = Map("nino" -> validNino, "taxYear" -> taxYear),
           requestBody = None,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

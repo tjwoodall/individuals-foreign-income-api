@@ -17,15 +17,15 @@
 package v1.controllers
 
 import play.api.libs.json.{JsValue, Json}
-import play.api.mvc.{AnyContentAsJson, Result}
+import play.api.mvc.Result
 import shared.config.MockAppConfig
-import shared.controllers.{OldControllerBaseSpec, OldControllerTestRunner}
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.{ErrorWrapper, NinoFormatError, RuleTaxYearNotSupportedError}
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
-import v1.controllers.requestParsers.MockCreateAmendForeignRequestParser
+import v1.controllers.validators.MockCreateAmendForeignValidatorFactory
 import v1.models.request.createAmend
 import v1.models.request.createAmend._
 import v1.services.MockCreateAmendForeignService
@@ -34,11 +34,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class CreateAmendForeignControllerSpec
-    extends OldControllerBaseSpec
-    with OldControllerTestRunner
+    extends ControllerBaseSpec
+    with ControllerTestRunner
     with MockAuditService
     with MockCreateAmendForeignService
-    with MockCreateAmendForeignRequestParser
+    with MockCreateAmendForeignValidatorFactory
     with MockAppConfig {
 
   val taxYear: String = "2019-20"
@@ -66,12 +66,6 @@ class CreateAmendForeignControllerSpec
     """.stripMargin
   )
 
-  val rawData: CreateAmendForeignRawData = createAmend.CreateAmendForeignRawData(
-    nino = nino,
-    taxYear = taxYear,
-    body = AnyContentAsJson(requestBodyJson)
-  )
-
   val foreignEarning: ForeignEarnings = ForeignEarnings(
     customerReference = Some("FOREIGNINCME123A"),
     earningsNotTaxableUK = 1999.99
@@ -96,15 +90,12 @@ class CreateAmendForeignControllerSpec
   )
 
   val requestData: CreateAmendForeignRequest =
-    createAmend.CreateAmendForeignRequest(nino = Nino(nino), taxYear = TaxYear.fromMtd(taxYear), body = amendForeignRequestBody)
+    createAmend.CreateAmendForeignRequest(nino = Nino(validNino), taxYear = TaxYear.fromMtd(taxYear), body = amendForeignRequestBody)
 
   "AmendForeignController" should {
     "return a successful response with status 200 (OK)" when {
       "the request received is valid" in new Test {
-          MockedCreateAmendForeignRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
+        willUseValidator(returningSuccess(requestData))
         MockedCreateAmendForeignService
           .amendForeign(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, ()))))
@@ -118,17 +109,12 @@ class CreateAmendForeignControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-          MockedCreateAmendForeignRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError)))
-
+        willUseValidator(returning(NinoFormatError))
         runErrorTestWithAudit(NinoFormatError, Some(requestBodyJson))
       }
 
       "the service returns an error" in new Test {
-          MockedCreateAmendForeignRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
+        willUseValidator(returningSuccess(requestData))
 
         MockedCreateAmendForeignService
           .amendForeign(requestData)
@@ -139,19 +125,19 @@ class CreateAmendForeignControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
+  trait Test extends ControllerTest with AuditEventChecking {
 
     val controller = new CreateAmendForeignController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockCreateAmendForeignRequestParser,
+      validatorFactory = mockCreateAmendForeignValidatorFactory,
       service = mockCreateAmendForeignService,
       auditService = mockAuditService,
       cc = cc,
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.createAmendForeign(nino, taxYear)(fakePutRequest(requestBodyJson))
+    protected def callController(): Future[Result] = controller.createAmendForeign(validNino, taxYear)(fakePostRequest(requestBodyJson))
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
@@ -160,8 +146,8 @@ class CreateAmendForeignControllerSpec
         detail = GenericAuditDetail(
           userType = "Individual",
           agentReferenceNumber = None,
-          versionNumber= "1.0",
-          params = Map("nino" -> nino, "taxYear" -> taxYear),
+          versionNumber = "1.0",
+          params = Map("nino" -> validNino, "taxYear" -> taxYear),
           requestBody = maybeRequestBody,
           `X-CorrelationId` = correlationId,
           auditResponse = auditResponse

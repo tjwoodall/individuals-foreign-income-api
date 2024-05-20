@@ -16,16 +16,17 @@
 
 package v1.controllers
 
+import config.MockForeignIncomeConfig
 import play.api.mvc.Result
 import shared.config.MockAppConfig
-import shared.controllers.{OldControllerBaseSpec, OldControllerTestRunner}
+import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import v1.controllers.requestParsers.MockRetrieveForeignRequestParser
+import v1.controllers.validators.MockRetrieveForeignValidatorFactory
 import v1.fixtures.RetrieveForeignFixture.fullRetrieveForeignResponseJson
 import v1.models.request.retrieve
-import v1.models.request.retrieve.{RetrieveForeignRawData, RetrieveForeignRequest}
+import v1.models.request.retrieve.RetrieveForeignRequest
 import v1.models.response.retrieve.{ForeignEarnings, RetrieveForeignResponse, UnremittableForeignIncome}
 import v1.services.MockRetrieveForeignService
 
@@ -33,17 +34,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class RetrieveForeignControllerSpec
-    extends OldControllerBaseSpec
-    with OldControllerTestRunner
+    extends ControllerBaseSpec
+    with ControllerTestRunner
     with MockRetrieveForeignService
-    with MockRetrieveForeignRequestParser
+    with MockRetrieveForeignValidatorFactory
     with MockAppConfig {
 
-  private val taxYear: String                 = "2019-20"
-  private val rawData: RetrieveForeignRawData = RetrieveForeignRawData(nino = nino, taxYear = taxYear)
+  private val taxYear: String = "2019-20"
 
   private val requestData: RetrieveForeignRequest = retrieve.RetrieveForeignRequest(
-    nino = Nino(nino),
+    nino = Nino(validNino),
     taxYear = TaxYear.fromMtd(taxYear)
   )
 
@@ -79,10 +79,7 @@ class RetrieveForeignControllerSpec
   "RetrieveForeignController" should {
     "return OK" when {
       "the request is valid" in new Test {
-        MockRetrieveForeignRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
+        willUseValidator(returningSuccess(requestData))
         MockedRetrieveForeignService
           .retrieve(requestData)
           .returns(Future.successful(Right(ResponseWrapper(correlationId, retrieveForeignResponse))))
@@ -93,18 +90,13 @@ class RetrieveForeignControllerSpec
 
     "return the error as per spec" when {
       "the parser validation fails" in new Test {
-        MockRetrieveForeignRequestParser
-          .parse(rawData)
-          .returns(Left(ErrorWrapper(correlationId, NinoFormatError, None)))
+        willUseValidator(returning(NinoFormatError))
 
         runErrorTest(NinoFormatError)
       }
 
       "the service returns an error" in new Test {
-        MockRetrieveForeignRequestParser
-          .parse(rawData)
-          .returns(Right(requestData))
-
+        willUseValidator(returningSuccess(requestData))
         MockedRetrieveForeignService
           .retrieve(requestData)
           .returns(Future.successful(Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))))
@@ -114,18 +106,19 @@ class RetrieveForeignControllerSpec
     }
   }
 
-  trait Test extends ControllerTest {
+  trait Test extends ControllerTest with MockForeignIncomeConfig{
 
     val controller = new RetrieveForeignController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
-      parser = mockRetrieveForeignRequestParser,
+      validatorFactory = mockRetrieveForeignValidatorFactory,
       service = mockRetrieveForeignService,
       cc = cc,
-      idGenerator = mockIdGenerator
+      idGenerator = mockIdGenerator,
+      foreignIncomeConfig = mockForeignIncomeConfig
     )
 
-    protected def callController(): Future[Result] = controller.retrieveForeign(nino, taxYear)(fakeGetRequest)
+    protected def callController(): Future[Result] = controller.retrieveForeign(validNino, taxYear)(fakeGetRequest)
   }
 
 }

@@ -22,7 +22,7 @@ import play.api.{Configuration, Environment}
 import play.api.http.{DefaultFileMimeTypes, DefaultHttpErrorHandler, FileMimeTypesConfiguration, HttpConfiguration}
 import play.api.mvc.Result
 import shared.config.rewriters._
-import shared.config.{AppConfig, MockAppConfig}
+import shared.config.{MockAppConfig}
 import shared.definition._
 import shared.routing.Version1
 import uk.gov.hmrc.http.HeaderCarrier
@@ -46,7 +46,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
 
   "rewrite()" when {
     "the API version is disabled" should {
-      "return the yaml with [test only] in the API title" in new Test {
+      "return the yaml with [Test only] in the API title" in new Test {
         MockAppConfig.apiVersionReleasedInProduction("1.0").anyNumberOfTimes() returns false
         MockAppConfig.endpointsEnabled("1.0").anyNumberOfTimes() returns true
 
@@ -54,7 +54,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
         status(response) shouldBe OK
 
         private val result = contentAsString(response)
-        result should include(s"""  title: "$apiTitle [test only]"""")
+        result should include(s"""title: "$apiTitle [test only]"""")
 
         withClue("Only the title should have [test only] appended:") {
           numberOfTestOnlyOccurrences(result) shouldBe 1
@@ -100,7 +100,7 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
     MockAppConfig.featureSwitchConfig returns Configuration("openApiFeatureTest.enabled" -> featureEnabled)
 
     private val apiFactory = new ApiDefinitionFactory {
-      protected val appConfig: AppConfig = mockAppConfig
+      protected val appConfig = mockAppConfig
 
       val definition: Definition = Definition(
         Nil,

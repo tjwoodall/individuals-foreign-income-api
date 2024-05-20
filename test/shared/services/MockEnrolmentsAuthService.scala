@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,10 @@
 
 package shared.services
 
-import shared.models.auth.UserDetails
-import shared.models.outcomes.AuthOutcome
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import shared.models.auth.UserDetails
+import shared.models.outcomes.AuthOutcome
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
 

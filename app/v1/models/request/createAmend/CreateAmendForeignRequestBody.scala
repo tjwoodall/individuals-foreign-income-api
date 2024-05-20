@@ -16,7 +16,7 @@
 
 package v1.models.request.createAmend
 
-import common.utils.JsonUtils
+import api.utils.JsonUtils
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, OWrites, Reads}
 

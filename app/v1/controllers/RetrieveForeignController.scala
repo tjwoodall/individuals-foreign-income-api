@@ -16,13 +16,13 @@
 
 package v1.controllers
 
+import config.ForeignIncomeConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.AppConfig
-import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandlerOld}
+import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v1.controllers.requestParsers.RetrieveForeignRequestParser
-import v1.models.request.retrieve.RetrieveForeignRawData
+import v1.controllers.validators.RetrieveForeignValidatorFactory
 import v1.services.RetrieveForeignService
 
 import javax.inject.{Inject, Singleton}
@@ -31,10 +31,11 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class RetrieveForeignController @Inject() (val authService: EnrolmentsAuthService,
                                            val lookupService: MtdIdLookupService,
-                                           parser: RetrieveForeignRequestParser,
+                                           validatorFactory: RetrieveForeignValidatorFactory,
                                            service: RetrieveForeignService,
                                            cc: ControllerComponents,
-                                           val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                           val idGenerator: IdGenerator,
+                                           foreignIncomeConfig: ForeignIncomeConfig)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -47,15 +48,14 @@ class RetrieveForeignController @Inject() (val authService: EnrolmentsAuthServic
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
 
-      val rawData: RetrieveForeignRawData = RetrieveForeignRawData(nino = nino, taxYear = taxYear)
-
+      val validator = validatorFactory.validator(nino, taxYear)
       val requestHandler =
-        RequestHandlerOld
-          .withParser(parser)
+        RequestHandler
+          .withValidator(validator)
           .withService(service.retrieve)
           .withPlainJsonResult()
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }
