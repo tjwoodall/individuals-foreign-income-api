@@ -14,24 +14,17 @@
  * limitations under the License.
  */
 
-package api.utils
+package v1.models.domain
 
-import play.api.libs.json.Reads
+import shared.UnitSpec
 
-trait JsonUtils {
+class CustomerRefSpec extends UnitSpec {
 
-  /** Extension methods for reads of a optional sequence
-    */
-  implicit class OptSeqReadsOps[A](reads: Reads[Option[Seq[A]]]) {
-
-    /** Returns a Reads that maps the sequence to itself unless it is empty
-      */
-    def mapEmptySeqToNone: Reads[Option[Seq[A]]] =
-      reads.map {
-        case Some(Nil) => None
-        case other     => other
-      }
-
+  "toString" should {
+    "return the CustomerRef value" in {
+      val result = CustomerRef("some ref").toString
+      result shouldBe "some ref"
+    }
   }
 
 }

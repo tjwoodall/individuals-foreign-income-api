@@ -69,10 +69,10 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
     "buildAPIStatus" when {
       "the 'apiStatus' parameter is present and valid" should {
-          List(
-            (Version3, BETA),
-            (Version4, BETA)
-          ).foreach { case (version, status) =>
+        List(
+          (Version3, BETA),
+          (Version4, BETA)
+        ).foreach { case (version, status) =>
           s"return the correct $status for $version " in new Test {
             MockAppConfig.apiStatus(version) returns status.toString
             MockAppConfig
@@ -85,16 +85,16 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
       }
 
       "the 'apiStatus' parameter is present and invalid" should {
-          List(Version3, Version4).foreach { version =>
-            s"default to alpha for $version " in new Test {
-              MockAppConfig.apiStatus(version) returns "ALPHO"
-              MockAppConfig
-                .deprecationFor(version)
-                .returns(NotDeprecated.valid)
-                .anyNumberOfTimes()
-              apiDefinitionFactory.checkBuildApiStatus(version) shouldBe ALPHA
-            }
+        List(Version3, Version4).foreach { version =>
+          s"default to alpha for $version " in new Test {
+            MockAppConfig.apiStatus(version) returns "ALPHO"
+            MockAppConfig
+              .deprecationFor(version)
+              .returns(NotDeprecated.valid)
+              .anyNumberOfTimes()
+            apiDefinitionFactory.checkBuildApiStatus(version) shouldBe ALPHA
           }
+        }
       }
 
       "the 'deprecatedOn' parameter is missing for a deprecated version" should {

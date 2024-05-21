@@ -134,10 +134,6 @@ class AppConfig @Inject() (config: ServicesConfig, configuration: Configuration)
     } else NotDeprecated.valid
 
   }
-  //TODO: Remove
-  def allowRequestCannotBeFulfilledHeader: Boolean = config.getBoolean("allow-request-cannot-be-fulfilled-header")
-
-  def minimumPermittedTaxYear: Int = config.getInt("minimumPermittedTaxYear")
 
 }
 

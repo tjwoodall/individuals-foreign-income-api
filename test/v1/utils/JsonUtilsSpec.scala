@@ -14,12 +14,27 @@
  * limitations under the License.
  */
 
-package api.utils
+package v1.utils
 
-import java.time.LocalDate
-import javax.inject.Singleton
+import play.api.libs.json._
+import shared.UnitSpec
 
-@Singleton
-class CurrentDate {
-  def getLocalDate: LocalDate = LocalDate.now()
+class JsonUtilsSpec extends UnitSpec with JsonUtils {
+
+  "mapEmptySeqToNone" must {
+    val reads = __.readNullable[Seq[String]].mapEmptySeqToNone
+
+    "map non-empty sequence to Some(non-empty sequence)" in {
+      JsArray(List(JsString("value0"), JsString("value1"))).as(reads) shouldBe Some(List("value0", "value1"))
+    }
+
+    "map empty sequence to None" in {
+      JsArray.empty.as(reads) shouldBe None
+    }
+
+    "map None to None" in {
+      JsNull.as(reads) shouldBe None
+    }
+  }
+
 }

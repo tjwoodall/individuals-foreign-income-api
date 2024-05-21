@@ -14,29 +14,18 @@
  * limitations under the License.
  */
 
-package utils
+package v1.models.domain
 
-import play.api.libs.json._
 import shared.UnitSpec
-import v1.utils.JsonUtils
+import shared.utils.enums.EnumJsonSpecSupport
 
+class ShareOptionSchemeTypeSpec extends UnitSpec with EnumJsonSpecSupport {
 
-class JsonUtilsSpec extends UnitSpec with JsonUtils {
-
-  "mapEmptySeqToNone" must {
-    val reads = __.readNullable[Seq[String]].mapEmptySeqToNone
-
-    "map non-empty sequence to Some(non-empty sequence)" in {
-        JsArray(List(JsString("value0"), JsString("value1"))).as(reads) shouldBe Some(List("value0", "value1"))
-    }
-
-    "map empty sequence to None" in {
-      JsArray.empty.as(reads) shouldBe None
-    }
-
-    "map None to None" in {
-      JsNull.as(reads) shouldBe None
-    }
-  }
+  testRoundTrip[ShareOptionSchemeType](
+    ("Other", ShareOptionSchemeType.Other),
+    ("EMI", ShareOptionSchemeType.EMI),
+    ("SAYE", ShareOptionSchemeType.SAYE),
+    ("CSOP", ShareOptionSchemeType.CSOP)
+  )
 
 }

@@ -14,27 +14,14 @@
  * limitations under the License.
  */
 
-package shared.utils
+package v1.models.domain
 
-import play.api.libs.json._
+import shared.UnitSpec
+import shared.utils.enums.EnumJsonSpecSupport
 
-trait JsonWritesUtil {
-
-  def filterNull(json: JsValue): JsObject = json match {
-    case JsObject(fields) =>
-      JsObject(fields.flatMap {
-        case (_, JsNull) => None
-        case other       => Some(other)
-      })
-    case other => other.as[JsObject]
-  }
-
-  def writesFrom[A](pf: PartialFunction[A, JsObject]): OWrites[A] = {
-    val f: A => JsObject = pf.orElse(a => throw new IllegalArgumentException(s"No writes defined for type ${a.getClass.getName}"))
-
-    OWrites.apply(f)
-  }
-
+class SharesAwardedOrReceivedSchemeTypeSpec  extends UnitSpec with EnumJsonSpecSupport {
+    testRoundTrip[SharesAwardedOrReceivedSchemeType](
+      ("Other", SharesAwardedOrReceivedSchemeType.Other),
+      ("SIP", SharesAwardedOrReceivedSchemeType.SIP)
+    )
 }
-
-object JsonWritesUtil extends JsonWritesUtil

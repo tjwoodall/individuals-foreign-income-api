@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 
-package utils
+package v1.utils
 
-import play.api.libs.json._
-import shared.UnitSpec
-import v1.utils.JsonUtils
+import play.api.libs.json.Reads
 
+trait JsonUtils {
 
-class JsonUtilsSpec extends UnitSpec with JsonUtils {
+  /** Extension methods for reads of a optional sequence
+    */
+  implicit class OptSeqReadsOps[A](reads: Reads[Option[Seq[A]]]) {
 
-  "mapEmptySeqToNone" must {
-    val reads = __.readNullable[Seq[String]].mapEmptySeqToNone
+    /** Returns a Reads that maps the sequence to itself unless it is empty
+      */
+    def mapEmptySeqToNone: Reads[Option[Seq[A]]] =
+      reads.map {
+        case Some(Nil) => None
+        case other     => other
+      }
 
-    "map non-empty sequence to Some(non-empty sequence)" in {
-        JsArray(List(JsString("value0"), JsString("value1"))).as(reads) shouldBe Some(List("value0", "value1"))
-    }
-
-    "map empty sequence to None" in {
-      JsArray.empty.as(reads) shouldBe None
-    }
-
-    "map None to None" in {
-      JsNull.as(reads) shouldBe None
-    }
   }
 
 }
