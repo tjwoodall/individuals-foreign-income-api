@@ -26,7 +26,7 @@ import shared.routing.Version1
 import shared.UnitSpec
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 
-class ForeiginIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
+class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
 
   private val confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200

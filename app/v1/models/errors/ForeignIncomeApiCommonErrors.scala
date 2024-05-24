@@ -21,15 +21,9 @@ import shared.models.errors.MtdError
 
 object AccountNameFormatError extends MtdError("FORMAT_ACCOUNT_NAME", "The provided account name is invalid", BAD_REQUEST)
 
-object CustomerRefFormatError extends MtdError("FORMAT_CUSTOMER_REF", "The provided customer reference is invalid", BAD_REQUEST) {
-
-  def forPath(paths: Seq[String]): MtdError =
-    CustomerRefFormatError.copy(paths = Some(paths))
-
-}
-
-object EventFormatError   extends MtdError("FORMAT_EVENT", "The provided policy event is invalid", BAD_REQUEST)
-object QOPSRefFormatError extends MtdError("FORMAT_QOPS_REF", "The provided QOPS reference number is invalid", BAD_REQUEST)
+object CustomerRefFormatError extends MtdError("FORMAT_CUSTOMER_REF", "The provided customer reference is invalid", BAD_REQUEST)
+object EventFormatError       extends MtdError("FORMAT_EVENT", "The provided policy event is invalid", BAD_REQUEST)
+object QOPSRefFormatError     extends MtdError("FORMAT_QOPS_REF", "The provided QOPS reference number is invalid", BAD_REQUEST)
 
 object ClassOfSharesAwardedFormatError
     extends MtdError("FORMAT_CLASS_OF_SHARES_AWARDED", "The provided class of shares awarded is invalid", BAD_REQUEST)

@@ -47,7 +47,7 @@ class MtdIdLookupServiceSpec extends ServiceSpec {
       }
     }
 
-    "a not authorised error occurs the service" should {
+    "a not authorised error occurs in the service" should {
       "proxy the error to the caller" in new Test {
         val connectorResponse = Left(ClientNotAuthorisedError)
 

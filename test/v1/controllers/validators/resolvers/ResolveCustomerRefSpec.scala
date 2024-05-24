@@ -38,7 +38,7 @@ class ResolveCustomerRefSpec extends UnitSpec {
 
         val customerRef: String = "This customer ref string is 91 characters long ------------------------------------------91"
         val result              = ResolveCustomerRef(customerRef, path)
-        result shouldBe Invalid(List(CustomerRefFormatError.forPath(Seq(path))))
+        result shouldBe Invalid(List(CustomerRefFormatError.withPath(path)))
       }
     }
 
@@ -59,7 +59,7 @@ class ResolveCustomerRefSpec extends UnitSpec {
 
         val customerRef = Some("This customer ref string is 91 characters long ------------------------------------------91")
         val result      = ResolveCustomerRef(customerRef, path)
-        result shouldBe Invalid(List(CustomerRefFormatError.forPath(Seq(path))))
+        result shouldBe Invalid(List(CustomerRefFormatError.withPath(path)))
       }
     }
   }

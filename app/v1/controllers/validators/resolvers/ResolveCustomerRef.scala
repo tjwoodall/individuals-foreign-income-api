@@ -35,6 +35,6 @@ object ResolveCustomerRef extends ResolverSupport {
   def apply(value: String, path: String): Validated[Seq[MtdError], CustomerRef] =
     resolver(errorFor(path))(value)
 
-  private def errorFor(path: String): MtdError = CustomerRefFormatError.forPath(Seq(path))
+  private def errorFor(path: String): MtdError = CustomerRefFormatError.withPath(path)
 }
 

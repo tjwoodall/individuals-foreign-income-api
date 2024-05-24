@@ -137,7 +137,7 @@ class CreateAmendForeignControllerSpec
       idGenerator = mockIdGenerator
     )
 
-    protected def callController(): Future[Result] = controller.createAmendForeign(validNino, taxYear)(fakePostRequest(requestBodyJson))
+    protected def callController(): Future[Result] = controller.createAmendForeign(validNino, taxYear)(fakePutRequest(requestBodyJson))
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(
