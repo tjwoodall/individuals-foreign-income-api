@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,28 +16,28 @@
 
 package shared.connectors.httpparsers
 
-import play.api.libs.json.Writes.StringWrites
-import play.api.libs.json.{JsObject, Json}
-import play.api.test.Helpers.{FORBIDDEN, INTERNAL_SERVER_ERROR, OK, UNAUTHORIZED}
 import shared.connectors.MtdIdLookupOutcome
 import shared.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
-import shared.models.errors.{InternalError, InvalidBearerTokenError, NinoFormatError}
-import support.UnitSpec
+import shared.models.errors._
+import play.api.libs.json.Json
+import play.api.libs.json.Writes.StringWrites
+import play.api.test.Helpers.{FORBIDDEN, INTERNAL_SERVER_ERROR, OK, UNAUTHORIZED}
+import shared.UnitSpec
 import uk.gov.hmrc.http.HttpResponse
 
 class MtdIdLookupHttpParserSpec extends UnitSpec {
 
-  val method = "GET"
-  val url    = "test-url"
-  val mtdId  = "test-mtd-id"
+  private val method = "GET"
+  private val url    = "test-url"
+  private val mtdId  = "test-mtd-id"
 
-  val mtdIdJson: JsObject   = Json.obj("mtdbsa" -> mtdId)
-  val invalidJson: JsObject = Json.obj("hello" -> "world")
+  private val mtdIdJson   = Json.obj("mtdbsa" -> mtdId)
+  private val invalidJson = Json.obj("hello" -> "world")
 
   "read" should {
     "return an MtdId" when {
       "the HttpResponse contains a 200 status and a correct response body" in {
-        val response                   = HttpResponse(OK, mtdIdJson.toString())
+        val response                   = HttpResponse(OK, mtdIdJson, Map.empty[String, Seq[String]])
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Right(mtdId)
@@ -46,14 +46,14 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
 
     "returns an downstream error" when {
       "backend doesn't have a valid data" in {
-        val response                   = HttpResponse(OK, invalidJson.toString())
+        val response                   = HttpResponse(OK, invalidJson, Map.empty[String, Seq[String]])
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Left(InternalError)
       }
 
       "backend doesn't return any data" in {
-        val response                   = HttpResponse(OK, None.orNull)
+        val response                   = HttpResponse(OK, "")
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Left(InternalError)
@@ -69,7 +69,7 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
 
     "return an InvalidNino error" when {
       "the HttpResponse contains a 403 status" in {
-        val response                   = HttpResponse(FORBIDDEN, None.orNull)
+        val response                   = HttpResponse(FORBIDDEN, "")
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Left(NinoFormatError)
@@ -78,7 +78,7 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
 
     "return an Unauthorised error" when {
       "the HttpResponse contains a 403 status" in {
-        val response                   = HttpResponse(UNAUTHORIZED, None.orNull)
+        val response                   = HttpResponse(UNAUTHORIZED, "")
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Left(InvalidBearerTokenError)
@@ -87,7 +87,7 @@ class MtdIdLookupHttpParserSpec extends UnitSpec {
 
     "return a DownstreamError" when {
       "the HttpResponse contains any other status" in {
-        val response                   = HttpResponse(INTERNAL_SERVER_ERROR, None.orNull)
+        val response                   = HttpResponse(INTERNAL_SERVER_ERROR, "")
         val result: MtdIdLookupOutcome = mtdIdLookupHttpReads.read(method, url, response)
 
         result shouldBe Left(InternalError)

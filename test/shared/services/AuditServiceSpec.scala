@@ -16,9 +16,9 @@
 
 package shared.services
 
-import shared.models.audit.AuditEvent
 import play.api.Configuration
 import play.api.libs.json.Json
+import shared.models.audit.AuditEvent
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditResult.Success
 import uk.gov.hmrc.play.audit.http.connector.{AuditConnector, AuditResult}
@@ -54,7 +54,7 @@ class AuditServiceSpec extends ServiceSpec {
           .expects(*, *, *)
           .returns(expected)
 
-        val event: AuditEvent[String] = AuditEvent(auditType, transactionName, eventDetails)
+        val event = AuditEvent(auditType, transactionName, eventDetails)
         target.auditEvent(event) shouldBe expected
       }
 
@@ -68,7 +68,7 @@ class AuditServiceSpec extends ServiceSpec {
           )
           .returns(expected)
 
-        val event: AuditEvent[String] = AuditEvent(auditType, transactionName, eventDetails)
+        val event = AuditEvent(auditType, transactionName, eventDetails)
 
         target.auditEvent(event)
       }
@@ -83,7 +83,7 @@ class AuditServiceSpec extends ServiceSpec {
           )
           .returns(expected)
 
-        val event: AuditEvent[String] = AuditEvent(auditType, transactionName, eventDetails)
+        val event = AuditEvent(auditType, transactionName, eventDetails)
 
         target.auditEvent(event)
       }
@@ -98,7 +98,7 @@ class AuditServiceSpec extends ServiceSpec {
           )
           .returns(expected)
 
-        val event: AuditEvent[String] = AuditEvent(auditType, transactionName, eventDetails)
+        val event = AuditEvent(auditType, transactionName, eventDetails)
 
         target.auditEvent(event)
       }
@@ -113,7 +113,7 @@ class AuditServiceSpec extends ServiceSpec {
           )
           .returns(expected)
 
-        val event: AuditEvent[String] = AuditEvent(auditType, transactionName, eventDetails)
+        val event = AuditEvent(auditType, transactionName, eventDetails)
 
         target.auditEvent(event)
       }

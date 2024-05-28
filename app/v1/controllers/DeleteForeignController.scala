@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,26 +16,29 @@
 
 package v1.controllers
 
-import config.AppConfig
+import config.ForeignIncomeConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import shared.config.AppConfig
 import shared.controllers._
+import shared.routing.Version1
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v1.controllers.requestParsers.DeleteForeignRequestParser
-import v1.models.request.delete.DeleteForeignRawData
+import v1.controllers.validators.DeleteForeignValidatorFactory
 import v1.services.DeleteForeignService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class DeleteForeignController @Inject() (val authService: EnrolmentsAuthService,
-                                         val lookupService: MtdIdLookupService,
-                                         parser: DeleteForeignRequestParser,
-                                         service: DeleteForeignService,
-                                         auditService: AuditService,
-                                         cc: ControllerComponents,
-                                         val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
+class DeleteForeignController @Inject() (
+    val authService: EnrolmentsAuthService,
+    val lookupService: MtdIdLookupService,
+    validatorFactory: DeleteForeignValidatorFactory,
+    service: DeleteForeignService,
+    auditService: AuditService,
+    cc: ControllerComponents,
+    val idGenerator: IdGenerator,
+    foreignIncomeConfig: ForeignIncomeConfig)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   implicit val endpointLogContext: EndpointLogContext =
@@ -47,21 +50,21 @@ class DeleteForeignController @Inject() (val authService: EnrolmentsAuthService,
   def deleteForeign(nino: String, taxYear: String): Action[AnyContent] =
     authorisedAction(nino).async { implicit request =>
       implicit val ctx: RequestContext = RequestContext.from(idGenerator, endpointLogContext)
-
-      val rawData: DeleteForeignRawData = DeleteForeignRawData(nino = nino, taxYear = taxYear)
+      val validator                    = validatorFactory.validator(nino, taxYear)
 
       val requestHandler = RequestHandler
-        .withParser(parser)
+        .withValidator(validator)
         .withService(service.deleteForeign)
         .withAuditing(AuditHandler(
           auditService = auditService,
           auditType = "DeleteForeignIncome",
           transactionName = "delete-foreign-income",
+          apiVersion = Version1,
           params = Map("nino" -> nino, "taxYear" -> taxYear),
           requestBody = None
         ))
 
-      requestHandler.handleRequest(rawData)
+      requestHandler.handleRequest()
     }
 
 }

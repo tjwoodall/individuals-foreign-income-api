@@ -1,4 +1,4 @@
-summary: Create and Amend Foreign Income [Test only]
+summary: Create and Amend Foreign Income
 description: |
   This endpoint enables you to create and amend foreign income:
   foreign earnings and unremittable foreign income.
@@ -13,8 +13,6 @@ description: |
   | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request could not be processed. |
   | STATEFUL                         | Performs a stateful create or update.                            |
 
-tags:
-  - Foreign Income
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'

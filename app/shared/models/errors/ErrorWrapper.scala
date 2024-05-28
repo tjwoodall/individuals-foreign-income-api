@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,25 +16,18 @@
 
 package shared.models.errors
 
-import play.api.libs.json.{JsObject, Json, Writes}
 import shared.models.audit.AuditError
+import play.api.libs.json.{JsObject, Json, Writes}
 
-/** If the errors arg is defined, error should be a BadRequest.
-  */
 case class ErrorWrapper(correlationId: String, error: MtdError, errors: Option[Seq[MtdError]] = None) {
+
+  def auditErrors: Seq[AuditError] =
+    allErrors.map(error => AuditError(error.code))
 
   private def allErrors: Seq[MtdError] = errors match {
     case Some(seq) => seq
     case None      => List(error)
   }
-
-  def auditErrors: Seq[AuditError] =
-    allErrors.map(error => AuditError(error.code))
-
-  /** Controller only checks the first/main error code, not the additional errors.
-   */
-  def containsAnyOf(errorsToCheck: MtdError*): Boolean =
-    errorsToCheck.exists(_.code == error.code)
 
 }
 
@@ -42,7 +35,7 @@ object ErrorWrapper {
 
   implicit val writes: Writes[ErrorWrapper] = (errorResponse: ErrorWrapper) => {
 
-    val json = errorResponse.error.asJson.as[JsObject]
+    val json = Json.toJson(errorResponse.error).as[JsObject]
 
     errorResponse.errors match {
       case Some(errors) if errors.nonEmpty => json + ("errors" -> Json.toJson(errors))

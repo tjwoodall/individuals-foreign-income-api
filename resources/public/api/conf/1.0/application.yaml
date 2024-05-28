@@ -2,7 +2,7 @@ openapi: "3.0.3"
 
 info:
   version: "1.0"
-  title: Individuals Foreign Income (MTD) [Test only]
+  title: Individuals Foreign Income (MTD)
   description: |
     # Send fraud prevention data
     HMRC monitors transactions to help protect your customers' confidential data from criminals and fraudsters. 
@@ -51,7 +51,7 @@ components:
 
 tags:
   - name: Foreign Income
-    description: Resources relating to an individual's employments
+    description: Resources relating to an foreign income
 
 paths:
   /individuals/foreign-income/{nino}/{taxYear}:

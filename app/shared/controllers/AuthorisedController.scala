@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,16 +16,17 @@
 
 package shared.controllers
 
-import shared.models.auth.UserDetails
-import shared.models.errors.{ClientNotAuthenticatedError, InternalError, MtdError}
-import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import play.api.mvc._
+import shared.models.auth.UserDetails
+import shared.models.errors.MtdError
+import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.backend.controller.BackendController
 
 import scala.concurrent.{ExecutionContext, Future}
+
 
 case class UserRequest[A](userDetails: UserDetails, request: Request[A]) extends WrappedRequest[A](request)
 
@@ -49,8 +50,7 @@ abstract class AuthorisedController(cc: ControllerComponents)(implicit ec: Execu
                                                                                                                  headerCarrier: HeaderCarrier): Future[Result] = {
       authService.authorised(predicate(mtdId)).flatMap[Result] {
         case Right(userDetails)                => block(UserRequest(userDetails.copy(mtdId = mtdId), request))
-        case Left(ClientNotAuthenticatedError) => Future.successful(Forbidden(ClientNotAuthenticatedError.asJson))
-        case Left(_)                           => Future.successful(InternalServerError(InternalError.asJson))
+        case Left(mtdError)                    => errorResponse(mtdError)
       }
     }
 

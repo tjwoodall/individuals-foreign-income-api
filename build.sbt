@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,7 @@ import uk.gov.hmrc.DefaultBuildSettings.{addTestReportOption, defaultSettings}
 import uk.gov.hmrc.SbtAutoBuildPlugin
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
-val appName = "individuals-foreign-income-api"
-
+val appName     = "individuals-foreign-income-api"
 lazy val ItTest = config("it") extend Test
 
 lazy val microservice = Project(appName, file("."))
@@ -36,38 +35,26 @@ lazy val microservice = Project(appName, file("."))
       "-language:higherKinds",
       "-Xlint:-byname-implicit",
       "-Xfatal-warnings",
-      "-Wconf:src=routes/.*:silent"
+      "-Wconf:src=routes/.*:silent",
+      "-feature"
     )
   )
   .settings(
     Compile / unmanagedResourceDirectories += baseDirectory.value / "resources"
   )
-  .settings(majorVersion := 0)
+  .settings(majorVersion := 1)
   .settings(CodeCoverageSettings.settings: _*)
   .settings(defaultSettings(): _*)
   .configs(ItTest)
-  .settings(inConfig(ItTest)(
-    Defaults.itSettings ++ headerSettings(ItTest) ++ automateHeaderSettings(ItTest) ++ ScalafmtPlugin.scalafmtConfigSettings): _*)
+  .settings(inConfig(ItTest)(Defaults.itSettings): _*)
   .settings(
     ItTest / fork                       := true,
-    ItTest / unmanagedSourceDirectories := List((ItTest / baseDirectory).value / "it"),
+    ItTest / unmanagedSourceDirectories := Seq((ItTest / baseDirectory).value / "it"),
     ItTest / unmanagedClasspath += baseDirectory.value / "resources",
     Runtime / unmanagedClasspath += baseDirectory.value / "resources",
     ItTest / javaOptions += "-Dlogger.resource=logback-test.xml",
     ItTest / parallelExecution := false,
-    addTestReportOption(ItTest, directory = "int-test-reports")
+    addTestReportOption(ItTest, "int-test-reports")
   )
-  .settings(
-    resolvers += Resolver.jcenterRepo
-  )
+  .settings(resolvers += Resolver.jcenterRepo)
   .settings(PlayKeys.playDefaultPort := 7760)
-
-Global / excludeLintKeys += update / evictionWarningOptions
-
-dependencyUpdatesFilter -= moduleFilter(name = "bootstrap-backend-play-30")
-dependencyUpdatesFilter -= moduleFilter(organization = "org.playframework")
-dependencyUpdatesFilter -= moduleFilter(name = "scala-library")
-dependencyUpdatesFilter -= moduleFilter(name = "flexmark-all")
-dependencyUpdatesFilter -= moduleFilter(name = "scalatestplus-play")
-dependencyUpdatesFilter -= moduleFilter(name = "scalatestplus-scalacheck")
-dependencyUpdatesFailBuild := true

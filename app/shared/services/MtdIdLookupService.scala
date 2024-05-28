@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,9 @@
 
 package shared.services
 
-import shared.connectors.MtdIdLookupOutcome
+import shared.connectors.{MtdIdLookupConnector, MtdIdLookupOutcome}
+import shared.controllers.validators.resolvers.ResolveNino
 import shared.models.errors.NinoFormatError
-import shared.connectors.MtdIdLookupConnector
-import shared.models.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 
 import javax.inject.{Inject, Singleton}
@@ -29,7 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class MtdIdLookupService @Inject() (val connector: MtdIdLookupConnector) {
 
   def lookup(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MtdIdLookupOutcome] = {
-    if (Nino.isValid(nino)) {
+    if (ResolveNino.isValid(nino)) {
       connector.getMtdId(nino)
     } else {
       Future.successful(Left(NinoFormatError))

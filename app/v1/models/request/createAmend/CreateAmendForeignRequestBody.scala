@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package v1.models.request.createAmend
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, OWrites, Reads}
-import shared.utils.JsonUtils
+import v1.utils.JsonUtils
 
 case class CreateAmendForeignRequestBody(foreignEarnings: Option[ForeignEarnings], unremittableForeignIncome: Option[Seq[UnremittableForeignIncomeItem]])
 

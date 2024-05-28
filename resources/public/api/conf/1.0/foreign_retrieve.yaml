@@ -1,4 +1,4 @@
-summary: Retrieve Foreign Income [Test only]
+summary: Retrieve Foreign Income
 description: |
   This endpoint enables you to retrieve foreign income:
   foreign earnings and unremittable foreign income.
@@ -13,8 +13,6 @@ description: |
   | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request could not be processed. |
   | STATEFUL                         | Performs a stateful retrieve.                                    |
 
-tags:
-  - Foreign Income
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'

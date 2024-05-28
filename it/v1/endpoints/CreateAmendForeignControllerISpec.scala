@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
 import shared.stubs.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import support.IntegrationBaseSpec
-import v1.models.errors.CustomerRefFormatError
+import v1.models.errors.{CountryCodeRuleError, CustomerRefFormatError}
 
 class CreateAmendForeignControllerISpec extends IntegrationBaseSpec {
 

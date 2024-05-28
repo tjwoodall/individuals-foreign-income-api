@@ -16,7 +16,6 @@
 
 package shared.services
 
-import shared.services.MtdIdLookupService
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import shared.connectors.MtdIdLookupOutcome

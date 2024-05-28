@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,10 @@
 
 package shared.controllers
 
-import shared.controllers.AuthorisedController
-import shared.models.errors.{ClientNotAuthenticatedError, ClientNotAuthorisedError, InternalError, InvalidBearerTokenError, NinoFormatError}
-import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
+import shared.models.errors._
+import shared.services.{EnrolmentsAuthService, MockEnrolmentsAuthService, MockMtdIdLookupService, MtdIdLookupService}
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent}
-import shared.services.{MockEnrolmentsAuthService, MockMtdIdLookupService}
+import play.api.mvc.{Action, AnyContent, Result}
 import uk.gov.hmrc.auth.core.Enrolment
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.http.HeaderCarrier
@@ -31,30 +29,15 @@ import scala.concurrent.Future
 
 class AuthorisedControllerSpec extends ControllerBaseSpec {
 
-  trait Test extends MockEnrolmentsAuthService with MockMtdIdLookupService {
-    val hc = HeaderCarrier()
+  private val nino  = "AA123456A"
+  private val mtdId = "X123567890"
 
-    class TestController extends AuthorisedController(cc) {
-      override val authService: EnrolmentsAuthService = mockEnrolmentsAuthService
-      override val lookupService: MtdIdLookupService  = mockMtdIdLookupService
-
-      def action(nino: String): Action[AnyContent] = authorisedAction(nino).async {
-        Future.successful(Ok(Json.obj()))
-      }
-
-    }
-
-    lazy val target = new TestController()
-  }
-
-  val nino  = "AA123456A"
-  val mtdId = "X123567890"
-
-  val predicate: Predicate = Enrolment("HMRC-MTD-IT")
+  private val predicate: Predicate = Enrolment("HMRC-MTD-IT")
     .withIdentifier("MTDITID", mtdId)
     .withDelegatedAuthRule("mtd-it-auth")
 
   "calling an action" when {
+
     "the user is authorised" should {
       "return a 200" in new Test {
 
@@ -80,7 +63,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
           .authorised(predicate)
           .returns(Future.successful(Left(InternalError)))
 
-        private val result = target.action(nino)(fakeGetRequest)
+        val result: Future[Result] = target.action(nino)(fakeGetRequest)
         status(result) shouldBe INTERNAL_SERVER_ERROR
       }
     }
@@ -92,7 +75,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
           .lookup(nino)
           .returns(Future.successful(Left(NinoFormatError)))
 
-        private val result = target.action(nino)(fakeGetRequest)
+        val result: Future[Result] = target.action(nino)(fakeGetRequest)
         status(result) shouldBe BAD_REQUEST
       }
     }
@@ -104,7 +87,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
           .lookup(nino)
           .returns(Future.successful(Left(InvalidBearerTokenError)))
 
-        private val result = target.action(nino)(fakeGetRequest)
+        val result: Future[Result] = target.action(nino)(fakeGetRequest)
         status(result) shouldBe UNAUTHORIZED
       }
     }
@@ -118,7 +101,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
         .lookup(nino)
         .returns(Future.successful(Left(ClientNotAuthorisedError)))
 
-      private val result = target.action(nino)(fakeGetRequest)
+      val result: Future[Result] = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
     }
   }
@@ -130,7 +113,7 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
         .lookup(nino)
         .returns(Future.successful(Left(InternalError)))
 
-      private val result = target.action(nino)(fakeGetRequest)
+      val result: Future[Result] = target.action(nino)(fakeGetRequest)
       status(result) shouldBe INTERNAL_SERVER_ERROR
     }
   }
@@ -144,9 +127,9 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockedEnrolmentsAuthService
         .authorised(predicate)
-        .returns(Future.successful(Left(ClientNotAuthenticatedError)))
+        .returns(Future.successful(Left(ClientNotAuthorisedError)))
 
-      private val result = target.action(nino)(fakeGetRequest)
+      val result: Future[Result] = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
     }
   }
@@ -160,11 +143,28 @@ class AuthorisedControllerSpec extends ControllerBaseSpec {
 
       MockedEnrolmentsAuthService
         .authorised(predicate)
-        .returns(Future.successful(Left(ClientNotAuthenticatedError)))
+        .returns(Future.successful(Left(ClientNotAuthorisedError)))
 
-      private val result = target.action(nino)(fakeGetRequest)
+      val result: Future[Result] = target.action(nino)(fakeGetRequest)
       status(result) shouldBe FORBIDDEN
     }
+  }
+
+  trait Test extends MockEnrolmentsAuthService with MockMtdIdLookupService {
+
+    val hc: HeaderCarrier = HeaderCarrier()
+
+    class TestController extends AuthorisedController(cc) {
+      override val authService: EnrolmentsAuthService = mockEnrolmentsAuthService
+      override val lookupService: MtdIdLookupService  = mockMtdIdLookupService
+
+      def action(nino: String): Action[AnyContent] = authorisedAction(nino).async {
+        Future.successful(Ok(Json.obj()))
+      }
+
+    }
+
+    lazy val target = new TestController()
   }
 
 }
