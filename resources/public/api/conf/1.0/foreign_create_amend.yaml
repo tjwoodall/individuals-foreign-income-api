@@ -13,6 +13,8 @@ description: |
   | REQUEST_CANNOT_BE_FULFILLED      | Simulates the scenario where the request could not be processed. |
   | STATEFUL                         | Performs a stateful create or update.                            |
 
+tags:
+  - Foreign Income
 
 parameters:
   - $ref: './common/pathParameters.yaml#/components/parameters/nino'
