@@ -15,6 +15,44 @@ components:
         code: FORMAT_TAX_YEAR
         message: The provided tax year is invalid
 
+    formatValue:
+      description: One or more values have been added with the incorrect format.
+      value:
+        code: FORMAT_VALUE
+        message: The value must be between 0.00 and 99999999999.99
+
+    formatCustomerRef:
+      description: The format of the supplied customer reference is not valid.
+      value:
+        code: FORMAT_CUSTOMER_REF
+        message: The provided customer reference is invalid
+
+    formatCountryCode:
+      description: The format of the supplied country code is not valid.
+      value:
+        code: FORMAT_COUNTRY_CODE
+        message: The format of the country code is invalid
+
+    ruleCountryCode:
+      description: Not a valid ISO 3166-1 alpha-3 country code.
+      value:
+        code: RULE_COUNTRY_CODE
+        message: The country code is not a valid ISO 3166-1 alpha-3 country code
+
+    ruleTaxYearNotSupported:
+      description: |
+        The specified tax year is not supported.
+        Either the tax year specified is before the minimum tax year value, or it is after the maximum tax year value.
+      value:
+        code: RULE_TAX_YEAR_NOT_SUPPORTED
+        message: The tax year specified does not lie within the supported range
+
+    ruleTaxYearRangeInvalid:
+      description: Tax year range invalid. A tax year range of one year is required.
+      value:
+        code: RULE_TAX_YEAR_RANGE_INVALID
+        message: Tax year range invalid. A tax year range of one year is required
+
     ruleIncorrectOrEmptyBody:
       description: An empty or non-matching body was submitted.
       value:
