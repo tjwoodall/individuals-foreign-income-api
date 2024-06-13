@@ -19,7 +19,7 @@ package shared.connectors
 import play.api.http.{HeaderNames, MimeTypes}
 import play.api.libs.json.Writes
 import shared.config.AppConfig
-import shared.connectors.DownstreamUri.{DesUri, IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
 import shared.utils.Logging
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
 
@@ -123,7 +123,6 @@ trait BaseDownstreamConnector extends Logging {
 
   private def configFor[Resp](uri: DownstreamUri[Resp]) =
     uri match {
-      case DesUri(_)                => appConfig.desDownstreamConfig
       case IfsUri(_)                => appConfig.ifsDownstreamConfig
       case TaxYearSpecificIfsUri(_) => appConfig.tysIfsDownstreamConfig
     }
