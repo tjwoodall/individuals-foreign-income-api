@@ -19,9 +19,11 @@ package v1.models.domain
 import shared.UnitSpec
 import shared.utils.enums.EnumJsonSpecSupport
 
-class SharesAwardedOrReceivedSchemeTypeSpec  extends UnitSpec with EnumJsonSpecSupport {
-    testRoundTrip[SharesAwardedOrReceivedSchemeType](
-      ("Other", SharesAwardedOrReceivedSchemeType.Other),
-      ("SIP", SharesAwardedOrReceivedSchemeType.SIP)
-    )
+class SharesAwardedOrReceivedSchemeTypeSpec extends UnitSpec with EnumJsonSpecSupport {
+
+  testRoundTrip[SharesAwardedOrReceivedSchemeType](
+    ("Other", SharesAwardedOrReceivedSchemeType.Other),
+    ("SIP", SharesAwardedOrReceivedSchemeType.SIP)
+  )
+
 }

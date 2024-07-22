@@ -71,8 +71,8 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
       .returns(Future.successful(Success))
 
     val configuration: Configuration = Configuration(
-      "appName" -> "myApp",
-      "bootstrap.errorHandler.warnOnly.statusCodes" -> List(OK),
+      "appName"                                         -> "myApp",
+      "bootstrap.errorHandler.warnOnly.statusCodes"     -> List(OK),
       "bootstrap.errorHandler.suppress4xxErrorMessages" -> false,
       "bootstrap.errorHandler.suppress5xxErrorMessages" -> false
     )
@@ -105,7 +105,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         val result: Future[Result] = handler.onClientError(requestHeader, UNAUTHORIZED, "test")
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe ClientNotAuthorisedError.asJson
+        contentAsJson(result) shouldBe ClientOrAgentNotAuthorisedError.asJson
       }
     }
 
@@ -145,7 +145,7 @@ class ErrorHandlerSpec extends UnitSpec with GuiceOneAppPerSuite {
         // TODO This really should be FORBIDDEN (403), but would need to be changed across all the APIs at once (if at all).
         status(result) shouldBe UNAUTHORIZED
 
-        contentAsJson(result) shouldBe ClientNotAuthorisedError.asJson
+        contentAsJson(result) shouldBe ClientOrAgentNotAuthorisedError.asJson
       }
     }
 

@@ -246,18 +246,20 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
       |""".stripMargin
   )
 
-
   class Test extends MockForeignIncomeConfig {
     implicit val correlationId: String = "1234"
 
     implicit val appConfig: ForeignIncomeConfig = mockForeignIncomeConfig
 
-    MockedForeignIncomeConfig.minimumPermittedTaxYear()
+    MockedForeignIncomeConfig
+      .minimumPermittedTaxYear()
       .returns(2019)
       .anyNumberOfTimes()
 
-    val validatorFactory                                        = new CreateAmendForeignValidatorFactory()
-    def validator(nino: String, taxYear: String, body: JsValue): Validator[CreateAmendForeignRequest] = validatorFactory.validator(nino, taxYear, body)
+    val validatorFactory = new CreateAmendForeignValidatorFactory()
+
+    def validator(nino: String, taxYear: String, body: JsValue): Validator[CreateAmendForeignRequest] =
+      validatorFactory.validator(nino, taxYear, body)
 
   }
 

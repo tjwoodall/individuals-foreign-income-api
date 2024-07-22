@@ -85,7 +85,6 @@ class BaseDownstreamConnectorSpec extends ConnectorSpec {
     val qps = List("param1" -> "value1")
   }
 
-
   "for IFS" when {
     "post" must {
       "posts with the required ifs headers and returns the result" in new IfsLocalTest {

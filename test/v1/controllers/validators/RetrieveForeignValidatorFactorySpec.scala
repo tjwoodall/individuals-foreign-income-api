@@ -34,7 +34,8 @@ class RetrieveForeignValidatorFactorySpec extends UnitSpec {
 
     implicit val appConfig: ForeignIncomeConfig = mockForeignIncomeConfig
 
-    MockedForeignIncomeConfig.minimumPermittedTaxYear()
+    MockedForeignIncomeConfig
+      .minimumPermittedTaxYear()
       .returns(2021)
       .anyNumberOfTimes()
 

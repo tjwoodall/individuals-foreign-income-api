@@ -21,11 +21,12 @@ import shared.config.AppConfig
 import shared.routing.{Version, Version1, VersionRoutingMap}
 
 import javax.inject.{Inject, Singleton}
+
 @Singleton case class ForeignIncomeVersionRoutingMap @Inject() (
-                                                        appConfig: AppConfig,
-                                                        defaultRouter: Router,
-                                                        v1Router: v1.Routes
-                                                      ) extends VersionRoutingMap {
+    appConfig: AppConfig,
+    defaultRouter: Router,
+    v1Router: v1.Routes
+) extends VersionRoutingMap {
 
   /** Routes corresponding to available versions.
     */

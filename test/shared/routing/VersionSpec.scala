@@ -36,7 +36,7 @@ class VersionSpec extends UnitSpec {
   "Versions" when {
     "retrieved from a request header" should {
       "return Version for valid header" in {
-          Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.9.0+json"))) shouldBe Right(Version9)
+        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.9.0+json"))) shouldBe Right(Version9)
       }
 
       "return InvalidHeader when the version header is missing" in {
@@ -44,7 +44,7 @@ class VersionSpec extends UnitSpec {
       }
 
       "return VersionNotFound for unrecognised version" in {
-          Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.0.0+json"))) shouldBe Left(VersionNotFound)
+        Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "application/vnd.hmrc.0.0+json"))) shouldBe Left(VersionNotFound)
       }
 
       "return InvalidHeader for a header format that doesn't match regex" in {

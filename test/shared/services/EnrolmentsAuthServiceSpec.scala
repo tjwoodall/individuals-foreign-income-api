@@ -19,7 +19,7 @@ package shared.services
 import org.scalamock.handlers.CallHandler
 import shared.config.{ConfidenceLevelConfig, MockAppConfig}
 import shared.models.auth.UserDetails
-import shared.models.errors.{ClientNotAuthorisedError, InternalError}
+import shared.models.errors.{ClientOrAgentNotAuthorisedError, InternalError}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.{EmptyPredicate, Predicate}
 import uk.gov.hmrc.auth.core.retrieve.Retrieval
@@ -27,7 +27,6 @@ import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
-
 
 class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
 
@@ -139,7 +138,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
           .authorised(expectedPredicate, affinityGroup)
           .returns(Future.failed(MissingBearerToken()))
 
-        await(target.authorised(inputPredicate)) shouldBe Left(ClientNotAuthorisedError)
+        await(target.authorised(inputPredicate)) shouldBe Left(ClientOrAgentNotAuthorisedError)
       }
 
     def disallowUsersWithoutEnrolments(inputPredicate: Predicate, authValidationEnabled: Boolean, expectedPredicate: Predicate): Unit =
@@ -150,7 +149,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
           .authorised(expectedPredicate, affinityGroup)
           .returns(Future.failed(InsufficientEnrolments()))
 
-        await(target.authorised(inputPredicate)) shouldBe Left(ClientNotAuthorisedError)
+        await(target.authorised(inputPredicate)) shouldBe Left(ClientOrAgentNotAuthorisedError)
       }
   }
 
@@ -165,6 +164,7 @@ class EnrolmentsAuthServiceSpec extends ServiceSpec with MockAppConfig {
           .authorise[A](_: Predicate, _: Retrieval[A])(_: HeaderCarrier, _: ExecutionContext))
           .expects(predicate, retrievals, *, *)
       }
+
     }
 
     def mockConfidenceLevelCheckConfig(authValidationEnabled: Boolean): Unit = {

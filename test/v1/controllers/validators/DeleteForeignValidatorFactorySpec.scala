@@ -25,12 +25,11 @@ import v1.models.request.delete.DeleteForeignRequest
 
 class DeleteForeignValidatorFactorySpec extends UnitSpec {
 
-  val validNino: String                   = "AA123456B"
+  val validNino: String = "AA123456B"
   val parsedNino: Nino  = Nino(validNino)
 
-  val validTaxYear: String                = "2019-20"
+  val validTaxYear: String   = "2019-20"
   val parsedTaxYear: TaxYear = TaxYear.fromMtd(validTaxYear)
-
 
   implicit val correlationId: String = "a1e8057e-fbbc-47a8-a8b4-78d9f015c253"
 
@@ -38,7 +37,8 @@ class DeleteForeignValidatorFactorySpec extends UnitSpec {
 
     implicit val appConfig: ForeignIncomeConfig = mockForeignIncomeConfig
 
-    MockedForeignIncomeConfig.minimumPermittedTaxYear()
+    MockedForeignIncomeConfig
+      .minimumPermittedTaxYear()
       .returns(2019)
       .anyNumberOfTimes()
 
@@ -52,21 +52,21 @@ class DeleteForeignValidatorFactorySpec extends UnitSpec {
     "return a request object" when {
       "valid request data is supplied" in new Test {
 
-       val result = validator(validNino, validTaxYear).validateAndWrapResult()
-        result shouldBe  Right(DeleteForeignRequest(Nino(validNino), TaxYear.fromMtd(validTaxYear)))
+        val result = validator(validNino, validTaxYear).validateAndWrapResult()
+        result shouldBe Right(DeleteForeignRequest(Nino(validNino), TaxYear.fromMtd(validTaxYear)))
       }
     }
 
     "return an ErrorWrapper" when {
       "a single validation error occurs" in new Test {
         val result = validator(s"x$validNino", validTaxYear).validateAndWrapResult()
-       result shouldBe
-         Left(ErrorWrapper(correlationId, NinoFormatError))
+        result shouldBe
+          Left(ErrorWrapper(correlationId, NinoFormatError))
       }
 
       "multiple validation errors occur" in new Test {
         val result = validator(s"x$validNino", s"x$validTaxYear").validateAndWrapResult()
-       result shouldBe
+        result shouldBe
           Left(ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError))))
       }
     }

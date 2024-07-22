@@ -87,8 +87,6 @@ class RequestHandlerSpec
     implicit val writes: OWrites[Output.type] = _ => successResponseJson
   }
 
-
-
   trait DummyService {
     def service(input: Input.type)(implicit ctx: RequestContext, ec: ExecutionContext): Future[ServiceOutcome[Output.type]]
   }

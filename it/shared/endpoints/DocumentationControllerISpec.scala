@@ -16,7 +16,6 @@
 
 package shared.endpoints
 
-
 import io.swagger.v3.parser.OpenAPIV3Parser
 import play.api.http.Status
 import play.api.http.Status.OK
@@ -30,7 +29,7 @@ import uk.gov.hmrc.auth.core.ConfidenceLevel
 import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
-  private val apiTitle = "Individuals Foreign Income (MTD)"
+  private val apiTitle                 = "Individuals Foreign Income (MTD)"
   val config: AppConfig                = app.injector.instanceOf[AppConfig]
   val confidenceLevel: ConfidenceLevel = config.confidenceLevelConfig.confidenceLevel
 
@@ -84,7 +83,7 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
         val response = get(s"/api/conf/$version/application.yaml")
         response.status shouldBe Status.OK
 
-        val body = response.body[String]
+        val body         = response.body[String]
         val parserResult = Try(new OpenAPIV3Parser().readContents(body))
         parserResult.isSuccess shouldBe true
 
@@ -100,9 +99,9 @@ class DocumentationControllerISpec extends IntegrationBaseSpec {
         val response = get(s"/api/conf/${version.name}/common/headers.yaml")
         response.status shouldBe Status.OK
 
-        val body = response.body[String]
+        val body        = response.body[String]
         val headerRegex = """(?s).*?application/vnd\.hmrc\.(\d+\.\d+)\+json.*?""".r
-        val header = headerRegex.findFirstMatchIn(body)
+        val header      = headerRegex.findFirstMatchIn(body)
         header.isDefined shouldBe true
 
         val versionFromHeader = header.get.group(1)

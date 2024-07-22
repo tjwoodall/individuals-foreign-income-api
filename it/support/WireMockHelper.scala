@@ -47,4 +47,3 @@ trait WireMockHelper {
 
   def resetWireMock(): Unit = WireMock.reset()
 }
-

@@ -47,4 +47,3 @@ trait RequestContextImplicits {
 }
 
 object RequestContextImplicits extends RequestContextImplicits
-

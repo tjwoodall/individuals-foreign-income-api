@@ -106,7 +106,7 @@ class RetrieveForeignControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with MockForeignIncomeConfig{
+  trait Test extends ControllerTest with MockForeignIncomeConfig {
 
     val controller = new RetrieveForeignController(
       authService = mockEnrolmentsAuthService,

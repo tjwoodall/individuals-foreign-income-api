@@ -52,12 +52,12 @@ object RequestHandler {
   }
 
   case class RequestHandlerBuilder[Input, Output] private[RequestHandler] (
-                                                                            validator: Validator[Input],
-                                                                            service: Input => Future[ServiceOutcome[Output]],
-                                                                            errorHandling: ErrorHandling = ErrorHandling.Default,
-                                                                            resultCreator: ResultCreator[Input, Output] = ResultCreator.noContent[Input, Output](),
-                                                                            auditHandler: Option[AuditHandler] = None
-                                                                          ) extends RequestHandler {
+      validator: Validator[Input],
+      service: Input => Future[ServiceOutcome[Output]],
+      errorHandling: ErrorHandling = ErrorHandling.Default,
+      resultCreator: ResultCreator[Input, Output] = ResultCreator.noContent[Input, Output](),
+      auditHandler: Option[AuditHandler] = None
+  ) extends RequestHandler {
 
     def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Future[Result] =
       Delegate.handleRequest()
@@ -126,10 +126,10 @@ object RequestHandler {
       }
 
       def handleRequest()(implicit
-                          ctx: RequestContext,
-                          request: UserRequest[_],
-                          ec: ExecutionContext,
-                          appConfig: AppConfig
+          ctx: RequestContext,
+          request: UserRequest[_],
+          ec: ExecutionContext,
+          appConfig: AppConfig
       ): Future[Result] = {
 
         logger.info(
@@ -161,10 +161,10 @@ object RequestHandler {
       private def doWithContext[A](ctx: RequestContext)(f: RequestContext => A): A = f(ctx)
 
       private def handleSuccess(parsedRequest: Input, serviceResponse: ResponseWrapper[Output])(implicit
-                                                                                                ctx: RequestContext,
-                                                                                                request: UserRequest[_],
-                                                                                                ec: ExecutionContext,
-                                                                                                appConfig: AppConfig): Result = {
+          ctx: RequestContext,
+          request: UserRequest[_],
+          ec: ExecutionContext,
+          appConfig: AppConfig): Result = {
 
         implicit val apiVersion: Version = Version(request)
 
@@ -181,7 +181,7 @@ object RequestHandler {
       }
 
       private def handleFailure(
-                                 errorWrapper: ErrorWrapper)(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Result = {
+          errorWrapper: ErrorWrapper)(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Result = {
 
         implicit val apiVersion: Version = Version(request)
         logger.warn(
@@ -202,9 +202,9 @@ object RequestHandler {
       }
 
       def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
-                                                                                            ctx: RequestContext,
-                                                                                            request: UserRequest[_],
-                                                                                            ec: ExecutionContext): Unit =
+          ctx: RequestContext,
+          request: UserRequest[_],
+          ec: ExecutionContext): Unit =
         auditHandler.foreach { creator =>
           creator.performAudit(request.userDetails, httpStatus, response)
         }

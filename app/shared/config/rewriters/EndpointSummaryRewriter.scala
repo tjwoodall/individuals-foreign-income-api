@@ -20,6 +20,7 @@ import shared.config.AppConfig
 import shared.config.rewriters.DocumentationRewriters.CheckAndRewrite
 
 import javax.inject.{Inject, Singleton}
+
 @Singleton class EndpointSummaryRewriter @Inject() (appConfig: AppConfig) {
 
   private val rewriteSummaryRegex = "([\\s]*)(summary: [\"]?)(.*)".r

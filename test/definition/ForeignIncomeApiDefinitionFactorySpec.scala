@@ -28,14 +28,12 @@ import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
-
   private val confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200
 
   class Test extends MockHttpClient with MockAppConfig {
     MockAppConfig.apiGatewayContext returns "individuals/foreign-income"
     val apiDefinitionFactory = new ForeignIncomeApiDefinitionFactory(mockAppConfig)
   }
-
 
   "definition" when {
     "called" should {
@@ -50,7 +48,7 @@ class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig 
           .returns(ConfidenceLevelConfig(confidenceLevel = confidenceLevel, definitionEnabled = true, authValidationEnabled = true))
           .anyNumberOfTimes()
 
-        private val readScope = "read:self-assessment"
+        private val readScope  = "read:self-assessment"
         private val writeScope = "write:self-assessment"
 
         apiDefinitionFactory.definition shouldBe
@@ -105,4 +103,5 @@ class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig 
       }
     }
   }
+
 }

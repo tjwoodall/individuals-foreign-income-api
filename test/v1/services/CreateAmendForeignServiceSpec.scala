@@ -83,7 +83,7 @@ class CreateAmendForeignServiceSpec extends ServiceSpec {
         def serviceError(downstreamErrorCode: String, error: MtdError): Unit =
           s"a $downstreamErrorCode error is returned from the service" in new Test {
 
-              MockedCreateAmendForeignConnector
+            MockedCreateAmendForeignConnector
               .amendForeign(amendForeignRequest)
               .returns(Future.successful(Left(ResponseWrapper(correlationId, DownstreamErrors.single(DownstreamErrorCode(downstreamErrorCode))))))
 

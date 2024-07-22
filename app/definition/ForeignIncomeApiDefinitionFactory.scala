@@ -16,7 +16,6 @@
 
 package definition
 
-
 import shared.config.AppConfig
 import shared.definition._
 import shared.routing.Version1
@@ -24,20 +23,21 @@ import shared.routing.Version1
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ForeignIncomeApiDefinitionFactory @Inject()(protected val appConfig: AppConfig) extends ApiDefinitionFactory {
+class ForeignIncomeApiDefinitionFactory @Inject() (protected val appConfig: AppConfig) extends ApiDefinitionFactory {
+
   lazy val definition: Definition =
     Definition(
-    scopes = List(
-      Scope(
-        key = readScope,
-        name = "View your Self Assessment information",
-        description = "Allow read access to self assessment data",
-        confidenceLevel = confidenceLevel
-      ),
-      Scope(
-        key = writeScope,
-        name = "Change your Self Assessment information",
-        description = "Allow write access to self assessment data",
+      scopes = List(
+        Scope(
+          key = readScope,
+          name = "View your Self Assessment information",
+          description = "Allow read access to self assessment data",
+          confidenceLevel = confidenceLevel
+        ),
+        Scope(
+          key = writeScope,
+          name = "Change your Self Assessment information",
+          description = "Allow write access to self assessment data",
           confidenceLevel = confidenceLevel
         )
       ),
@@ -56,6 +56,5 @@ class ForeignIncomeApiDefinitionFactory @Inject()(protected val appConfig: AppCo
         requiresTrust = None
       )
     )
-
 
 }

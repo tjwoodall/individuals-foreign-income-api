@@ -30,9 +30,10 @@ import v1.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendFore
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class CreateAmendForeignValidatorFactory @Inject()(implicit foreignIncomeConfig: ForeignIncomeConfig) {
+class CreateAmendForeignValidatorFactory @Inject() (implicit foreignIncomeConfig: ForeignIncomeConfig) {
   private lazy val minTaxYear = foreignIncomeConfig.minimumPermittedTaxYear()
-  private val resolveJson = new ResolveNonEmptyJsonObject[CreateAmendForeignRequestBody]()
+  private val resolveJson     = new ResolveNonEmptyJsonObject[CreateAmendForeignRequestBody]()
+
   def validator(nino: String, taxYear: String, body: JsValue): Validator[CreateAmendForeignRequest] = new Validator[CreateAmendForeignRequest] {
 
     def validate: Validated[Seq[MtdError], CreateAmendForeignRequest] =
@@ -40,10 +41,9 @@ class CreateAmendForeignValidatorFactory @Inject()(implicit foreignIncomeConfig:
         ResolveNino(nino),
         ResolveTaxYearMinimum(TaxYear.fromDownstreamInt(minTaxYear)).apply(taxYear),
         resolveJson(body)
-        ).mapN((resolvedNino, resolvedTaxYear, resolvedBody) =>
+      ).mapN((resolvedNino, resolvedTaxYear, resolvedBody) =>
         CreateAmendForeignRequest(resolvedNino, resolvedTaxYear, resolvedBody)) andThen validateBusinessRules
 
   }
-
 
 }

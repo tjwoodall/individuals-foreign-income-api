@@ -35,14 +35,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class ControllerBaseSpec
-    extends UnitSpec
-    with Status
-    with MimeTypes
-    with HeaderNames
-    with ResultExtractors
-    with MockAuditService
-    with MockAppConfig {
+class ControllerBaseSpec extends UnitSpec with Status with MimeTypes with HeaderNames with ResultExtractors with MockAuditService with MockAppConfig {
 
   val apiVersion: Version = Version1
 
@@ -56,7 +49,7 @@ class ControllerBaseSpec
   )
 
   def fakePostRequest[T](body: T): FakeRequest[T] = fakeRequest.withBody(body)
-  def fakePutRequest[T](body: T): FakeRequest[T] = fakeRequest.withBody(body)
+  def fakePutRequest[T](body: T): FakeRequest[T]  = fakeRequest.withBody(body)
 }
 
 trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLookupService with MockIdGenerator {

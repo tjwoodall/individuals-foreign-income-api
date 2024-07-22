@@ -25,7 +25,8 @@ import v1.models.errors.CustomerRefFormatError
 import scala.util.matching.Regex
 
 object ResolveCustomerRef extends ResolverSupport {
- private val regex: Regex = "^[0-9a-zA-Z{À-˿'}\\- _&`():.'^]{1,90}$".r
+  private val regex: Regex = "^[0-9a-zA-Z{À-˿'}\\- _&`():.'^]{1,90}$".r
+
   def resolver(error: => MtdError): Resolver[String, CustomerRef] =
     ResolveStringPattern(regex, error).resolver.map(CustomerRef)
 
@@ -37,4 +38,3 @@ object ResolveCustomerRef extends ResolverSupport {
 
   private def errorFor(path: String): MtdError = CustomerRefFormatError.withPath(path)
 }
-
