@@ -24,32 +24,16 @@ import play.api.libs.ws.WSResponse
 import shared.config.AppConfig
 import shared.routing.Version1
 import support.IntegrationBaseSpec
-import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 import scala.util.Try
 
 class DocumentationControllerISpec extends IntegrationBaseSpec {
-  private val apiTitle                 = "Individuals Foreign Income (MTD)"
-  val config: AppConfig                = app.injector.instanceOf[AppConfig]
-  val confidenceLevel: ConfidenceLevel = config.confidenceLevelConfig.confidenceLevel
+  private val apiTitle  = "Individuals Foreign Income (MTD)"
+  val config: AppConfig = app.injector.instanceOf[AppConfig]
 
   val apiDefinitionJson: JsValue = Json.parse(
     s"""
        |{
-       |   "scopes":[
-       |      {
-       |         "key":"read:self-assessment",
-       |         "name":"View your Self Assessment information",
-       |         "description":"Allow read access to self assessment data",
-       |         "confidenceLevel": $confidenceLevel
-       |      },
-       |      {
-       |         "key":"write:self-assessment",
-       |         "name":"Change your Self Assessment information",
-       |         "description":"Allow write access to self assessment data",
-       |         "confidenceLevel": $confidenceLevel
-       |      }
-       |   ],
        |   "api":{
        |      "name":"Individuals Foreign Income (MTD)",
        |      "description":"An API for providing individual foreign income data",

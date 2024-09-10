@@ -18,11 +18,11 @@ package shared.controllers
 
 import com.typesafe.config.ConfigFactory
 import controllers.{AssetsConfiguration, DefaultAssetsMetadata, RewriteableAssets}
-import play.api.{Configuration, Environment}
 import play.api.http.{DefaultFileMimeTypes, DefaultHttpErrorHandler, FileMimeTypesConfiguration, HttpConfiguration}
 import play.api.mvc.Result
+import play.api.{Configuration, Environment}
+import shared.config.MockAppConfig
 import shared.config.rewriters._
-import shared.config.{MockAppConfig}
 import shared.definition._
 import shared.routing.Version1
 import uk.gov.hmrc.http.HeaderCarrier
@@ -103,7 +103,6 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
       protected val appConfig = mockAppConfig
 
       val definition: Definition = Definition(
-        Nil,
         APIDefinition(
           "test API definition",
           "description",
