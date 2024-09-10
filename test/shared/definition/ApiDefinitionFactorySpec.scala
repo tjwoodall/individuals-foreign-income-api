@@ -19,11 +19,10 @@ package shared.definition
 import cats.implicits.catsSyntaxValidatedId
 import shared.UnitSpec
 import shared.config.Deprecation.NotDeprecated
-import shared.config.{AppConfig, ConfidenceLevelConfig, MockAppConfig}
+import shared.config.{AppConfig, MockAppConfig}
 import shared.definition.APIStatus.{ALPHA, BETA}
 import shared.mocks.MockHttpClient
 import shared.routing.{Version, Version1, Version3, Version4}
-import uk.gov.hmrc.auth.core.ConfidenceLevel
 
 class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
@@ -31,7 +30,6 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
     protected val appConfig: AppConfig = mockAppConfig
 
     val definition: Definition = Definition(
-      Nil,
       APIDefinition(
         "test API definition",
         "description",
@@ -48,24 +46,6 @@ class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
     MockAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
 
     protected val apiDefinitionFactory = new MyApiDefinitionFactory
-
-    "confidenceLevel" when {
-      List(
-        (true, ConfidenceLevel.L250, ConfidenceLevel.L250),
-        (true, ConfidenceLevel.L200, ConfidenceLevel.L200),
-        (false, ConfidenceLevel.L200, ConfidenceLevel.L50)
-      ).foreach { case (definitionEnabled, configCL, expectedDefinitionCL) =>
-        s"confidence-level-check.definition.enabled is $definitionEnabled and confidence-level = $configCL" should {
-          s"return confidence level $expectedDefinitionCL" in new Test {
-            MockAppConfig.confidenceLevelCheckEnabled returns ConfidenceLevelConfig(
-              confidenceLevel = configCL,
-              definitionEnabled = definitionEnabled,
-              authValidationEnabled = true)
-            apiDefinitionFactory.confidenceLevel shouldBe expectedDefinitionCL
-          }
-        }
-      }
-    }
 
     "buildAPIStatus" when {
       "the 'apiStatus' parameter is present and valid" should {
