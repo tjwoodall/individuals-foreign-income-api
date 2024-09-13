@@ -18,7 +18,7 @@ package v1.controllers.validators
 
 import config.{ForeignIncomeConfig, MockForeignIncomeConfig}
 import play.api.libs.json.{JsValue, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.controllers.validators.Validator
 import shared.controllers.validators.validations.ValueFormatErrorMessages
 import shared.models.domain.{Nino, TaxYear}

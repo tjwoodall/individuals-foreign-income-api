@@ -17,18 +17,18 @@
 package definition
 
 import cats.implicits.catsSyntaxValidatedId
-import shared.UnitSpec
 import shared.config.Deprecation.NotDeprecated
 import shared.config.MockAppConfig
 import shared.definition.APIStatus.BETA
 import shared.definition.{APIDefinition, APIVersion, Definition}
 import shared.mocks.MockHttpClient
 import shared.routing.Version1
+import shared.utils.UnitSpec
 
 class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
   class Test extends MockHttpClient with MockAppConfig {
-    MockAppConfig.apiGatewayContext returns "individuals/foreign-income"
+    MockedAppConfig.apiGatewayContext returns "individuals/foreign-income"
     val apiDefinitionFactory = new ForeignIncomeApiDefinitionFactory(mockAppConfig)
   }
 
@@ -36,9 +36,9 @@ class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig 
     "called" should {
       "return a valid Definition case class" in new Test {
         Seq(Version1).foreach { version =>
-          MockAppConfig.apiStatus(version) returns "BETA"
-          MockAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
-          MockAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
+          MockedAppConfig.apiStatus(version) returns "BETA"
+          MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
+          MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
         }
 
         apiDefinitionFactory.definition shouldBe

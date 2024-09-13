@@ -19,7 +19,7 @@ package shared.controllers.validators.resolvers
 import cats.data.Validated.{Invalid, Valid}
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{JsObject, JsString}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.models.errors.MtdError
 
 class ResolveExclusiveJsonPropertySpec extends UnitSpec {

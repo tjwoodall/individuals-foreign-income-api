@@ -16,7 +16,7 @@
 
 package shared.definition
 
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.definition.APIStatus.{ALPHA, BETA, DEPRECATED, RETIRED, STABLE}
 import shared.utils.enums.EnumJsonSpecSupport
 

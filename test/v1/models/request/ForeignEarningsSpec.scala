@@ -17,7 +17,7 @@
 package v1.models.request
 
 import play.api.libs.json.{JsError, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import v1.models.request.createAmend.ForeignEarnings
 
 class ForeignEarningsSpec extends UnitSpec {

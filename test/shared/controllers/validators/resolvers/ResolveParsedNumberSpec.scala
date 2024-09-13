@@ -19,7 +19,7 @@ package shared.controllers.validators.resolvers
 import cats.data.Validated.{Invalid, Valid}
 import org.scalacheck.Arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckDrivenPropertyChecks
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.models.errors.ValueFormatError
 
 class ResolveParsedNumberSpec extends UnitSpec with ScalaCheckDrivenPropertyChecks {

@@ -17,6 +17,7 @@
 package v1.controllers
 
 import config.MockForeignIncomeConfig
+import play.api.Configuration
 import play.api.libs.json.JsValue
 import play.api.mvc.Result
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -85,7 +86,7 @@ class DeleteForeignControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with AuditEventChecking {
+  trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
     val controller = new DeleteForeignController(
       authService = mockEnrolmentsAuthService,
@@ -97,6 +98,12 @@ class DeleteForeignControllerSpec
       idGenerator = mockIdGenerator,
       mockForeignIncomeConfig
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] =
       controller.deleteForeign(validNino, taxYear)(fakeRequest)

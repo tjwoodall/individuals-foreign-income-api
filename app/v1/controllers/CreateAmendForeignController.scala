@@ -39,6 +39,8 @@ class CreateAmendForeignController @Inject() (val authService: EnrolmentsAuthSer
                                               val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  override val endpointName: String = "create-amend-foreign"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "CreateAmendForeignController",

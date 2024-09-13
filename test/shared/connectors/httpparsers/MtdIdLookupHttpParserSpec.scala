@@ -20,7 +20,7 @@ import play.api.http.Status.IM_A_TEAPOT
 import play.api.libs.json.Writes.StringWrites
 import play.api.libs.json.{JsResultException, Json}
 import play.api.test.Helpers.OK
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.connectors.MtdIdLookupConnector
 import shared.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
 import uk.gov.hmrc.http.HttpResponse

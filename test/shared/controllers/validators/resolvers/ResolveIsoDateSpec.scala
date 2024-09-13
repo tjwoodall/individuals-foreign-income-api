@@ -18,7 +18,7 @@ package shared.controllers.validators.resolvers
 
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.models.errors.{MtdError, StartDateFormatError}
 
 import java.time.LocalDate

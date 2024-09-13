@@ -17,6 +17,7 @@
 package v1.controllers
 
 import config.MockForeignIncomeConfig
+import play.api.Configuration
 import play.api.mvc.Result
 import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
@@ -117,6 +118,12 @@ class RetrieveForeignControllerSpec
       idGenerator = mockIdGenerator,
       foreignIncomeConfig = mockForeignIncomeConfig
     )
+
+    MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(
+      "supporting-agents-access-control.enabled" -> true
+    )
+
+    MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
     protected def callController(): Future[Result] = controller.retrieveForeign(validNino, taxYear)(fakeGetRequest)
   }

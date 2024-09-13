@@ -24,7 +24,7 @@ import play.api.http.{HeaderNames, Status}
 import play.api.libs.json.{JsString, Json, OWrites}
 import play.api.mvc.{AnyContent, AnyContentAsEmpty}
 import play.api.test.{FakeRequest, ResultExtractors}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.config.Deprecation.{Deprecated, NotDeprecated}
 import shared.config.{AppConfig, Deprecation, MockAppConfig}
 import shared.controllers.validators.Validator
@@ -58,7 +58,7 @@ class RequestHandlerSpec
   private val generatedCorrelationId = "generatedCorrelationId"
   private val serviceCorrelationId   = "serviceCorrelationId"
 
-  MockIdGenerator.generateCorrelationId.returns(generatedCorrelationId).anyNumberOfTimes()
+  MockedIdGenerator.generateCorrelationId.returns(generatedCorrelationId).anyNumberOfTimes()
 
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(controllerName = "SomeController", endpointName = "someEndpoint")
@@ -92,7 +92,7 @@ class RequestHandlerSpec
   }
 
   def mockDeprecation(deprecationStatus: Deprecation): CallHandler[Validated[String, Deprecation]] =
-    MockAppConfig
+    MockedAppConfig
       .deprecationFor(Version(userRequest))
       .returns(deprecationStatus.valid)
       .anyNumberOfTimes()
@@ -157,7 +157,7 @@ class RequestHandlerSpec
             .withService(mockService.service)
             .withNoContentResult()
 
-          MockAppConfig.allowRequestCannotBeFulfilledHeader(Version1).returns(true).anyNumberOfTimes()
+          MockedAppConfig.allowRequestCannotBeFulfilledHeader(Version1).returns(true).anyNumberOfTimes()
           mockDeprecation(NotDeprecated)
 
           val expectedContent = Json.parse(
@@ -190,7 +190,7 @@ class RequestHandlerSpec
 
           service returns Future.successful(Right(ResponseWrapper(serviceCorrelationId, Output)))
 
-          MockAppConfig.allowRequestCannotBeFulfilledHeader(Version1).returns(false).anyNumberOfTimes()
+          MockedAppConfig.allowRequestCannotBeFulfilledHeader(Version1).returns(false).anyNumberOfTimes()
           mockDeprecation(NotDeprecated)
 
           val ctx2: RequestContext = ctx.copy(hc = hc.copy(otherHeaders = List("gov-test-scenario" -> "REQUEST_CANNOT_BE_FULFILLED")))
@@ -221,7 +221,7 @@ class RequestHandlerSpec
               )
             )
 
-            MockAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
+            MockedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
 
             val result = requestHandler.handleRequest()
 
@@ -248,7 +248,7 @@ class RequestHandlerSpec
                 None
               )
             )
-            MockAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
+            MockedAppConfig.apiDocumentationUrl().returns("http://someUrl").anyNumberOfTimes()
 
             val result = requestHandler.handleRequest()
 

@@ -17,7 +17,7 @@
 package shared.services
 
 import play.api.http.{HeaderNames, MimeTypes, Status}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.controllers.{EndpointLogContext, RequestContext}
 import uk.gov.hmrc.http.HeaderCarrier
 

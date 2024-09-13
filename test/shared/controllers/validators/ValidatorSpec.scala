@@ -22,7 +22,7 @@ import cats.implicits._
 import org.scalamock.scalatest.MockFactory
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{JsValue, Json, Reads}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.controllers.validators.resolvers.{ResolveJsonObject, ResolveNino, ResolveTaxYear}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._

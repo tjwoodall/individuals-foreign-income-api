@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,9 @@ import org.scalamock.scalatest.MockFactory
 
 trait MockIdGenerator extends MockFactory {
 
-  val mockIdGenerator: IdGenerator = mock[IdGenerator]
+  protected val mockIdGenerator: IdGenerator = mock[IdGenerator]
 
-  object MockIdGenerator {
+  object MockedIdGenerator {
     def generateCorrelationId: CallHandler[String] = (() => mockIdGenerator.generateCorrelationId).expects()
   }
 

@@ -19,7 +19,7 @@ package shared.routing
 import play.api.http.HeaderNames.ACCEPT
 import play.api.libs.json._
 import play.api.test.FakeRequest
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.routing.Version.VersionReads
 
 class VersionSpec extends UnitSpec {

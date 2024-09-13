@@ -18,7 +18,7 @@ package shared.services
 
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{Format, Json}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.controllers.EndpointLogContext
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper

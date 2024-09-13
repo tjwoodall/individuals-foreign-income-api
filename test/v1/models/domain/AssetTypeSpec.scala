@@ -16,7 +16,7 @@
 
 package v1.models.domain
 
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.utils.enums.EnumJsonSpecSupport
 
 class AssetTypeSpec extends UnitSpec with EnumJsonSpecSupport {

@@ -38,6 +38,8 @@ class RetrieveForeignController @Inject() (val authService: EnrolmentsAuthServic
                                            foreignIncomeConfig: ForeignIncomeConfig)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  override val endpointName: String = "retrieve-foreign"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "RetrieveForeignController",

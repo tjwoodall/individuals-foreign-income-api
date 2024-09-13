@@ -18,7 +18,7 @@ package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import cats.implicits.catsSyntaxOption
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.models.errors.MtdError
 
 import java.util.concurrent.atomic.AtomicInteger

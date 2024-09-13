@@ -17,7 +17,7 @@
 package v1.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import v1.models.domain.CustomerRef
 import v1.models.errors.CustomerRefFormatError
 

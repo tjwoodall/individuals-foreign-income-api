@@ -40,6 +40,8 @@ class DeleteForeignController @Inject() (val authService: EnrolmentsAuthService,
                                          foreignIncomeConfig: ForeignIncomeConfig)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
+  override val endpointName: String = "delete-foreign"
+
   implicit val endpointLogContext: EndpointLogContext =
     EndpointLogContext(
       controllerName = "DeleteForeignController",

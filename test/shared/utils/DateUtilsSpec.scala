@@ -16,7 +16,7 @@
 
 package shared.utils
 
-import shared.UnitSpec
+import shared.utils.UnitSpec
 
 import java.time.LocalDateTime
 

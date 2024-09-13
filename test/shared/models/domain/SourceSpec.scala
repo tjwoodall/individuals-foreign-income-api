@@ -16,7 +16,7 @@
 
 package shared.models.domain
 
-import shared.UnitSpec
+import shared.utils.UnitSpec
 import shared.models.domain.Source.`MTD-SA`
 import shared.utils.enums.EnumJsonSpecSupport
 
