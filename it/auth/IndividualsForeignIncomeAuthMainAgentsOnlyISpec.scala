@@ -51,8 +51,7 @@ class IndividualsForeignIncomeAuthMainAgentsOnlyISpec extends AuthMainAgentsOnly
          |       }
          |    ]
          |}
-         |""".stripMargin
-      )
+         |""".stripMargin)
     )
   )
 

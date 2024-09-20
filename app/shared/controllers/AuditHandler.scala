@@ -16,13 +16,13 @@
 
 package shared.controllers
 
+import cats.syntax.either._
+import play.api.libs.json.{JsValue, Writes}
 import shared.models.audit.{AuditEvent, AuditResponse, GenericAuditDetail}
 import shared.models.auth.UserDetails
 import shared.models.errors.ErrorWrapper
-import shared.services.AuditService
-import cats.syntax.either._
-import play.api.libs.json.{JsValue, Writes}
 import shared.routing.Version
+import shared.services.AuditService
 
 import scala.Function.const
 import scala.concurrent.ExecutionContext

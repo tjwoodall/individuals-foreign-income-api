@@ -16,10 +16,10 @@
 
 package shared.connectors.httpparsers
 
-import shared.models.errors._
 import play.api.libs.json._
-import uk.gov.hmrc.http.HttpResponse
+import shared.models.errors._
 import shared.utils.Logging
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.util.{Success, Try}
 

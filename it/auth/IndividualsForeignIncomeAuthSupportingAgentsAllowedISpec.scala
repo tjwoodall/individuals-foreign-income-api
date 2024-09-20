@@ -51,8 +51,7 @@ class IndividualsForeignIncomeAuthSupportingAgentsAllowedISpec extends AuthSuppo
          |       }
          |    ]
          |}
-         |""".stripMargin
-      )
+         |""".stripMargin)
     )
   )
 
