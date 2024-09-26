@@ -32,10 +32,10 @@ requestBody:
   content:
     application/json:
       schema:
-        $ref: './schemas/create_amend_request.json'
+        oneOf:
+         - $ref: './schemas/create_amend_request.json'
       examples:
-        full_amendment:
-          description: Full Foreign Income Amendment
+        "Full Foreign Income Amendment for all tax years":
           value:
             $ref: './examples/create_amend_request.json'
 

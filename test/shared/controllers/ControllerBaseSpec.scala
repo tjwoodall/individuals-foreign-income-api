@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,16 +27,24 @@ import shared.config.{MockAppConfig, RealAppConfig}
 import shared.models.audit.{AuditError, AuditEvent, AuditResponse}
 import shared.models.domain.Nino
 import shared.models.errors.{BadRequestError, ErrorWrapper, MtdError}
-import shared.routing.{Version, Version1}
+import shared.routing.{Version, Version9}
 import shared.services.{MockAuditService, MockEnrolmentsAuthService, MockMtdIdLookupService}
 import shared.utils.{MockIdGenerator, UnitSpec}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future
 
-class ControllerBaseSpec extends UnitSpec with Status with MimeTypes with HeaderNames with ResultExtractors with MockAuditService with MockAppConfig {
+abstract class ControllerBaseSpec
+    extends UnitSpec
+    with Status
+    with MimeTypes
+    with HeaderNames
+    with ResultExtractors
+    with MockAuditService
+    with ControllerSpecHateoasSupport
+    with MockAppConfig {
 
-  val apiVersion: Version = Version1
+  protected val apiVersion: Version = Version9
 
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest().withHeaders(HeaderNames.ACCEPT -> s"application/vnd.hmrc.${apiVersion.name}+json")
@@ -48,7 +56,6 @@ class ControllerBaseSpec extends UnitSpec with Status with MimeTypes with Header
   )
 
   def fakePostRequest[T](body: T): FakeRequest[T] = fakeRequest.withBody(body)
-  def fakePutRequest[T](body: T): FakeRequest[T]  = fakeRequest.withBody(body)
 }
 
 trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLookupService with MockIdGenerator with RealAppConfig {
@@ -68,7 +75,6 @@ trait ControllerTestRunner extends MockEnrolmentsAuthService with MockMtdIdLooku
     MockedMtdIdLookupService.lookup(validNino).returns(Future.successful(Right("test-mtd-id")))
     MockedEnrolmentsAuthService.authoriseUser()
     MockedIdGenerator.generateCorrelationId.returns(correlationId)
-    MockedAppConfig.deprecationFor(apiVersion).returns(NotDeprecated.valid).anyNumberOfTimes()
 
     MockedAppConfig
       .deprecationFor(apiVersion)

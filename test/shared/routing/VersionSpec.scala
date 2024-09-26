@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,22 +16,15 @@
 
 package shared.routing
 
+import org.scalamock.scalatest.MockFactory
 import play.api.http.HeaderNames.ACCEPT
 import play.api.libs.json._
+import play.api.mvc.{Headers, RequestHeader}
 import play.api.test.FakeRequest
-import shared.utils.UnitSpec
 import shared.routing.Version.VersionReads
+import shared.utils.UnitSpec
 
-class VersionSpec extends UnitSpec {
-
-  "serialized to Json" must {
-    "return the expected Json output" in {
-      val version: Version = Version3
-      val expected         = Json.parse(""" "3.0" """)
-      val result           = Json.toJson(version)
-      result shouldBe expected
-    }
-  }
+class VersionSpec extends UnitSpec with MockFactory {
 
   "Versions" when {
     "retrieved from a request header" should {
@@ -49,6 +42,44 @@ class VersionSpec extends UnitSpec {
 
       "return InvalidHeader for a header format that doesn't match regex" in {
         Versions.getFromRequest(FakeRequest().withHeaders((ACCEPT, "invalidHeaderFormat"))) shouldBe Left(InvalidHeader)
+      }
+    }
+  }
+
+  "Version" when {
+    "serialized to Json" should {
+      "return the expected Json output" in {
+        val version: Version = Version3
+
+        val result = Json.toJson(version)
+        result shouldBe JsString("3.0")
+      }
+    }
+  }
+
+  "Version.apply(RequestHeader)" when {
+
+    def mockRequestHeader(keyValue: (String, String)): RequestHeader = {
+      val (k, v)  = keyValue
+      val header  = mock[RequestHeader]
+      val headers = Headers(k -> v)
+
+      (() => header.headers: Headers).expects().returning(headers)
+      header
+    }
+
+    "given a valid Accept header" should {
+      "return the expected API Version" in {
+        val header = mockRequestHeader(ACCEPT -> "application/vnd.hmrc.9.0+json")
+        val result = Version(header)
+        result shouldBe Version9
+      }
+    }
+
+    "given an invalid Accept header" should {
+      "throw the expected exception (code shouldn't have reached this point)" in {
+        val header = mockRequestHeader(ACCEPT -> "not-a-valid-request-header")
+        the[Exception] thrownBy Version(header) should have message "Missing or unsupported version found in request accept header"
       }
     }
   }

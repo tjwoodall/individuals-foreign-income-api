@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,15 +25,16 @@ import play.api.mvc._
 import play.api.routing.Router
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import shared.utils.UnitSpec
 import shared.config.MockAppConfig
 import shared.models.errors.{InvalidAcceptHeaderError, UnsupportedVersionError}
+import shared.utils.UnitSpec
 
 class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockAppConfig with GuiceOneAppPerSuite {
   test =>
 
   implicit private val actorSystem: ActorSystem = ActorSystem("test")
-  val action: DefaultActionBuilder              = app.injector.instanceOf[DefaultActionBuilder]
+
+  val action: DefaultActionBuilder = app.injector.instanceOf[DefaultActionBuilder]
 
   import play.api.mvc.Handler
   import play.api.routing.sird._
@@ -64,7 +65,11 @@ class VersionRoutingRequestHandlerSpec extends UnitSpec with Inside with MockApp
     "the handler is found" should {
       "use it" in new Test {
         val maybeAcceptHeader: Option[String] = None
-        MockedAppConfig.endpointsEnabled(Version3).returns(true).anyNumberOfTimes()
+
+        MockedAppConfig
+          .endpointsEnabled(Version3)
+          .returns(true)
+          .anyNumberOfTimes()
 
         val result: Option[Handler] = requestHandler.routeRequest(buildRequest("/"))
         result shouldBe Some(DefaultHandler)

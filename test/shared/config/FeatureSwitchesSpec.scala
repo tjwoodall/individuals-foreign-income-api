@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,35 +19,18 @@ package shared.config
 import play.api.Configuration
 import shared.utils.UnitSpec
 
-class FeatureSwitchesSpec extends UnitSpec {
+class FeatureSwitchesSpec extends UnitSpec with FeatureSwitchesBehaviour[FeatureSwitches] {
 
-  private case class TestFeatureSwitches(protected val featureSwitchConfig: Configuration) extends FeatureSwitches
+  override def featureSwitches(configuration: Configuration): FeatureSwitches = new FeatureSwitches {
+    override protected val featureSwitchConfig: Configuration = configuration
+  }
 
-  "FeatureSwitches" should {
-    "be true" when {
-      "absent from the config" in {
-        val configuration   = Configuration.empty
-        val featureSwitches = TestFeatureSwitches(configuration)
+  "isEnabled" should {
+    behave like aFeatureSwitchWithKey("some-feature.enabled", _.isEnabled("some-feature"))
+  }
 
-        featureSwitches.isEnabled("some-feature") shouldBe true
-      }
-
-      "enabled" in {
-        val configuration   = Configuration("some-feature.enabled" -> true)
-        val featureSwitches = TestFeatureSwitches(configuration)
-
-        featureSwitches.isEnabled("some-feature") shouldBe true
-      }
-    }
-
-    "be false" when {
-      "disabled" in {
-        val configuration   = Configuration("some-feature.enabled" -> false)
-        val featureSwitches = TestFeatureSwitches(configuration)
-
-        featureSwitches.isEnabled("some-feature") shouldBe false
-      }
-    }
+  "isReleasedInProduction" should {
+    behave like aFeatureSwitchWithKey("some-feature.released-in-production", _.isReleasedInProduction("some-feature"))
   }
 
 }

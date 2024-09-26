@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import play.api.mvc.Results.InternalServerError
 import shared.config.AppConfig
 import shared.config.Deprecation.Deprecated
 import shared.controllers.validators.Validator
+import shared.hateoas.{HateoasData, HateoasFactory, HateoasLinksFactory, HateoasWrapper}
 import shared.models.errors.{ErrorWrapper, InternalError, RuleRequestCannotBeFulfilledError}
 import shared.models.outcomes.ResponseWrapper
 import shared.routing.Version
@@ -56,7 +57,8 @@ object RequestHandler {
       service: Input => Future[ServiceOutcome[Output]],
       errorHandling: ErrorHandling = ErrorHandling.Default,
       resultCreator: ResultCreator[Input, Output] = ResultCreator.noContent[Input, Output](),
-      auditHandler: Option[AuditHandler] = None
+      auditHandler: Option[AuditHandler] = None,
+      responseModifier: Option[Output => Output] = None
   ) extends RequestHandler {
 
     def handleRequest()(implicit ctx: RequestContext, request: UserRequest[_], ec: ExecutionContext, appConfig: AppConfig): Future[Result] =
@@ -67,6 +69,9 @@ object RequestHandler {
 
     def withAuditing(auditHandler: AuditHandler): RequestHandlerBuilder[Input, Output] =
       copy(auditHandler = Some(auditHandler))
+
+    def withResponseModifier(responseModifier: Output => Output): RequestHandlerBuilder[Input, Output] =
+      copy(responseModifier = Option(responseModifier))
 
     /** Shorthand for
       * {{{
@@ -86,6 +91,27 @@ object RequestHandler {
 
     def withResultCreator(resultCreator: ResultCreator[Input, Output]): RequestHandlerBuilder[Input, Output] =
       copy(resultCreator = resultCreator)
+
+    /** Shorthand for
+      * {{{
+      * withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)(data))
+      * }}}
+      */
+    def withHateoasResultFrom[HData <: HateoasData](
+        hateoasFactory: HateoasFactory)(data: (Input, Output) => HData, successStatus: Int = Status.OK)(implicit
+        linksFactory: HateoasLinksFactory[Output, HData],
+        writes: Writes[HateoasWrapper[Output]]): RequestHandlerBuilder[Input, Output] =
+      withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)(data))
+
+    /** Shorthand for
+      * {{{
+      * withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)((_,_) => data))
+      * }}}
+      */
+    def withHateoasResult[HData <: HateoasData](hateoasFactory: HateoasFactory)(data: HData, successStatus: Int = Status.OK)(implicit
+        linksFactory: HateoasLinksFactory[Output, HData],
+        writes: Writes[HateoasWrapper[Output]]): RequestHandlerBuilder[Input, Output] =
+      withResultCreator(ResultCreator.hateoasWrapping(hateoasFactory, successStatus)((_, _) => data))
 
     // Scoped as a private delegate so as to keep the logic completely separate from the configuration
     private object Delegate extends RequestHandler with Logging with RequestContextImplicits {
@@ -115,7 +141,8 @@ object RequestHandler {
           val headers =
             responseHeaders ++
               List(
-                "X-CorrelationId" -> correlationId
+                "X-CorrelationId"        -> correlationId,
+                "X-Content-Type-Options" -> "nosniff"
               ) ++
               withDeprecationHeaders
 
@@ -136,15 +163,21 @@ object RequestHandler {
             s"with correlationId : ${ctx.correlationId}")
 
         val result =
-          if (simulateRequestCannotBeFulfilled)
+          if (simulateRequestCannotBeFulfilled) {
             EitherT[Future, ErrorWrapper, Result](Future.successful(Left(ErrorWrapper(ctx.correlationId, RuleRequestCannotBeFulfilledError))))
-          else
+          } else {
             for {
               parsedRequest   <- EitherT.fromEither[Future](validator.validateAndWrapResult())
               serviceResponse <- EitherT(service(parsedRequest))
             } yield doWithContext(ctx.withCorrelationId(serviceResponse.correlationId)) { implicit ctx: RequestContext =>
-              handleSuccess(parsedRequest, serviceResponse)
+              responseModifier match {
+                case Some(modifier) =>
+                  handleSuccess(parsedRequest, serviceResponse.copy(responseData = modifier(serviceResponse.responseData)))
+                case None =>
+                  handleSuccess(parsedRequest, serviceResponse)
+              }
             }
+          }
 
         result.leftMap { errorWrapper =>
           doWithContext(ctx.withCorrelationId(errorWrapper.correlationId)) { implicit ctx: RequestContext =>
@@ -200,7 +233,7 @@ object RequestHandler {
         InternalServerError(InternalError.asJson)
       }
 
-      def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
+      private def auditIfRequired(httpStatus: Int, response: Either[ErrorWrapper, Option[JsValue]])(implicit
           ctx: RequestContext,
           request: UserRequest[_],
           ec: ExecutionContext): Unit =

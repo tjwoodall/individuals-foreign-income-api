@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package shared.connectors
 
 import shared.config.MockAppConfig
+import shared.connectors.MtdIdLookupConnector.Outcome
 import shared.mocks.MockHttpClient
 
 import scala.concurrent.Future
@@ -43,13 +44,16 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
           .get[MtdIdLookupConnector.Outcome](s"$baseUrl/mtd-identifier-lookup/nino/$nino", dummyHeaderCarrierConfig)
           .returns(Future.successful(Right(mtdId)))
 
-        await(connector.getMtdId(nino)) shouldBe Right(mtdId)
+        val result: Outcome = await(connector.getMtdId(nino))
+
+        result shouldBe Right(mtdId)
       }
     }
 
-    "return a error" when {
+    "return an error" when {
       "the http client returns that error" in new Test {
         val statusCode: Int = IM_A_TEAPOT
+
         MockedHttpClient
           .get[MtdIdLookupConnector.Outcome](
             url = s"$baseUrl/mtd-identifier-lookup/nino/$nino",
@@ -57,7 +61,9 @@ class MtdIdLookupConnectorSpec extends ConnectorSpec {
           )
           .returns(Future.successful(Left(MtdIdLookupConnector.Error(statusCode))))
 
-        await(connector.getMtdId(nino)) shouldBe Left(MtdIdLookupConnector.Error(statusCode))
+        val result: Outcome = await(connector.getMtdId(nino))
+
+        result shouldBe Left(MtdIdLookupConnector.Error(statusCode))
       }
     }
   }

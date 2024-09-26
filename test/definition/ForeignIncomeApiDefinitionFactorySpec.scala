@@ -35,7 +35,7 @@ class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig 
   "definition" when {
     "called" should {
       "return a valid Definition case class" in new Test {
-        Seq(Version1).foreach { version =>
+        List(Version1).foreach { version =>
           MockedAppConfig.apiStatus(version) returns "BETA"
           MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
           MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
@@ -47,8 +47,8 @@ class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig 
               name = "Individuals Foreign Income (MTD)",
               description = "An API for providing individual foreign income data",
               context = "individuals/foreign-income",
-              categories = Seq("INCOME_TAX_MTD"),
-              versions = Seq(
+              categories = List("INCOME_TAX_MTD"),
+              versions = List(
                 APIVersion(
                   Version1,
                   status = BETA,

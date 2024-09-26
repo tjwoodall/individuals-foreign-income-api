@@ -17,16 +17,16 @@
 package v1.controllers.validators
 
 import config.{ForeignIncomeConfig, MockForeignIncomeConfig}
+import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{JsValue, Json}
 import shared.controllers.validators.Validator
-import shared.controllers.validators.validations.ValueFormatErrorMessages
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.utils.UnitSpec
 import v1.models.errors.{CountryCodeRuleError, CustomerRefFormatError}
 import v1.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody, ForeignEarnings, UnremittableForeignIncomeItem}
 
-class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeConfig with ValueFormatErrorMessages {
+class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeConfig {
 
   private val validNino    = "AA123456A"
   private val validTaxYear = "2018-19"
@@ -59,7 +59,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
       |""".stripMargin
   )
 
-  private val unremittableForeignIncome: Seq[UnremittableForeignIncomeItem] = Seq(
+  private val unremittableForeignIncome = List(
     UnremittableForeignIncomeItem("FRA", 0, Some(0)),
     UnremittableForeignIncomeItem("GBR", 99999999999.99, Some(99999999999.99)),
     UnremittableForeignIncomeItem("ESP", 0.99, Some(100.00))
@@ -337,99 +337,90 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
 
     "return ValueFormatError error" when {
       "an incorrectly formatted earningsNotTaxableUK is submitted" in new Test {
-        val result = validator(validNino, validTaxYear, invalidEarningsNotTaxableUKRequestBodyJson).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(
-            correlationId,
-            ValueFormatError.copy(
-              paths = Some(List("/foreignEarnings/earningsNotTaxableUK")),
-              message = ZERO_MINIMUM_INCLUSIVE
-            )))
-      }
-    }
+        object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be between 0 and 99999999999.99", BAD_REQUEST) {
 
-    "return ValueFormatError error (single failure)" when {
-      "one field fails value validation (countryCode 3 digit)" in new Test {
-        val result = validator(validNino, validTaxYear, invalidCountryCodeRequestBodyJson).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(
-            correlationId,
-            CountryCodeRuleError.copy(
-              paths = Some(List("/unremittableForeignIncome/0/countryCode"))
-            )))
+          val result = validator(validNino, validTaxYear, invalidEarningsNotTaxableUKRequestBodyJson).validateAndWrapResult()
+          result shouldBe Left(
+            ErrorWrapper(correlationId, ValueFormatError.withPath("/foreignEarnings/earningsNotTaxableUK"))
+          )
+        }
       }
 
-      "one field fails value validation (countryCode 4 digit)" in new Test {
-        val result = validator(validNino, validTaxYear, invalidCountryCodeFormatRequestBodyJson).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(
-            correlationId,
-            CountryCodeFormatError.copy(
-              paths = Some(List("/unremittableForeignIncome/0/countryCode"))
-            )))
-      }
+      "return ValueFormatError error (single failure)" when {
+        "one field fails value validation (countryCode 3 digit)" in new Test {
+          val result = validator(validNino, validTaxYear, invalidCountryCodeRequestBodyJson).validateAndWrapResult()
+          result shouldBe Left(
+            ErrorWrapper(
+              correlationId,
+              CountryCodeRuleError.copy(
+                paths = Some(List("/unremittableForeignIncome/0/countryCode"))
+              )))
+        }
 
-      "one field fails value validation (amountInForeignCurrency)" in new Test {
-        val result = validator(validNino, validTaxYear, invalidAmountInForeignCurrencyRequestBodyJson).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(
-            correlationId,
-            ValueFormatError.copy(
-              message = ZERO_MINIMUM_INCLUSIVE,
-              paths = Some(List("/unremittableForeignIncome/0/amountInForeignCurrency"))
-            )))
-      }
-
-      "one field fails value validation (AmountTaxPaid)" in new Test {
-        val result = validator(validNino, validTaxYear, invalidAmountTaxPaidRequestBodyJson).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(
-            correlationId,
-            ValueFormatError.copy(
-              message = ZERO_MINIMUM_INCLUSIVE,
-              paths = Some(List("/unremittableForeignIncome/0/amountTaxPaid"))
-            )))
-      }
-    }
-
-    "return ValueFormatError error (multiple failures)" when {
-      "multiple fields fail value validation" in new Test {
-        val result = validator(validNino, validTaxYear, allInvalidValueRawRequestBodyJson).validateAndWrapResult()
-        result shouldBe Left(
-          ErrorWrapper(
-            correlationId,
-            BadRequestError,
-            Some(List(
+        "one field fails value validation (countryCode 4 digit)" in new Test {
+          val result = validator(validNino, validTaxYear, invalidCountryCodeFormatRequestBodyJson).validateAndWrapResult()
+          result shouldBe Left(
+            ErrorWrapper(
+              correlationId,
               CountryCodeFormatError.copy(
                 paths = Some(List("/unremittableForeignIncome/0/countryCode"))
-              ),
-              CustomerRefFormatError.copy(
-                paths = Some(List("/foreignEarnings/customerReference"))
-              ),
-              ValueFormatError.copy(
-                paths = Some(List(
-                  "/foreignEarnings/earningsNotTaxableUK",
-                  "/unremittableForeignIncome/0/amountInForeignCurrency",
-                  "/unremittableForeignIncome/0/amountTaxPaid",
-                  "/unremittableForeignIncome/1/amountInForeignCurrency",
-                  "/unremittableForeignIncome/1/amountTaxPaid"
-                )),
-                message = ZERO_MINIMUM_INCLUSIVE
-              ),
-              CountryCodeRuleError.copy(
-                paths = Some(List("/unremittableForeignIncome/1/countryCode"))
-              )
+              )))
+        }
+
+        "one field fails value validation (amountInForeignCurrency)" in new Test {
+          val result = validator(validNino, validTaxYear, invalidAmountInForeignCurrencyRequestBodyJson).validateAndWrapResult()
+          result shouldBe Left(
+            ErrorWrapper(correlationId, ValueFormatError.withPath("/unremittableForeignIncome/0/amountInForeignCurrency"))
+          )
+        }
+
+        "one field fails value validation (AmountTaxPaid)" in new Test {
+          val result = validator(validNino, validTaxYear, invalidAmountTaxPaidRequestBodyJson).validateAndWrapResult()
+          result shouldBe Left(
+            ErrorWrapper(correlationId, ValueFormatError.withPath("/unremittableForeignIncome/0/amountTaxPaid"))
+          )
+        }
+      }
+
+      "return ValueFormatError error (multiple failures)" when {
+        "multiple fields fail value validation" in new Test {
+          val result = validator(validNino, validTaxYear, allInvalidValueRawRequestBodyJson).validateAndWrapResult()
+          result shouldBe Left(
+            ErrorWrapper(
+              correlationId,
+              BadRequestError,
+              Some(List(
+                CountryCodeFormatError.copy(
+                  paths = Some(List("/unremittableForeignIncome/0/countryCode"))
+                ),
+                CustomerRefFormatError.copy(
+                  paths = Some(List("/foreignEarnings/customerReference"))
+                ),
+                ValueFormatError.withPaths(
+                  List(
+                    "/foreignEarnings/earningsNotTaxableUK",
+                    "/unremittableForeignIncome/0/amountInForeignCurrency",
+                    "/unremittableForeignIncome/0/amountTaxPaid",
+                    "/unremittableForeignIncome/1/amountInForeignCurrency",
+                    "/unremittableForeignIncome/1/amountTaxPaid"
+                  )
+                ),
+                CountryCodeRuleError.copy(
+                  paths = Some(List("/unremittableForeignIncome/1/countryCode"))
+                )
+              ))
             ))
-          ))
+        }
+      }
+
+      "return multiple errors" when {
+        "request supplied has multiple errors (path parameters)" in new Test {
+          val result = validator("A12344A", "20178", validRequestBodyJson).validateAndWrapResult()
+          result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError))))
+        }
       }
     }
 
-    "return multiple errors" when {
-      "request supplied has multiple errors (path parameters)" in new Test {
-        val result = validator("A12344A", "20178", validRequestBodyJson).validateAndWrapResult()
-        result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError))))
-      }
-    }
   }
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,9 @@ package shared.controllers.validators
 import cats.data.Validated
 import cats.data.Validated.{Invalid, Valid}
 import play.api.http.Status.BAD_REQUEST
-import shared.utils.UnitSpec
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.MtdError
+import shared.utils.UnitSpec
 
 class RulesValidatorSpec extends UnitSpec {
 

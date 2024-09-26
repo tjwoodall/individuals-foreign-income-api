@@ -144,7 +144,8 @@ class CreateAmendForeignControllerSpec
 
     MockedAppConfig.endpointAllowsSupportingAgents(controller.endpointName).anyNumberOfTimes() returns false
 
-    protected def callController(): Future[Result] = controller.createAmendForeign(validNino, taxYear)(fakePutRequest(requestBodyJson))
+    protected def callController(): Future[Result] =
+      controller.createAmendForeign(validNino, taxYear)(fakeRequest.withBody(requestBodyJson))
 
     def event(auditResponse: AuditResponse, maybeRequestBody: Option[JsValue]): AuditEvent[GenericAuditDetail] =
       AuditEvent(

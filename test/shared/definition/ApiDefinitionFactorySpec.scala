@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,83 +17,82 @@
 package shared.definition
 
 import cats.implicits.catsSyntaxValidatedId
-import shared.utils.UnitSpec
 import shared.config.Deprecation.NotDeprecated
 import shared.config.{AppConfig, MockAppConfig}
 import shared.definition.APIStatus.{ALPHA, BETA}
 import shared.mocks.MockHttpClient
-import shared.routing.{Version, Version1, Version3, Version4}
+import shared.routing._
+import shared.utils.UnitSpec
 
-class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
+import scala.language.reflectiveCalls
 
-  private[definition] class MyApiDefinitionFactory extends ApiDefinitionFactory {
-    protected val appConfig: AppConfig = mockAppConfig
+class ApiDefinitionFactorySpec extends UnitSpec {
 
-    val definition: Definition = Definition(
-      APIDefinition(
-        "test API definition",
-        "description",
-        "context",
-        List("category"),
-        List(APIVersion(Version1, APIStatus.BETA, endpointsEnabled = true)),
-        None)
-    )
+  "buildAPIStatus" when {
+    "the 'apiStatus' parameter is present and valid" should {
 
-    def checkBuildApiStatus(version: Version): APIStatus = buildAPIStatus(version)
+      s"return the expected status" in new Test {
+        setupMockConfig(Version9)
+        MockedAppConfig.apiStatus(Version9) returns "BETA"
+
+        val result: APIStatus = apiDefinitionFactory.checkBuildApiStatus(Version9)
+        result shouldBe BETA
+      }
+
+    }
+
+    "the 'apiStatus' parameter is present but invalid" should {
+      s"default to alpha" in new Test {
+        setupMockConfig(Version9)
+        MockedAppConfig.apiStatus(Version9) returns "not-a-status"
+
+        apiDefinitionFactory.checkBuildApiStatus(Version9) shouldBe ALPHA
+      }
+    }
+
+    "the 'deprecatedOn' parameter is missing for a deprecated version" should {
+      "throw an exception" in new Test {
+        MockedAppConfig.apiStatus(Version9) returns "DEPRECATED"
+
+        MockedAppConfig
+          .deprecationFor(Version9)
+          .returns("deprecatedOn date is required for a deprecated version".invalid)
+          .anyNumberOfTimes()
+
+        val exception: Exception = intercept[Exception] {
+          apiDefinitionFactory.checkBuildApiStatus(Version9)
+        }
+
+        val exceptionMessage: String = exception.getMessage
+        exceptionMessage shouldBe "deprecatedOn date is required for a deprecated version"
+      }
+    }
   }
 
   class Test extends MockHttpClient with MockAppConfig {
     MockedAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
 
-    protected val apiDefinitionFactory = new MyApiDefinitionFactory
+    protected val apiDefinitionFactory = new ApiDefinitionFactory {
+      protected val appConfig: AppConfig = mockAppConfig
 
-    "buildAPIStatus" when {
-      "the 'apiStatus' parameter is present and valid" should {
-        List(
-          (Version3, BETA),
-          (Version4, BETA)
-        ).foreach { case (version, status) =>
-          s"return the correct $status for $version " in new Test {
-            MockedAppConfig.apiStatus(version) returns status.toString
-            MockedAppConfig
-              .deprecationFor(version)
-              .returns(NotDeprecated.valid)
-              .anyNumberOfTimes()
-            apiDefinitionFactory.checkBuildApiStatus(version) shouldBe status
-          }
-        }
-      }
+      val definition: Definition = Definition(
+        APIDefinition(
+          "test API definition",
+          "description",
+          "context",
+          List("category"),
+          List(APIVersion(Version1, APIStatus.BETA, endpointsEnabled = true)),
+          None)
+      )
 
-      "the 'apiStatus' parameter is present and invalid" should {
-        List(Version3, Version4).foreach { version =>
-          s"default to alpha for $version " in new Test {
-            MockedAppConfig.apiStatus(version) returns "ALPHO"
-            MockedAppConfig
-              .deprecationFor(version)
-              .returns(NotDeprecated.valid)
-              .anyNumberOfTimes()
-            apiDefinitionFactory.checkBuildApiStatus(version) shouldBe ALPHA
-          }
-        }
-      }
+      def checkBuildApiStatus(version: Version): APIStatus = buildAPIStatus(version)
+    }
 
-      "the 'deprecatedOn' parameter is missing for a deprecated version" should {
-        "throw exception" in new Test {
-          MockedAppConfig.apiStatus(Version3) returns "DEPRECATED"
-          MockedAppConfig
-            .deprecationFor(Version3)
-            .returns("deprecatedOn date is required for a deprecated version".invalid)
-            .anyNumberOfTimes()
-
-          val exception: Exception = intercept[Exception] {
-            apiDefinitionFactory.checkBuildApiStatus(Version4)
-          }
-
-          val exceptionMessage: String = exception.getMessage
-          exceptionMessage shouldBe "deprecatedOn date is required for a deprecated version"
-        }
-      }
-
+    protected def setupMockConfig(version: Version): Unit = {
+      MockedAppConfig
+        .deprecationFor(version)
+        .returns(NotDeprecated.valid)
+        .anyNumberOfTimes()
     }
 
   }

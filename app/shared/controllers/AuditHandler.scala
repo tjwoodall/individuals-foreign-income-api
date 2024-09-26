@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,8 @@ object AuditHandler {
                         transactionName: String,
                         auditDetailCreator: AuditDetailCreator[A],
                         requestBody: Option[JsValue] = None,
-                        responseBodyMap: Option[JsValue] => Option[JsValue]): AuditHandler =
+                        responseBodyMap: Option[JsValue] => Option[JsValue]): AuditHandler = {
+    // $COVERAGE-OFF$
     new AuditHandlerImpl[A](
       auditService = auditService,
       auditType = auditType,
@@ -67,6 +68,8 @@ object AuditHandler {
       requestBody = requestBody,
       responseBodyMap = responseBodyMap
     )
+    // $COVERAGE-ON$
+  }
 
   trait AuditDetailCreator[A] {
     def createAuditDetail(userDetails: UserDetails, requestBody: Option[JsValue], auditResponse: AuditResponse)(implicit ctx: RequestContext): A

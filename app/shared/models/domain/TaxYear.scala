@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ final case class TaxYear private (private val value: String) {
 
   /** Use this for downstream API endpoints that are known to be TYS.
     */
-  def useTaxYearSpecificApi: Boolean = year >= 2024
+  val useTaxYearSpecificApi: Boolean = year >= 2024
 
   override def toString: String = s"TaxYear($value)"
 }
@@ -84,6 +84,12 @@ object TaxYear {
     */
   def fromMtd(taxYear: String): TaxYear =
     TaxYear(taxYear.take(2) + taxYear.drop(5))
+
+  def maybeFromMtd(taxYear: String): Option[TaxYear] = {
+    mtdTaxYearFormat.findFirstIn(taxYear).map(TaxYear.fromMtd)
+  }
+
+  private val mtdTaxYearFormat = "20[1-9][0-9]-[1-9][0-9]".r
 
   def now(implicit clock: Clock = Clock.systemUTC): TaxYear            = TaxYear.containing(LocalDate.now(clock))
   def currentTaxYear(implicit clock: Clock = Clock.systemUTC): TaxYear = TaxYear.now

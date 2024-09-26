@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,10 @@ trait DownstreamResponseMappingSupport {
       case "UNMATCHED_STUB_ERROR" =>
         logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - No matching stub was found")
         RuleIncorrectGovTestScenarioError
+
+      case "INVALID_CORRELATION_ID" | "INVALID_CORRELATIONID" =>
+        logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - An internal server error occurred")
+        InternalError
 
       case code =>
         logger.warn(s"[${logContext.controllerName}] [${logContext.endpointName}] - No mapping found for error code $code")

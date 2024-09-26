@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,9 @@ import play.api.mvc.RequestHeader
 object Version {
 
   def apply(request: RequestHeader): Version =
-    Versions.getFromRequest(request).getOrElse(throw new Exception("Missing or unsupported version found in request accept header"))
+    Versions
+      .getFromRequest(request)
+      .getOrElse(throw new Exception("Missing or unsupported version found in request accept header"))
 
   object VersionWrites extends Writes[Version] {
     def writes(version: Version): JsValue = version.asJson

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 package shared.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
-import shared.utils.UnitSpec
 import shared.models.errors.{CountryCodeFormatError, RuleCountryCodeError}
+import shared.utils.UnitSpec
 
 class ResolveParsedCountryCodeSpec extends UnitSpec {
 
   "ResolveParsedCountryCode" must {
-    // @formatter:off
+      // @formatter:off
     List("AFG", "ALB", "DZA", "ASM", "AND", "AGO", "AIA", "ATG", "ARG", "ARM", "ABW", "AUS", "AUT", "AZE", "BHS",
         "BHR", "BGD", "BRB", "BLR", "BEL", "BLZ", "BEN", "BMU", "BTN", "BOL", "BES", "BIH", "BWA", "BRA", "VGB",
         "BRN", "BGR", "BFA", "MMR", "BDI", "KHM", "CMR", "CAN", "CPV", "CYM", "CAF", "TCD", "CHL", "CHN", "CXR",
@@ -48,6 +48,21 @@ class ResolveParsedCountryCodeSpec extends UnitSpec {
             }
         }
       // @formatter:on
+
+    "return valid for an empty optional country code" in {
+      val result = ResolveParsedCountryCode(None, path = "path")
+      result shouldBe Valid(None)
+    }
+
+    "return valid for a valid optional country code" in {
+      val result = ResolveParsedCountryCode(Some("VEN"), path = "path")
+      result shouldBe Valid(Some("VEN"))
+    }
+
+    "return a CountryCodeFormatError for an invalid optional country code" in {
+      val result = ResolveParsedCountryCode(Some("notACountryCode"), path = "path")
+      result shouldBe Invalid(List(CountryCodeFormatError.withPath("path")))
+    }
 
     "return a CountryCodeFormatError for an invalid country code" in {
       val result = ResolveParsedCountryCode("notACountryCode", path = "path")

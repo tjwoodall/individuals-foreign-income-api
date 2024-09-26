@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,10 +29,14 @@ trait HttpParser extends Logging {
 
     def validateJson[T](implicit reads: Reads[T]): Option[T] = {
       Try(response.json) match {
-        case Success(json: JsValue) => parseResult(json)
+        case Success(json: JsValue) =>
+          parseResult(json)
+
+        // $COVERAGE-OFF$
         case _ =>
           logger.warn("[KnownJsonResponse][validateJson] No JSON was returned")
           None
+        // $COVERAGE-ON$
       }
     }
 
