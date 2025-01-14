@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package routing
+package v2.models.response.retrieve
 
-import play.api.routing.Router
-import shared.config.AppConfig
-import shared.routing.{Version, Version1, Version2, VersionRoutingMap}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
-import javax.inject.{Inject, Singleton}
+case class ForeignEarnings(customerReference: Option[String], earningsNotTaxableUK: BigDecimal)
 
-@Singleton case class ForeignIncomeVersionRoutingMap @Inject() (
-    appConfig: AppConfig,
-    defaultRouter: Router,
-    v1Router: v1.Routes,
-    v2Router: v2.Routes
-) extends VersionRoutingMap {
+object ForeignEarnings {
 
-  /** Routes corresponding to available versions.
-    */
-  val map: Map[Version, Router] = Map(
-    Version1 -> v1Router,
-    Version2 -> v2Router
-  )
+  implicit val reads: Reads[ForeignEarnings] = (
+    (JsPath \ "customerReference").readNullable[String] and
+      (JsPath \ "earningsNotTaxableUK").read[BigDecimal]
+  )(ForeignEarnings.apply _)
 
+  implicit val writes: OWrites[ForeignEarnings] = Json.writes[ForeignEarnings]
 }
