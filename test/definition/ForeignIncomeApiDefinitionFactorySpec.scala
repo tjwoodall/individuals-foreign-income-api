@@ -22,7 +22,7 @@ import shared.config.MockAppConfig
 import shared.definition.APIStatus.BETA
 import shared.definition.{APIDefinition, APIVersion, Definition}
 import shared.mocks.MockHttpClient
-import shared.routing.Version1
+import shared.routing.{Version1, Version2}
 import shared.utils.UnitSpec
 
 class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
@@ -35,7 +35,7 @@ class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig 
   "definition" when {
     "called" should {
       "return a valid Definition case class" in new Test {
-        List(Version1).foreach { version =>
+        List(Version1, Version2).foreach { version =>
           MockedAppConfig.apiStatus(version) returns "BETA"
           MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
           MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
@@ -51,6 +51,11 @@ class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig 
               versions = List(
                 APIVersion(
                   Version1,
+                  status = BETA,
+                  endpointsEnabled = true
+                ),
+                APIVersion(
+                  Version2,
                   status = BETA,
                   endpointsEnabled = true
                 )

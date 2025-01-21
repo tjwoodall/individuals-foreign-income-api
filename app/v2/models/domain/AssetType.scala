@@ -14,26 +14,23 @@
  * limitations under the License.
  */
 
-package routing
+package v2.models.domain
 
-import play.api.routing.Router
-import shared.config.AppConfig
-import shared.routing.{Version, Version1, Version2, VersionRoutingMap}
+import play.api.libs.json.Format
+import shared.utils.enums.Enums
 
-import javax.inject.{Inject, Singleton}
+sealed trait AssetType
 
-@Singleton case class ForeignIncomeVersionRoutingMap @Inject() (
-    appConfig: AppConfig,
-    defaultRouter: Router,
-    v1Router: v1.Routes,
-    v2Router: v2.Routes
-) extends VersionRoutingMap {
+object AssetType {
 
-  /** Routes corresponding to available versions.
-    */
-  val map: Map[Version, Router] = Map(
-    Version1 -> v1Router,
-    Version2 -> v2Router
-  )
+  case object otherProperty extends AssetType
 
+  case object unlistedShares extends AssetType
+
+  case object listedShares extends AssetType
+
+  case object otherAsset extends AssetType
+
+  implicit val format: Format[AssetType]         = Enums.format[AssetType]
+  val parser: PartialFunction[String, AssetType] = Enums.parser[AssetType]
 }

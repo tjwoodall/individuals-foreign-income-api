@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
-package routing
+package v2.utils
 
-import play.api.routing.Router
-import shared.config.AppConfig
-import shared.routing.{Version, Version1, Version2, VersionRoutingMap}
+import play.api.libs.json.Reads
 
-import javax.inject.{Inject, Singleton}
+trait JsonUtils {
 
-@Singleton case class ForeignIncomeVersionRoutingMap @Inject() (
-    appConfig: AppConfig,
-    defaultRouter: Router,
-    v1Router: v1.Routes,
-    v2Router: v2.Routes
-) extends VersionRoutingMap {
-
-  /** Routes corresponding to available versions.
+  /** Extension methods for reads of a optional sequence
     */
-  val map: Map[Version, Router] = Map(
-    Version1 -> v1Router,
-    Version2 -> v2Router
-  )
+  implicit class OptSeqReadsOps[A](reads: Reads[Option[Seq[A]]]) {
+
+    /** Returns a Reads that maps the sequence to itself unless it is empty
+      */
+    def mapEmptySeqToNone: Reads[Option[Seq[A]]] =
+      reads.map {
+        case Some(Nil) => None
+        case other     => other
+      }
+
+  }
 
 }

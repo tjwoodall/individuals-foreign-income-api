@@ -18,7 +18,7 @@ package definition
 
 import shared.config.AppConfig
 import shared.definition._
-import shared.routing.Version1
+import shared.routing.{Version1, Version2}
 
 import javax.inject.{Inject, Singleton}
 
@@ -37,6 +37,11 @@ class ForeignIncomeApiDefinitionFactory @Inject() (protected val appConfig: AppC
             version = Version1,
             status = buildAPIStatus(Version1),
             endpointsEnabled = appConfig.endpointsEnabled(Version1)
+          ),
+          APIVersion(
+            version = Version2,
+            status = buildAPIStatus(Version2),
+            endpointsEnabled = appConfig.endpointsEnabled(Version2)
           )
         ),
         requiresTrust = None

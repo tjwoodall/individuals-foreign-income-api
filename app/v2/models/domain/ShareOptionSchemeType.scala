@@ -14,26 +14,18 @@
  * limitations under the License.
  */
 
-package routing
+package v2.models.domain
 
-import play.api.routing.Router
-import shared.config.AppConfig
-import shared.routing.{Version, Version1, Version2, VersionRoutingMap}
+import play.api.libs.json.Format
+import shared.utils.enums.Enums
 
-import javax.inject.{Inject, Singleton}
+sealed trait ShareOptionSchemeType
 
-@Singleton case class ForeignIncomeVersionRoutingMap @Inject() (
-    appConfig: AppConfig,
-    defaultRouter: Router,
-    v1Router: v1.Routes,
-    v2Router: v2.Routes
-) extends VersionRoutingMap {
+object ShareOptionSchemeType {
+  case object EMI   extends ShareOptionSchemeType
+  case object CSOP  extends ShareOptionSchemeType
+  case object SAYE  extends ShareOptionSchemeType
+  case object Other extends ShareOptionSchemeType
 
-  /** Routes corresponding to available versions.
-    */
-  val map: Map[Version, Router] = Map(
-    Version1 -> v1Router,
-    Version2 -> v2Router
-  )
-
+  implicit val format: Format[ShareOptionSchemeType] = Enums.format[ShareOptionSchemeType]
 }

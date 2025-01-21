@@ -1,0 +1,4 @@
+
+PUT        /:nino/:taxYear                         v2.controllers.CreateAmendForeignController.createAmendForeign(nino: String, taxYear: String)
+GET        /:nino/:taxYear                         v2.controllers.RetrieveForeignController.retrieveForeign(nino: String, taxYear: String)
+DELETE     /:nino/:taxYear                         v2.controllers.DeleteForeignController.deleteForeign(nino: String, taxYear: String)
