@@ -24,8 +24,8 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
 import shared.models.domain.TaxYear
 import shared.models.errors.MtdError
-import v1.controllers.validators.CreateAmendForeignValidator.validateBusinessRules
-import v1.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody}
+import v2.controllers.validators.CreateAmendForeignValidator.validateBusinessRules
+import v2.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody}
 
 import javax.inject.{Inject, Singleton}
 

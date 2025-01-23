@@ -19,8 +19,8 @@ package v2.connectors
 import shared.connectors.ConnectorSpec
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
-import v1.models.request.delete
-import v1.models.request.delete.DeleteForeignRequest
+import v2.models.request.delete
+import v2.models.request.delete.DeleteForeignRequest
 
 import scala.concurrent.Future
 

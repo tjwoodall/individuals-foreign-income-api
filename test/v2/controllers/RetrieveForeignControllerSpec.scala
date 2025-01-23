@@ -24,12 +24,12 @@ import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
-import v1.controllers.validators.MockRetrieveForeignValidatorFactory
-import v1.fixtures.RetrieveForeignFixture.fullRetrieveForeignResponseJson
-import v1.models.request.retrieve
-import v1.models.request.retrieve.RetrieveForeignRequest
-import v1.models.response.retrieve.{ForeignEarnings, RetrieveForeignResponse, UnremittableForeignIncome}
-import v1.services.MockRetrieveForeignService
+import v2.controllers.validators.MockRetrieveForeignValidatorFactory
+import v2.fixtures.RetrieveForeignFixture.fullRetrieveForeignResponseJson
+import v2.models.request.retrieve
+import v2.models.request.retrieve.RetrieveForeignRequest
+import v2.models.response.retrieve.{ForeignEarnings, RetrieveForeignResponse, UnremittableForeignIncome}
+import v2.services.MockRetrieveForeignService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

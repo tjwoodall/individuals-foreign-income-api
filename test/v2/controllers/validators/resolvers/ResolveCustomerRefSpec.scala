@@ -18,8 +18,8 @@ package v2.controllers.validators.resolvers
 
 import cats.data.Validated.{Invalid, Valid}
 import shared.utils.UnitSpec
-import v1.models.domain.CustomerRef
-import v1.models.errors.CustomerRefFormatError
+import v2.models.domain.CustomerRef
+import v2.models.errors.CustomerRefFormatError
 
 class ResolveCustomerRefSpec extends UnitSpec {
 

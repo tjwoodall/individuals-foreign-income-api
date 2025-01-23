@@ -24,7 +24,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v1.models.errors.{CountryCodeRuleError, CustomerRefFormatError}
+import v2.models.errors.{CountryCodeRuleError, CustomerRefFormatError}
 
 class CreateAmendForeignControllerISpec extends IntegrationBaseSpec {
 

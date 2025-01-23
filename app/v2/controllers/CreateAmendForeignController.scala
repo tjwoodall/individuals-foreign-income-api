@@ -23,8 +23,8 @@ import shared.controllers._
 import shared.routing.Version1
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v1.controllers.validators.CreateAmendForeignValidatorFactory
-import v1.services.CreateAmendForeignService
+import v2.controllers.validators.CreateAmendForeignValidatorFactory
+import v2.services.CreateAmendForeignService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

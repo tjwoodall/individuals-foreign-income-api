@@ -20,7 +20,7 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
-import v1.models.request.createAmend.CreateAmendForeignRequest
+import v2.models.request.createAmend.CreateAmendForeignRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 

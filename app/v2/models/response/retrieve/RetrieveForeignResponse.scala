@@ -19,7 +19,7 @@ package v2.models.response.retrieve
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import shared.models.domain.Timestamp
-import v1.utils.JsonUtils
+import v2.utils.JsonUtils
 
 case class RetrieveForeignResponse(submittedOn: Timestamp,
                                    foreignEarnings: Option[ForeignEarnings],

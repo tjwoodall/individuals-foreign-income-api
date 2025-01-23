@@ -20,9 +20,9 @@ import org.scalamock.handlers.CallHandler
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.outcomes.ResponseWrapper
-import v1.models.request.retrieve
-import v1.models.request.retrieve.RetrieveForeignRequest
-import v1.models.response.retrieve.RetrieveForeignResponse
+import v2.models.request.retrieve
+import v2.models.request.retrieve.RetrieveForeignRequest
+import v2.models.response.retrieve.RetrieveForeignResponse
 
 import scala.concurrent.Future
 

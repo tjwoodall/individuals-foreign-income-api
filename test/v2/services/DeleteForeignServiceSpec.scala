@@ -21,8 +21,8 @@ import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v1.connectors.MockDeleteForeignConnector
-import v1.models.request.delete.DeleteForeignRequest
+import v2.connectors.MockDeleteForeignConnector
+import v2.models.request.delete.DeleteForeignRequest
 
 import scala.concurrent.Future
 

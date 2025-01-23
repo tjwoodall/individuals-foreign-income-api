@@ -27,10 +27,10 @@ import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import shared.utils.MockIdGenerator
-import v1.controllers.validators.MockDeleteForeignValidatorFactory
-import v1.models.request.delete
-import v1.models.request.delete.DeleteForeignRequest
-import v1.services.MockDeleteForeignService
+import v2.controllers.validators.MockDeleteForeignValidatorFactory
+import v2.models.request.delete
+import v2.models.request.delete.DeleteForeignRequest
+import v2.services.MockDeleteForeignService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

@@ -22,8 +22,8 @@ import shared.config.AppConfig
 import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
 import shared.services.{EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
-import v1.controllers.validators.RetrieveForeignValidatorFactory
-import v1.services.RetrieveForeignService
+import v2.controllers.validators.RetrieveForeignValidatorFactory
+import v2.services.RetrieveForeignService
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext

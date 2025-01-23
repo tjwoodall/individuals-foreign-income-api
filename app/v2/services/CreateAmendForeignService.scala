@@ -20,8 +20,8 @@ import cats.implicits.toBifunctorOps
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
-import v1.connectors.CreateAmendForeignConnector
-import v1.models.request.createAmend.CreateAmendForeignRequest
+import v2.connectors.CreateAmendForeignConnector
+import v2.models.request.createAmend.CreateAmendForeignRequest
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

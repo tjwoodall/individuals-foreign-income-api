@@ -25,7 +25,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors._
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v1.fixtures.RetrieveForeignFixture
+import v2.fixtures.RetrieveForeignFixture
 
 class RetrieveForeignControllerISpec extends IntegrationBaseSpec {
 

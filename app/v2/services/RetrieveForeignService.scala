@@ -20,9 +20,9 @@ import cats.implicits._
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
-import v1.connectors.RetrieveForeignConnector
-import v1.models.request.retrieve.RetrieveForeignRequest
-import v1.models.response.retrieve.RetrieveForeignResponse
+import v2.connectors.RetrieveForeignConnector
+import v2.models.request.retrieve.RetrieveForeignRequest
+import v2.models.response.retrieve.RetrieveForeignResponse
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

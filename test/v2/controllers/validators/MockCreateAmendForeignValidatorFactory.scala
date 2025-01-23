@@ -19,7 +19,7 @@ package v2.controllers.validators
 import org.scalamock.handlers.CallHandler
 import play.api.libs.json.JsValue
 import shared.controllers.validators.{MockValidatorFactory, Validator}
-import v1.models.request.createAmend.CreateAmendForeignRequest
+import v2.models.request.createAmend.CreateAmendForeignRequest
 
 trait MockCreateAmendForeignValidatorFactory extends MockValidatorFactory[CreateAmendForeignRequest] {
 

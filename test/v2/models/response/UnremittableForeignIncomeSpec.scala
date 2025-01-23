@@ -18,7 +18,7 @@ package v2.models.response
 
 import play.api.libs.json.{JsError, JsValue, Json}
 import shared.utils.UnitSpec
-import v1.models.response.retrieve.UnremittableForeignIncome
+import v2.models.response.retrieve.UnremittableForeignIncome
 
 class UnremittableForeignIncomeSpec extends UnitSpec {
 

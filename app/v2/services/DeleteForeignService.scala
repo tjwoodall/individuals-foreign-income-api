@@ -20,8 +20,8 @@ import cats.implicits._
 import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
-import v1.connectors.DeleteForeignConnector
-import v1.models.request.delete.DeleteForeignRequest
+import v2.connectors.DeleteForeignConnector
+import v2.models.request.delete.DeleteForeignRequest
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}

@@ -21,9 +21,9 @@ import shared.models.domain.{Nino, TaxYear, Timestamp}
 import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
-import v1.connectors.MockRetrieveForeignConnector
-import v1.models.request.retrieve.RetrieveForeignRequest
-import v1.models.response.retrieve.RetrieveForeignResponse
+import v2.connectors.MockRetrieveForeignConnector
+import v2.models.request.retrieve.RetrieveForeignRequest
+import v2.models.response.retrieve.RetrieveForeignResponse
 
 import scala.concurrent.Future
 

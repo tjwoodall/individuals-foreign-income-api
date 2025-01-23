@@ -18,7 +18,7 @@ package v2.models.request.createAmend
 
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, OWrites, Reads}
-import v1.utils.JsonUtils
+import v2.utils.JsonUtils
 
 case class CreateAmendForeignRequestBody(foreignEarnings: Option[ForeignEarnings],
                                          unremittableForeignIncome: Option[Seq[UnremittableForeignIncomeItem]])

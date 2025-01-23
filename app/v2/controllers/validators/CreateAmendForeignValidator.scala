@@ -22,8 +22,8 @@ import cats.implicits.toFoldableOps
 import shared.controllers.validators.RulesValidator
 import shared.controllers.validators.resolvers.{ResolveParsedCountryCode, ResolveParsedNumber}
 import shared.models.errors.MtdError
-import v1.controllers.validators.resolvers.ResolveCustomerRef
-import v1.models.request.createAmend.{CreateAmendForeignRequest, ForeignEarnings, UnremittableForeignIncomeItem}
+import v2.controllers.validators.resolvers.ResolveCustomerRef
+import v2.models.request.createAmend.{CreateAmendForeignRequest, ForeignEarnings, UnremittableForeignIncomeItem}
 
 object CreateAmendForeignValidator extends RulesValidator[CreateAmendForeignRequest] {
 

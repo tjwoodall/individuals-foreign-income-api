@@ -20,8 +20,8 @@ import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
-import v1.models.request.retrieve.RetrieveForeignRequest
-import v1.models.response.retrieve.RetrieveForeignResponse
+import v2.models.request.retrieve.RetrieveForeignRequest
+import v2.models.response.retrieve.RetrieveForeignResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 

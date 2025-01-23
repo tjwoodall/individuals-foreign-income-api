@@ -19,8 +19,8 @@ package v2.controllers.validators.resolvers
 import cats.data.Validated
 import shared.controllers.validators.resolvers.{ResolveStringPattern, ResolverSupport}
 import shared.models.errors.MtdError
-import v1.models.domain.CustomerRef
-import v1.models.errors.CustomerRefFormatError
+import v2.models.domain.CustomerRef
+import v2.models.errors.CustomerRefFormatError
 
 import scala.util.matching.Regex
 

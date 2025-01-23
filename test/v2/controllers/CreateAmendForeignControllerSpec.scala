@@ -26,10 +26,10 @@ import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.{ErrorWrapper, NinoFormatError, RuleTaxYearNotSupportedError}
 import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
-import v1.controllers.validators.MockCreateAmendForeignValidatorFactory
-import v1.models.request.createAmend
-import v1.models.request.createAmend._
-import v1.services.MockCreateAmendForeignService
+import v2.controllers.validators.MockCreateAmendForeignValidatorFactory
+import v2.models.request.createAmend
+import v2.models.request.createAmend._
+import v2.services.MockCreateAmendForeignService
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future

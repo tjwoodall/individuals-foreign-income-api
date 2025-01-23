@@ -23,7 +23,7 @@ import shared.controllers.validators.Validator
 import shared.controllers.validators.resolvers.{ResolveNino, ResolveTaxYearMinimum}
 import shared.models.domain.TaxYear
 import shared.models.errors.MtdError
-import v1.models.request.retrieve.RetrieveForeignRequest
+import v2.models.request.retrieve.RetrieveForeignRequest
 
 import javax.inject.{Inject, Singleton}
 
