@@ -21,6 +21,7 @@ import shared.controllers.RequestContext
 import shared.models.errors._
 import shared.services.{BaseService, ServiceOutcome}
 import v2.connectors.DeleteForeignConnector
+import v2.models.errors.RuleOutsideAmendmentWindowError
 import v2.models.request.delete.DeleteForeignRequest
 
 import javax.inject.{Inject, Singleton}
@@ -46,7 +47,8 @@ class DeleteForeignService @Inject() (connector: DeleteForeignConnector) extends
 
     val extraTysErrors = Map(
       "INVALID_CORRELATION_ID" -> InternalError,
-      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+      "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError,
+      "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindowError
     )
 
     errors ++ extraTysErrors

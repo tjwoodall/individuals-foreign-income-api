@@ -16,7 +16,7 @@ The Individuals Foreign Income API allows a developer to create, amend, retrieve
 
 Run the microservice from the console using: `sbt run` (starts on port 9792 by default)
 
-Start the service manager profile: `sm --start MTDFB_INDIVIDUALS_FOREIGN_INCOME`
+Start the service manager profile: `sm2 --start MTDFB_INDIVIDUALS_FOREIGN_INCOME`
 
 ## Run Tests
 
@@ -29,7 +29,7 @@ Run integration tests: `sbt it:test`
 To view documentation locally, ensure the API is running, and run api-documentation-frontend:
 `./run_local_with_dependencies.sh`
 Then go to http://localhost:9680/api-documentation/docs/openapi/preview and use this port and version:
-`http://localhost:7760/api/conf/1.0/application.yaml`
+`http://localhost:7760/api/conf/2.0/application.yaml`
 
 ## Changelog
 

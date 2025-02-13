@@ -22,6 +22,7 @@ import shared.models.errors._
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v2.connectors.MockCreateAmendForeignConnector
+import v2.models.errors.RuleOutsideAmendmentWindowError
 import v2.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody, ForeignEarnings, UnremittableForeignIncomeItem}
 
 import scala.concurrent.Future
@@ -101,8 +102,9 @@ class CreateAmendForeignServiceSpec extends ServiceSpec {
         )
 
         val extraTysErrors = List(
-          "INVALID_CORRELATION_ID" -> InternalError,
-          "TAX_YEAR_NOT_SUPPORTED" -> RuleTaxYearNotSupportedError
+          "INVALID_CORRELATION_ID"   -> InternalError,
+          "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError,
+          "OUTSIDE_AMENDMENT_WINDOW" -> RuleOutsideAmendmentWindowError,
         )
 
         (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
