@@ -62,8 +62,7 @@ class CreateAmendForeignController @Inject() (val authService: EnrolmentsAuthSer
           transactionName = "create-amend-foreign-income",
           apiVersion = Version1,
           params = Map("nino" -> nino, "taxYear" -> taxYear),
-          requestBody = Some(request.body),
-          includeResponse = true
+          requestBody = Some(request.body)
         ))
         .withNoContentResult(OK)
 
