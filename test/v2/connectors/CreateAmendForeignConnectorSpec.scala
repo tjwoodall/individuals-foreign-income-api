@@ -19,6 +19,7 @@ package v2.connectors
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v2.models.request.createAmend
 import v2.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody, ForeignEarnings, UnremittableForeignIncomeItem}
 
@@ -36,7 +37,7 @@ class CreateAmendForeignConnectorSpec extends ConnectorSpec {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
         willPut(
-          url = s"$baseUrl/income-tax/income/foreign/$nino/${taxYear.asMtd}",
+          url = url"$baseUrl/income-tax/income/foreign/$nino/${taxYear.asMtd}",
           body = amendForeignRequestBody
         ).returns(Future.successful(outcome))
 
@@ -51,7 +52,7 @@ class CreateAmendForeignConnectorSpec extends ConnectorSpec {
           val outcome = Right(ResponseWrapper(correlationId, ()))
 
           willPut(
-            url = s"$baseUrl/income-tax/foreign-income/${taxYear.asTysDownstream}/$nino",
+            url = url"$baseUrl/income-tax/foreign-income/${taxYear.asTysDownstream}/$nino",
             body = amendForeignRequestBody
           ).returns(Future.successful(outcome))
 

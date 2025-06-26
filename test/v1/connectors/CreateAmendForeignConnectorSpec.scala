@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package v1.connectors
 import shared.connectors.{ConnectorSpec, DownstreamOutcome}
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.outcomes.ResponseWrapper
+import uk.gov.hmrc.http.StringContextOps
 import v1.models.request.createAmend
 import v1.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody, ForeignEarnings, UnremittableForeignIncomeItem}
 
@@ -36,7 +37,7 @@ class CreateAmendForeignConnectorSpec extends ConnectorSpec {
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
         willPut(
-          url = s"$baseUrl/income-tax/income/foreign/$nino/${taxYear.asMtd}",
+          url = url"$baseUrl/income-tax/income/foreign/$nino/${taxYear.asMtd}",
           body = amendForeignRequestBody
         ).returns(Future.successful(outcome))
 
@@ -51,7 +52,7 @@ class CreateAmendForeignConnectorSpec extends ConnectorSpec {
           val outcome = Right(ResponseWrapper(correlationId, ()))
 
           willPut(
-            url = s"$baseUrl/income-tax/foreign-income/${taxYear.asTysDownstream}/$nino",
+            url = url"$baseUrl/income-tax/foreign-income/${taxYear.asTysDownstream}/$nino",
             body = amendForeignRequestBody
           ).returns(Future.successful(outcome))
 

@@ -18,6 +18,7 @@ package v2.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import v2.models.request.retrieve.RetrieveForeignRequest
@@ -25,7 +26,7 @@ import v2.models.response.retrieve.RetrieveForeignResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveForeignService extends MockFactory {
+trait MockRetrieveForeignService extends TestSuite with MockFactory {
 
   val mockRetrieveForeignService: RetrieveForeignService = mock[RetrieveForeignService]
 

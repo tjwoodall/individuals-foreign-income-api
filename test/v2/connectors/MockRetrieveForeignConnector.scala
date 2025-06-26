@@ -18,6 +18,7 @@ package v2.connectors
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.connectors.DownstreamOutcome
 import uk.gov.hmrc.http.HeaderCarrier
 import v2.models.request.retrieve.RetrieveForeignRequest
@@ -25,7 +26,7 @@ import v2.models.response.retrieve.RetrieveForeignResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockRetrieveForeignConnector extends MockFactory {
+trait MockRetrieveForeignConnector extends TestSuite with MockFactory {
 
   val mockRetrieveForeignConnector: RetrieveForeignConnector = mock[RetrieveForeignConnector]
 

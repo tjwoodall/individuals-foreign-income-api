@@ -18,13 +18,14 @@ package v2.services
 
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
+import org.scalatest.TestSuite
 import shared.controllers.RequestContext
 import shared.services.ServiceOutcome
 import v2.models.request.createAmend.CreateAmendForeignRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait MockCreateAmendForeignService extends MockFactory {
+trait MockCreateAmendForeignService extends TestSuite with MockFactory {
 
   val mockCreateAmendForeignService: CreateAmendForeignService = mock[CreateAmendForeignService]
 

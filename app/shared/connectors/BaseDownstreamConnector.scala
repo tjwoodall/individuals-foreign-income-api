@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,16 @@
 package shared.connectors
 
 import play.api.http.{HeaderNames, MimeTypes}
-import play.api.libs.json.Writes
+import play.api.libs.json.{Json, Writes}
 import shared.config.AppConfig
-import shared.utils.Logging
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads}
+import shared.utils.{Logging, UrlUtils}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 trait BaseDownstreamConnector extends Logging {
-  val http: HttpClient
+  val http: HttpClientV2
   val appConfig: AppConfig
 
   // This is to provide an implicit AppConfig in existing connector implementations (which
@@ -43,7 +44,7 @@ trait BaseDownstreamConnector extends Logging {
     val strategy = uri.strategy
 
     def doPost(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
-      http.POST(getBackendUri(uri.path, strategy), body)
+      http.post(url"${getBackendUri(uri.path, strategy)}").withBody(Json.toJson(body)).execute[DownstreamOutcome[Resp]]
     }
 
     for {
@@ -69,8 +70,10 @@ trait BaseDownstreamConnector extends Logging {
 
     val strategy = uri.strategy
 
-    def doGet(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] =
-      http.GET(getBackendUri(uri.path, strategy), queryParams)
+    def doGet(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
+      val fullUrl = UrlUtils.appendQueryParams(getBackendUri(uri.path, strategy), queryParams)
+      http.get(url"$fullUrl").execute
+    }
 
     for {
       headers <- getBackendHeaders(strategy)
@@ -87,7 +90,7 @@ trait BaseDownstreamConnector extends Logging {
     val strategy = uri.strategy
 
     def doDelete(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
-      http.DELETE(getBackendUri(uri.path, strategy))
+      http.delete(url"${getBackendUri(uri.path, strategy)}").execute
     }
 
     for {
@@ -105,7 +108,7 @@ trait BaseDownstreamConnector extends Logging {
     val strategy = uri.strategy
 
     def doPut(implicit hc: HeaderCarrier): Future[DownstreamOutcome[Resp]] = {
-      http.PUT(getBackendUri(uri.path, strategy), body)
+      http.put(url"${getBackendUri(uri.path, strategy)}").withBody(Json.toJson(body)).execute
     }
 
     for {
@@ -114,7 +117,7 @@ trait BaseDownstreamConnector extends Logging {
     } yield result
   }
 
-  private def intentHeader(maybeIntent: Option[String]) =
+  private def intentHeader(maybeIntent: Option[String]): Seq[(String, String)] =
     maybeIntent.map(intent => Seq("intent" -> intent)).getOrElse(Nil)
 
   private def getBackendUri(path: String, strategy: DownstreamStrategy): String =

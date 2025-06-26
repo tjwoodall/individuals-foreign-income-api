@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,8 @@
 package shared.connectors
 
 import shared.config.AppConfig
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, StringContextOps}
+import uk.gov.hmrc.http.client.HttpClientV2
 
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -30,12 +31,12 @@ object MtdIdLookupConnector {
 }
 
 @Singleton
-class MtdIdLookupConnector @Inject() (http: HttpClient, appConfig: AppConfig) {
+class MtdIdLookupConnector @Inject() (http: HttpClientV2, appConfig: AppConfig) {
 
   def getMtdId(nino: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[MtdIdLookupConnector.Outcome] = {
     import shared.connectors.httpparsers.MtdIdLookupHttpParser.mtdIdLookupHttpReads
 
-    http.GET[MtdIdLookupConnector.Outcome](s"${appConfig.mtdIdBaseUrl}/mtd-identifier-lookup/nino/$nino")
+    http.get(url"${appConfig.mtdIdBaseUrl}/mtd-identifier-lookup/nino/$nino").execute[MtdIdLookupConnector.Outcome]
   }
 
 }
