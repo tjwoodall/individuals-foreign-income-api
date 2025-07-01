@@ -132,11 +132,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     MockedAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns config
   }
 
-  protected trait TysIfsTest extends StandardConnectorTest {
-    override val name = "tys-ifs"
-
-    MockedAppConfig.tysIfsDownstreamConfig.anyNumberOfTimes() returns config
-  }
 
   protected trait HipTest extends ConnectorTest {
     private val clientId     = "clientId"

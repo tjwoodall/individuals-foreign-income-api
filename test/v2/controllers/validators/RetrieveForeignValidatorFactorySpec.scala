@@ -21,7 +21,6 @@ import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors._
 import shared.utils.UnitSpec
-import v2.controllers.validators.RetrieveForeignValidatorFactory
 import v2.models.request.retrieve.RetrieveForeignRequest
 
 class RetrieveForeignValidatorFactorySpec extends UnitSpec {
