@@ -33,7 +33,6 @@ trait MockAppConfig extends TestSuite with MockFactory {
 
     def desDownstreamConfig: CallHandler0[DownstreamConfig]    = (() => mockAppConfig.desDownstreamConfig: DownstreamConfig).expects()
     def ifsDownstreamConfig: CallHandler0[DownstreamConfig]    = (() => mockAppConfig.ifsDownstreamConfig: DownstreamConfig).expects()
-    def tysIfsDownstreamConfig: CallHandler0[DownstreamConfig] = (() => mockAppConfig.tysIfsDownstreamConfig: DownstreamConfig).expects()
 
     def hipDownstreamConfig: CallHandler[BasicAuthDownstreamConfig] = (() => mockAppConfig.hipDownstreamConfig: BasicAuthDownstreamConfig).expects()
 

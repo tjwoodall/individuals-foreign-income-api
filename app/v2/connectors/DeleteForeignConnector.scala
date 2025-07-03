@@ -17,7 +17,7 @@
 package v2.connectors
 
 import shared.config.AppConfig
-import shared.connectors.DownstreamUri.{IfsUri, TaxYearSpecificIfsUri}
+import shared.connectors.DownstreamUri.IfsUri
 import shared.connectors.httpparsers.StandardDownstreamHttpParser._
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -36,7 +36,7 @@ class DeleteForeignConnector @Inject() (val http: HttpClientV2, val appConfig: A
     import request._
 
     val url = if (taxYear.useTaxYearSpecificApi) {
-      TaxYearSpecificIfsUri[Unit](s"income-tax/income/foreign/${taxYear.asTysDownstream}/$nino")
+      IfsUri[Unit](s"income-tax/income/foreign/${taxYear.asTysDownstream}/$nino")
     } else {
       IfsUri[Unit](s"income-tax/income/foreign/$nino/${taxYear.asMtd}")
     }

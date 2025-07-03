@@ -42,7 +42,7 @@ class DeleteForeignConnectorSpec extends ConnectorSpec {
     }
 
     "return the expected response for a TYS request" when {
-      "a valid request is made" in new TysIfsTest with Test {
+      "a valid request is made" in new IfsTest with Test {
         val taxYear = "2023-24"
         val outcome = Right(ResponseWrapper(correlationId, ()))
 
