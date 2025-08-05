@@ -28,7 +28,7 @@ object ResolveCustomerRef extends ResolverSupport {
   private val regex: Regex = "^[0-9a-zA-Z{À-˿'}\\- _&`():.'^]{1,90}$".r
 
   def resolver(error: => MtdError): Resolver[String, CustomerRef] =
-    ResolveStringPattern(regex, error).resolver.map(CustomerRef)
+    ResolveStringPattern(regex, error).resolver.map(CustomerRef.apply)
 
   def apply(value: Option[String], path: String): Validated[Seq[MtdError], Option[CustomerRef]] =
     resolver(errorFor(path)).resolveOptionally(value)

@@ -63,8 +63,7 @@ class CreateAmendForeignConnectorSpec extends ConnectorSpec {
     }
   }
 
-  trait Test {
-    _: ConnectorTest =>
+  trait Test extends ConnectorTest {
 
     def taxYear: TaxYear
 

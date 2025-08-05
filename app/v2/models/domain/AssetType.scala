@@ -16,21 +16,14 @@
 
 package v2.models.domain
 
-import play.api.libs.json.Format
+import play.api.libs.json.*
 import shared.utils.enums.Enums
 
-sealed trait AssetType
+enum AssetType {
+  case otherProperty, unlistedShares, listedShares, otherAsset
+}
 
 object AssetType {
-
-  case object otherProperty extends AssetType
-
-  case object unlistedShares extends AssetType
-
-  case object listedShares extends AssetType
-
-  case object otherAsset extends AssetType
-
-  implicit val format: Format[AssetType]         = Enums.format[AssetType]
-  val parser: PartialFunction[String, AssetType] = Enums.parser[AssetType]
+  given Format[AssetType]                        = Enums.format(values)
+  val parser: PartialFunction[String, AssetType] = Enums.parser(values)
 }

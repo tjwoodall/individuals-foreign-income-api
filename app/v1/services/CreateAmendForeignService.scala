@@ -18,7 +18,7 @@ package v1.services
 
 import cats.implicits.toBifunctorOps
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v1.connectors.CreateAmendForeignConnector
 import v1.models.request.createAmend.CreateAmendForeignRequest

@@ -55,7 +55,7 @@ class DeleteForeignConnectorSpec extends ConnectorSpec {
     }
   }
 
-  trait Test { _: ConnectorTest =>
+  trait Test extends ConnectorTest {
     val taxYear: String
 
     val connector: DeleteForeignConnector = new DeleteForeignConnector(

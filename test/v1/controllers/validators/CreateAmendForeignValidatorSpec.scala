@@ -21,7 +21,7 @@ import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{JsValue, Json}
 import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v1.models.errors.{CountryCodeRuleError, CustomerRefFormatError}
 import v1.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody, ForeignEarnings, UnremittableForeignIncomeItem}

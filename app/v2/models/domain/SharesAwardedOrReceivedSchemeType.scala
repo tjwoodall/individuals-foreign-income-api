@@ -19,11 +19,10 @@ package v2.models.domain
 import play.api.libs.json.Format
 import shared.utils.enums.Enums
 
-sealed trait SharesAwardedOrReceivedSchemeType
+enum SharesAwardedOrReceivedSchemeType {
+  case SIP, Other
+}
 
 object SharesAwardedOrReceivedSchemeType {
-  case object SIP   extends SharesAwardedOrReceivedSchemeType
-  case object Other extends SharesAwardedOrReceivedSchemeType
-
-  implicit val format: Format[SharesAwardedOrReceivedSchemeType] = Enums.format[SharesAwardedOrReceivedSchemeType]
+  given Format[SharesAwardedOrReceivedSchemeType] = Enums.format(values)
 }

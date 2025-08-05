@@ -37,7 +37,7 @@ class RetrieveForeignValidatorFactory @Inject() (implicit foreignIncomeConfig: F
       (
         ResolveNino(nino),
         ResolveTaxYearMinimum(TaxYear.fromDownstreamInt(minTaxYear)).apply(taxYear)
-      ).mapN(RetrieveForeignRequest)
+      ).mapN(RetrieveForeignRequest.apply)
 
   }
 

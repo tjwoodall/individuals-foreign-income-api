@@ -18,7 +18,7 @@ package v2.services
 
 import cats.implicits.toBifunctorOps
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v2.connectors.CreateAmendForeignConnector
 import v2.models.errors.RuleOutsideAmendmentWindowError
@@ -46,10 +46,9 @@ class CreateAmendForeignService @Inject() (connector: CreateAmendForeignConnecto
     )
 
     val extraTysErrors = Map(
-      "INVALID_CORRELATION_ID"    -> InternalError,
-      "TAX_YEAR_NOT_SUPPORTED"    -> RuleTaxYearNotSupportedError,
-      "OUTSIDE_AMENDMENT_WINDOW"  -> RuleOutsideAmendmentWindowError,
-
+      "INVALID_CORRELATION_ID"   -> InternalError,
+      "TAX_YEAR_NOT_SUPPORTED"   -> RuleTaxYearNotSupportedError,
+      "OUTSIDE_AMENDMENT_WINDOW" -> RuleOutsideAmendmentWindowError
     )
     errors ++ extraTysErrors
 

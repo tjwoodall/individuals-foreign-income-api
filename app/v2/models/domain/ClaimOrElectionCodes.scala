@@ -16,35 +16,15 @@
 
 package v2.models.domain
 
-import play.api.libs.json.Format
+import play.api.libs.json.*
 import shared.utils.enums.Enums
 
-sealed trait ClaimOrElectionCodes
+enum ClaimOrElectionCodes {
+  case PRR, LET, GHO, ROR, PRO, ESH, NVC, SIR, OTH, BAD, INV
+}
 
 object ClaimOrElectionCodes {
+  given Format[ClaimOrElectionCodes] = Enums.format(values)
 
-  case object PRR extends ClaimOrElectionCodes
-
-  case object LET extends ClaimOrElectionCodes
-
-  case object GHO extends ClaimOrElectionCodes
-
-  case object ROR extends ClaimOrElectionCodes
-
-  case object PRO extends ClaimOrElectionCodes
-
-  case object ESH extends ClaimOrElectionCodes
-
-  case object NVC extends ClaimOrElectionCodes
-
-  case object SIR extends ClaimOrElectionCodes
-
-  case object OTH extends ClaimOrElectionCodes
-
-  case object BAD extends ClaimOrElectionCodes
-
-  case object INV extends ClaimOrElectionCodes
-
-  implicit val format: Format[ClaimOrElectionCodes]         = Enums.format[ClaimOrElectionCodes]
-  val parser: PartialFunction[String, ClaimOrElectionCodes] = Enums.parser[ClaimOrElectionCodes]
+  val parser: PartialFunction[String, ClaimOrElectionCodes] = Enums.parser(values)
 }

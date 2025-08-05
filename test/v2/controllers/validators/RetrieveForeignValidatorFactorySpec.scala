@@ -19,7 +19,7 @@ package v2.controllers.validators
 import config.{ForeignIncomeConfig, MockForeignIncomeConfig}
 import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.utils.UnitSpec
 import v2.models.request.retrieve.RetrieveForeignRequest
 

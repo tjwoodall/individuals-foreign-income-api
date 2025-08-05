@@ -41,7 +41,7 @@ object CreateAmendForeignValidator extends RulesValidator[CreateAmendForeignRequ
       case Some(earnings) =>
         combine(
           ResolveCustomerRef(earnings.customerReference, s"/foreignEarnings/customerReference"),
-          ResolveParsedNumber().apply(earnings.earningsNotTaxableUK, s"/foreignEarnings/earningsNotTaxableUK")
+          ResolveParsedNumber()(earnings.earningsNotTaxableUK, s"/foreignEarnings/earningsNotTaxableUK")
         )
       case None =>
         Valid(())
@@ -63,8 +63,8 @@ object CreateAmendForeignValidator extends RulesValidator[CreateAmendForeignRequ
   private def validateUnremittableForeignIncomeItem(item: UnremittableForeignIncomeItem, index: Int): Validated[Seq[MtdError], Unit] = {
     combine(
       ResolveParsedCountryCode(item.countryCode, s"/unremittableForeignIncome/$index/countryCode"),
-      ResolveParsedNumber().apply(item.amountInForeignCurrency, s"/unremittableForeignIncome/$index/amountInForeignCurrency"),
-      ResolveParsedNumber().apply(item.amountTaxPaid, s"/unremittableForeignIncome/$index/amountTaxPaid")
+      ResolveParsedNumber()(item.amountInForeignCurrency, s"/unremittableForeignIncome/$index/amountInForeignCurrency"),
+      ResolveParsedNumber()(item.amountTaxPaid, s"/unremittableForeignIncome/$index/amountTaxPaid")
     )
   }
 

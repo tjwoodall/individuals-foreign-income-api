@@ -16,7 +16,7 @@
 
 package v2.models.request.createAmend
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class ForeignEarnings(customerReference: Option[String], earningsNotTaxableUK: BigDecimal)
@@ -27,6 +27,6 @@ object ForeignEarnings {
   implicit val writes: OWrites[ForeignEarnings] = (
     (JsPath \ "customerReference").writeNullable[String] and
       (JsPath \ "earningsNotTaxableUK").write[BigDecimal]
-  )(unlift(ForeignEarnings.unapply))
+  )(w => Tuple.fromProductTyped(w))
 
 }

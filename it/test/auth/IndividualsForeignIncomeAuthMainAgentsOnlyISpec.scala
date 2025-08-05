@@ -18,6 +18,7 @@ package auth
 
 import play.api.http.Status.{NO_CONTENT, OK}
 import play.api.libs.json.{JsValue, Json}
+import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 import play.api.libs.ws.{WSRequest, WSResponse}
 import shared.auth.AuthMainAgentsOnlyISpec
 import shared.services.DownstreamStub

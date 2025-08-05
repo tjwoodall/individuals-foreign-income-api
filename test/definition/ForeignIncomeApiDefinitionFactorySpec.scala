@@ -21,25 +21,23 @@ import shared.config.Deprecation.NotDeprecated
 import shared.config.MockAppConfig
 import shared.definition.APIStatus.BETA
 import shared.definition.{APIDefinition, APIVersion, Definition}
-import shared.mocks.MockHttpClient
 import shared.routing.{Version1, Version2}
 import shared.utils.UnitSpec
 
 class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
-  class Test extends MockHttpClient with MockAppConfig {
-    MockedAppConfig.apiGatewayContext returns "individuals/foreign-income"
-    val apiDefinitionFactory = new ForeignIncomeApiDefinitionFactory(mockAppConfig)
-  }
-
   "definition" when {
     "called" should {
-      "return a valid Definition case class" in new Test {
+      "return a valid Definition case class" in {
+        MockedAppConfig.apiGatewayContext returns "individuals/foreign-income"
+
         List(Version1, Version2).foreach { version =>
           MockedAppConfig.apiStatus(version) returns "BETA"
           MockedAppConfig.endpointsEnabled(version).returns(true).anyNumberOfTimes()
           MockedAppConfig.deprecationFor(version).returns(NotDeprecated.valid).anyNumberOfTimes()
         }
+
+        val apiDefinitionFactory = new ForeignIncomeApiDefinitionFactory(mockAppConfig)
 
         apiDefinitionFactory.definition shouldBe
           Definition(

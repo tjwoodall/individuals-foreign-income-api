@@ -28,7 +28,7 @@ import shared.models.outcomes.ResponseWrapper
 import shared.services.MockAuditService
 import v2.controllers.validators.MockCreateAmendForeignValidatorFactory
 import v2.models.request.createAmend
-import v2.models.request.createAmend._
+import v2.models.request.createAmend.*
 import v2.services.MockCreateAmendForeignService
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -128,7 +128,7 @@ class CreateAmendForeignControllerSpec
 
   trait Test extends ControllerTest with AuditEventChecking[GenericAuditDetail] {
 
-    val controller = new CreateAmendForeignController(
+    val controller: CreateAmendForeignController = new CreateAmendForeignController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockCreateAmendForeignValidatorFactory,

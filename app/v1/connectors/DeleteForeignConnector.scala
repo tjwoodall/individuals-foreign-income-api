@@ -18,7 +18,7 @@ package v1.connectors
 
 import shared.config.AppConfig
 import shared.connectors.DownstreamUri.IfsUri
-import shared.connectors.httpparsers.StandardDownstreamHttpParser._
+import shared.connectors.httpparsers.StandardDownstreamHttpParser.*
 import shared.connectors.{BaseDownstreamConnector, DownstreamOutcome}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -33,7 +33,7 @@ class DeleteForeignConnector @Inject() (val http: HttpClientV2, val appConfig: A
   def deleteForeign(
       request: DeleteForeignRequest)(implicit hc: HeaderCarrier, ec: ExecutionContext, correlationId: String): Future[DownstreamOutcome[Unit]] = {
 
-    import request._
+    import request.*
 
     val url = if (taxYear.useTaxYearSpecificApi) {
       IfsUri[Unit](s"income-tax/income/foreign/${taxYear.asTysDownstream}/$nino")

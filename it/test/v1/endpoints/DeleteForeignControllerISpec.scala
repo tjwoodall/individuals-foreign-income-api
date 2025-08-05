@@ -17,13 +17,14 @@
 package v1.endpoints
 
 import play.api.http.HeaderNames.ACCEPT
-import play.api.http.Status._
+import play.api.http.Status.*
 import play.api.libs.json.Json
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
+import play.api.libs.ws.WSBodyReadables.readableAsString
 
 class DeleteForeignControllerISpec extends IntegrationBaseSpec {
 
@@ -74,7 +75,7 @@ class DeleteForeignControllerISpec extends IntegrationBaseSpec {
           ("AA123456A", "2015-17", BAD_REQUEST, RuleTaxYearRangeInvalidError),
           ("AA123456A", "2015-16", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
-        input.foreach(args => (validationErrorTest _).tupled(args))
+        input.foreach(validationErrorTest.tupled)
       }
 
       "downstream service error" when {
@@ -114,7 +115,7 @@ class DeleteForeignControllerISpec extends IntegrationBaseSpec {
           (UNPROCESSABLE_ENTITY, "TAX_YEAR_NOT_SUPPORTED", BAD_REQUEST, RuleTaxYearNotSupportedError)
         )
 
-        (errors ++ extraTysErrors).foreach(args => (serviceErrorTest _).tupled(args))
+        (errors ++ extraTysErrors).foreach(serviceErrorTest.tupled)
       }
     }
   }

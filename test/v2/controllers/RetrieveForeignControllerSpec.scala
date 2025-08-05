@@ -16,13 +16,12 @@
 
 package v2.controllers
 
-import config.MockForeignIncomeConfig
 import play.api.Configuration
 import play.api.mvc.Result
 import shared.config.MockAppConfig
 import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
 import shared.models.domain.{Nino, TaxYear, Timestamp}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import v2.controllers.validators.MockRetrieveForeignValidatorFactory
 import v2.fixtures.RetrieveForeignFixture.fullRetrieveForeignResponseJson
@@ -107,16 +106,15 @@ class RetrieveForeignControllerSpec
     }
   }
 
-  trait Test extends ControllerTest with MockForeignIncomeConfig {
+  trait Test extends ControllerTest {
 
-    val controller = new RetrieveForeignController(
+    val controller: RetrieveForeignController = new RetrieveForeignController(
       authService = mockEnrolmentsAuthService,
       lookupService = mockMtdIdLookupService,
       validatorFactory = mockRetrieveForeignValidatorFactory,
       service = mockRetrieveForeignService,
       cc = cc,
-      idGenerator = mockIdGenerator,
-      foreignIncomeConfig = mockForeignIncomeConfig
+      idGenerator = mockIdGenerator
     )
 
     MockedAppConfig.featureSwitchConfig.anyNumberOfTimes() returns Configuration(

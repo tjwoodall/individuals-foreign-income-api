@@ -16,7 +16,6 @@
 
 package v2.controllers
 
-import config.ForeignIncomeConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.AppConfig
 import shared.controllers.{AuthorisedController, EndpointLogContext, RequestContext, RequestHandler}
@@ -34,8 +33,7 @@ class RetrieveForeignController @Inject() (val authService: EnrolmentsAuthServic
                                            validatorFactory: RetrieveForeignValidatorFactory,
                                            service: RetrieveForeignService,
                                            cc: ControllerComponents,
-                                           val idGenerator: IdGenerator,
-                                           foreignIncomeConfig: ForeignIncomeConfig)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                           val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "retrieve-foreign"

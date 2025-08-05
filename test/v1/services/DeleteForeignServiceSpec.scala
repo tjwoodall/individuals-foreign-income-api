@@ -18,7 +18,7 @@ package v1.services
 
 import shared.controllers.EndpointLogContext
 import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors._
+import shared.models.errors.*
 import shared.models.outcomes.ResponseWrapper
 import shared.services.ServiceSpec
 import v1.connectors.MockDeleteForeignConnector
@@ -65,7 +65,7 @@ class DeleteForeignServiceSpec extends ServiceSpec {
           ("TAX_YEAR_NOT_SUPPORTED", RuleTaxYearNotSupportedError)
         )
 
-        (errors ++ extraTysErrors).foreach(args => (serviceError _).tupled(args))
+        (errors ++ extraTysErrors).foreach(args => serviceError.tupled(args))
       }
     }
   }

@@ -16,9 +16,9 @@
 
 package v1.services
 
-import cats.implicits._
+import cats.implicits.*
 import shared.controllers.RequestContext
-import shared.models.errors._
+import shared.models.errors.*
 import shared.services.{BaseService, ServiceOutcome}
 import v1.connectors.DeleteForeignConnector
 import v1.models.request.delete.DeleteForeignRequest

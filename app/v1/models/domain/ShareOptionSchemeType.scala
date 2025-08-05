@@ -16,16 +16,13 @@
 
 package v1.models.domain
 
-import play.api.libs.json.Format
+import play.api.libs.json.*
 import shared.utils.enums.Enums
 
-sealed trait ShareOptionSchemeType
+enum ShareOptionSchemeType {
+  case EMI, CSOP, SAYE, Other
+}
 
 object ShareOptionSchemeType {
-  case object EMI   extends ShareOptionSchemeType
-  case object CSOP  extends ShareOptionSchemeType
-  case object SAYE  extends ShareOptionSchemeType
-  case object Other extends ShareOptionSchemeType
-
-  implicit val format: Format[ShareOptionSchemeType] = Enums.format[ShareOptionSchemeType]
+  given Format[ShareOptionSchemeType] = Enums.format(values)
 }

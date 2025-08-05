@@ -52,7 +52,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
   protected trait ConnectorTest extends MockHttpClient with MockAppConfig {
     protected val baseUrl: String = "http://test-BaseUrl"
 
-    protected val requiredHeaders: Seq[(String, String)]
+    protected lazy val requiredHeaders: Seq[(String, String)]
 
     protected val allowedHeaders: Seq[String] = List("Gov-Test-Scenario")
 
@@ -109,7 +109,7 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
     private val token       = s"$name-token"
     private val environment = s"$name-environment"
 
-    protected final lazy val requiredHeaders: Seq[(String, String)] = List(
+    protected lazy val requiredHeaders: Seq[(String, String)] = List(
       "Authorization"        -> s"Bearer $token",
       "Environment"          -> environment,
       "User-Agent"           -> "this-api",
@@ -131,7 +131,6 @@ trait ConnectorSpec extends UnitSpec with Status with MimeTypes with HeaderNames
 
     MockedAppConfig.ifsDownstreamConfig.anyNumberOfTimes() returns config
   }
-
 
   protected trait HipTest extends ConnectorTest {
     private val clientId     = "clientId"

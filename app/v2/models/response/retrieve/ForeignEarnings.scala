@@ -16,7 +16,7 @@
 
 package v2.models.response.retrieve
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 
 case class ForeignEarnings(customerReference: Option[String], earningsNotTaxableUK: BigDecimal)
@@ -26,7 +26,7 @@ object ForeignEarnings {
   implicit val reads: Reads[ForeignEarnings] = (
     (JsPath \ "customerReference").readNullable[String] and
       (JsPath \ "earningsNotTaxableUK").read[BigDecimal]
-  )(ForeignEarnings.apply _)
+  )(ForeignEarnings.apply)
 
   implicit val writes: OWrites[ForeignEarnings] = Json.writes[ForeignEarnings]
 }

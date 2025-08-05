@@ -17,7 +17,7 @@
 package config
 
 import play.api.Configuration
-import shared.config.FeatureSwitches
+import shared.config.{AppConfig, FeatureSwitches}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 import javax.inject.{Inject, Singleton}
@@ -27,7 +27,7 @@ class ForeignIncomeConfig @Inject() (config: ServicesConfig, configuration: Conf
 
   def featureSwitchConfig: Configuration = configuration.getOptional[Configuration](s"feature-switch").getOrElse(Configuration.empty)
 
-  def featureSwitches: FeatureSwitches = ForeignIncomeFeatureSwitches(featureSwitchConfig)
+  def featureSwitches(implicit appConfig: AppConfig): FeatureSwitches = ForeignIncomeFeatureSwitches()
 
   def allowRequestCannotBeFulfilledHeader(): Boolean = config.getBoolean("allow-request-cannot-be-fulfilled-header")
 

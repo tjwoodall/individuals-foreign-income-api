@@ -16,7 +16,7 @@
 
 package v1.models.response.retrieve
 
-import play.api.libs.functional.syntax._
+import play.api.libs.functional.syntax.*
 import play.api.libs.json.{JsPath, Json, OWrites, Reads}
 import shared.models.domain.Timestamp
 import v1.utils.JsonUtils
@@ -31,7 +31,7 @@ object RetrieveForeignResponse extends JsonUtils {
     (JsPath \ "submittedOn").read[Timestamp] and
       (JsPath \ "foreignEarnings").readNullable[ForeignEarnings] and
       (JsPath \ "unremittableForeignIncome").readNullable[Seq[UnremittableForeignIncome]].mapEmptySeqToNone
-  )(RetrieveForeignResponse.apply _)
+  )(RetrieveForeignResponse.apply)
 
   implicit val writes: OWrites[RetrieveForeignResponse] = Json.writes[RetrieveForeignResponse]
 }

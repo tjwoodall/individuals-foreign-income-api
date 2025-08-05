@@ -16,27 +16,16 @@
 
 package v1.models.domain
 
-import play.api.libs.json.Format
+import play.api.libs.json.*
 import shared.utils.enums.Enums
 
-sealed trait MtdSourceEnum {
-  def toDesViewString: String
+enum MtdSourceEnum(val toDesViewString: String) {
+  case hmrcHeld extends MtdSourceEnum("HMRC-HELD")
+  case user     extends MtdSourceEnum("CUSTOMER")
+  case latest   extends MtdSourceEnum("LATEST")
 }
 
 object MtdSourceEnum {
-
-  case object hmrcHeld extends MtdSourceEnum {
-    override def toDesViewString: String = "HMRC-HELD"
-  }
-
-  case object user extends MtdSourceEnum {
-    override def toDesViewString: String = "CUSTOMER"
-  }
-
-  case object latest extends MtdSourceEnum {
-    override def toDesViewString: String = "LATEST"
-  }
-
-  implicit val format: Format[MtdSourceEnum]         = Enums.format[MtdSourceEnum]
-  val parser: PartialFunction[String, MtdSourceEnum] = Enums.parser[MtdSourceEnum]
+  given Format[MtdSourceEnum]                        = Enums.format(values)
+  val parser: PartialFunction[String, MtdSourceEnum] = Enums.parser(values)
 }

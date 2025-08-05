@@ -37,7 +37,7 @@ class DeleteForeignValidatorFactory @Inject() (implicit foreignIncomeConfig: For
       (
         ResolveNino(nino),
         ResolveTaxYearMinimum(TaxYear.fromDownstreamInt(minTaxYear)).apply(taxYear)
-      ).mapN(DeleteForeignRequest)
+      ).mapN(DeleteForeignRequest.apply)
 
   }
 

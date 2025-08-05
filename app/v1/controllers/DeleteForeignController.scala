@@ -16,10 +16,9 @@
 
 package v1.controllers
 
-import config.ForeignIncomeConfig
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import shared.config.AppConfig
-import shared.controllers._
+import shared.controllers.*
 import shared.routing.Version1
 import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
 import shared.utils.IdGenerator
@@ -36,8 +35,7 @@ class DeleteForeignController @Inject() (val authService: EnrolmentsAuthService,
                                          service: DeleteForeignService,
                                          auditService: AuditService,
                                          cc: ControllerComponents,
-                                         val idGenerator: IdGenerator,
-                                         foreignIncomeConfig: ForeignIncomeConfig)(implicit ec: ExecutionContext, appConfig: AppConfig)
+                                         val idGenerator: IdGenerator)(implicit ec: ExecutionContext, appConfig: AppConfig)
     extends AuthorisedController(cc) {
 
   override val endpointName: String = "delete-foreign"

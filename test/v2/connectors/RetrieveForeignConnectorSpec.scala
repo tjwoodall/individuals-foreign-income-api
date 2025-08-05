@@ -57,8 +57,7 @@ class RetrieveForeignConnectorSpec extends ConnectorSpec {
     }
   }
 
-  trait Test {
-    _: ConnectorTest =>
+  trait Test extends ConnectorTest {
 
     protected val nino: String = "AA111111A"
     def taxYear: TaxYear

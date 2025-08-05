@@ -17,7 +17,7 @@
 package shared.hateoas
 
 import cats.Functor
-import cats.implicits._
+import cats.implicits.*
 import shared.config.AppConfig
 
 import javax.inject.Inject
