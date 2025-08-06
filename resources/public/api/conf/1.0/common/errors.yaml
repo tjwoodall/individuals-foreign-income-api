@@ -1,0 +1,92 @@
+components:
+  examples:
+
+    # 400
+
+    formatNino:
+      description: The format of the supplied NINO field is not valid.
+      value:
+        code: FORMAT_NINO
+        message: The provided NINO is invalid
+
+    formatTaxYear:
+      description: The format of the supplied tax year field is not valid.
+      value:
+        code: FORMAT_TAX_YEAR
+        message: The provided tax year is invalid
+
+    formatValue:
+      description: One or more values have been added with the incorrect format.
+      value:
+        code: FORMAT_VALUE
+        message: The value must be between 0.00 and 99999999999.99
+
+    formatCustomerRef:
+      description: The format of the supplied customer reference is not valid.
+      value:
+        code: FORMAT_CUSTOMER_REF
+        message: The provided customer reference is invalid
+
+    formatCountryCode:
+      description: The format of the supplied country code is not valid.
+      value:
+        code: FORMAT_COUNTRY_CODE
+        message: The format of the country code is invalid
+
+    ruleCountryCode:
+      description: Not a valid ISO 3166-1 alpha-3 country code.
+      value:
+        code: RULE_COUNTRY_CODE
+        message: The country code is not a valid ISO 3166-1 alpha-3 country code
+
+    ruleTaxYearNotSupported:
+      description: |
+        The specified tax year is not supported.
+        Either the tax year specified is before the minimum tax year value, or it is after the maximum tax year value.
+      value:
+        code: RULE_TAX_YEAR_NOT_SUPPORTED
+        message: The tax year specified does not lie within the supported range
+
+    ruleTaxYearRangeInvalid:
+      description: Tax year range invalid. A tax year range of one year is required.
+      value:
+        code: RULE_TAX_YEAR_RANGE_INVALID
+        message: Tax year range invalid. A tax year range of one year is required
+
+    ruleIncorrectOrEmptyBody:
+      description: An empty or non-matching body was submitted.
+      value:
+        code: RULE_INCORRECT_OR_EMPTY_BODY_SUBMITTED
+        message: An empty or non-matching body was submitted
+
+    ruleIncorrectGovTestScenario:
+      description: The request did not match any available Sandbox data. Check that the supplied Gov-Test-Scenario is correct for this endpoint version. This error will only be returned in the Sandbox environment.
+      value:
+        code: RULE_INCORRECT_GOV_TEST_SCENARIO
+        message: The supplied Gov-Test-Scenario is not valid
+
+    # 403
+
+    clientOrAgentNotAuthorised:
+      description: |
+        The client or agent is not authorised. This is because: the client is not subscribed to MTD, 
+        the agent is not subscribed to Agent Services, or the client has not authorised the agent to act on their behalf.
+      value:
+        code: CLIENT_OR_AGENT_NOT_AUTHORISED
+        message: The client and/or agent is not authorised
+
+    # 404
+
+    notFound:
+      description: The supplied income source could not be found.
+      value:
+        code: MATCHING_RESOURCE_NOT_FOUND
+        message: Matching resource not found
+
+    #422
+
+    requestCannotBeFulfilled:
+      description: Custom (will vary in production depending on the actual error)
+      value:
+        code: RULE_REQUEST_CANNOT_BE_FULFILLED
+        message: Custom (will vary in production depending on the actual error)
