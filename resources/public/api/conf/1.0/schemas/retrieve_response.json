@@ -6,7 +6,7 @@
   "properties": {
     "submittedOn": {"$ref": "definitions.json#/definitions/submittedOn"},
     "foreignEarnings": {"$ref": "definitions.json#/definitions/foreignEarnings"},
-    "unremittableForeignIncome": {"$ref": "definitions.json#/definitions/unremittableForeignIncome"},
+    "unremittableForeignIncome": {"$ref": "definitions.json#/definitions/unremittableForeignIncome"}
   },
   "required": ["submittedOn"]
 }
