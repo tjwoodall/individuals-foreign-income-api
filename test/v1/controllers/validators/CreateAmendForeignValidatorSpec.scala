@@ -23,7 +23,7 @@ import shared.controllers.validators.Validator
 import shared.models.domain.{Nino, TaxYear}
 import shared.models.errors.*
 import shared.utils.UnitSpec
-import v1.models.errors.{CountryCodeRuleError, CustomerRefFormatError}
+import v1.models.errors.CustomerRefFormatError
 import v1.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody, ForeignEarnings, UnremittableForeignIncomeItem}
 
 class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeConfig {
@@ -352,7 +352,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
           result shouldBe Left(
             ErrorWrapper(
               correlationId,
-              CountryCodeRuleError.copy(
+              RuleCountryCodeError.copy(
                 paths = Some(List("/unremittableForeignIncome/0/countryCode"))
               )))
         }
@@ -405,7 +405,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
                     "/unremittableForeignIncome/1/amountTaxPaid"
                   )
                 ),
-                CountryCodeRuleError.copy(
+                RuleCountryCodeError.copy(
                   paths = Some(List("/unremittableForeignIncome/1/countryCode"))
                 )
               ))

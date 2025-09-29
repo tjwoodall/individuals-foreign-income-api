@@ -24,7 +24,7 @@ import play.api.test.Helpers.AUTHORIZATION
 import shared.models.errors.*
 import shared.services.{AuditStub, AuthStub, DownstreamStub, MtdIdLookupStub}
 import shared.support.IntegrationBaseSpec
-import v2.models.errors.{CountryCodeRuleError, CustomerRefFormatError, RuleOutsideAmendmentWindowError}
+import v2.models.errors.{CustomerRefFormatError, RuleOutsideAmendmentWindowError}
 import play.api.libs.ws.WSBodyWritables.writeableOf_JsValue
 
 class CreateAmendForeignControllerISpec extends IntegrationBaseSpec {
@@ -96,7 +96,7 @@ class CreateAmendForeignControllerISpec extends IntegrationBaseSpec {
               )),
             message = "The value must be between 0 and 99999999999.99"
           ),
-          CountryCodeRuleError.copy(
+          RuleCountryCodeError.copy(
             paths = Some(List("/unremittableForeignIncome/1/countryCode"))
           )
         )
@@ -269,7 +269,7 @@ class CreateAmendForeignControllerISpec extends IntegrationBaseSpec {
           ))
       )
 
-      val countryCodeRuleError: MtdError = CountryCodeRuleError.copy(
+      val countryCodeRuleError: MtdError = RuleCountryCodeError.copy(
         paths = Some(
           List(
             "/unremittableForeignIncome/0/countryCode",

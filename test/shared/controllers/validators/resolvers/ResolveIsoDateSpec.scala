@@ -45,6 +45,13 @@ class ResolveIsoDateSpec extends UnitSpec {
         result shouldBe expected
       }
 
+      "given a valid ISO date string and a pre-supplied MtdError" in {
+        val expected = Valid(LocalDate.parse(validDate))
+
+        val result = ResolveIsoDate(StartDateFormatError)(validDate)
+        result shouldBe expected
+      }
+
       "given a valid ISO date string in an Option and a pre-supplied MtdError" in {
         val expected = Valid(Some(LocalDate.parse(validDate)))
 

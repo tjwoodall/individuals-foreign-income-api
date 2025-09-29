@@ -74,6 +74,33 @@ class AppConfigSpec extends UnitSpec {
       )
     }
 
+    "return the HIP config" in {
+      val expectedHipEnvHeaders = Some(
+        List(
+          "HIP-Accept",
+          "HIP-Gov-Test-Scenario",
+          "HIP-Location"
+        ))
+
+      simpleAppConfig.hipDownstreamConfig shouldBe BasicAuthDownstreamConfig(
+        "http://127.0.0.1:9772",
+        "Prod",
+        "HIP-ClientId",
+        "HIP-ClientSecret",
+        expectedHipEnvHeaders
+      )
+    }
+  }
+
+  "return the apiDocumentationUrl" when {
+    "it is not specified" in {
+      val changedAppConfig = appConfig("", None)
+      changedAppConfig.apiDocumentationUrl shouldBe s"https://developer.service.hmrc.gov.uk/api-documentation/docs/api/service/${changedAppConfig.appName}"
+    }
+    "it is specified" in {
+      val changedAppConfig = appConfig("", Some("test123"))
+      changedAppConfig.apiDocumentationUrl shouldBe "test123"
+    }
   }
 
   "endpointsEnabled" when {
@@ -118,6 +145,25 @@ class AppConfigSpec extends UnitSpec {
             |""".stripMargin
         )
         val result = appConfigWithEnabledVersion.endpointsEnabled("6.0")
+        result shouldBe true
+      }
+    }
+  }
+
+  "allowRequestCannotBeFulfilledHeader" when {
+    "the API version allows request cannot be fulfilled header" should {
+      "return true" in {
+        val appConfigWithAllowRequestCannotBeFulfilledHeader = appConfig(
+          """
+            |    6.0 {
+            |      endpoints {
+            |        allow-request-cannot-be-fulfilled-header = true
+            |      }
+            |    }
+            |""".stripMargin
+        )
+
+        val result = appConfigWithAllowRequestCannotBeFulfilledHeader.allowRequestCannotBeFulfilledHeader(Version6)
         result shouldBe true
       }
     }
@@ -294,7 +340,7 @@ class AppConfigSpec extends UnitSpec {
     }
   }
 
-  private def appConfig(versionConf: String): AppConfig = {
+  private def appConfig(versionConf: String, apiDocumentationUrl: Option[String] = None): AppConfig = {
     val conf = ConfigFactory.parseString(
       """
         |  appName = "any-name-api"
@@ -305,36 +351,49 @@ class AppConfigSpec extends UnitSpec {
 
         versionConf ++
 
-        """
-          |  }
-          |  
-          |  microservice {
-          |    services {
-          |      mtd-id-lookup {
-          |        host = localhost
-          |        port = 9769
-          |      }
-          |
-          |      des {
-          |        host = 127.0.0.1
-          |        port = 6666
-          |        env = Prod
-          |        token = DES-ABCD1234
-          |        environmentHeaders = ["Des-Accept", "Des-Gov-Test-Scenario", "Des-Content-Type"]
-          |      }
-          |
-          |      ifs {
-          |        enabled = true
-          |        host = 127.0.0.1
-          |        port = 7777
-          |        env = Prod
-          |        token = IFS-ABCD1234
-          |        environmentHeaders = ["IFS-Accept", "IFS-Gov-Test-Scenario", "IFS-Content-Type"]
-          |      }
-          |
-          |    }
-          |  }
-          |""".stripMargin
+        s"""
+           |${apiDocumentationUrl match {
+            case Some(url) => s"documentation-url = $url"
+            case _         => ""
+          }}
+           |  }
+           |
+           |  
+           |  microservice {
+           |    services {
+           |      mtd-id-lookup {
+           |        host = localhost
+           |        port = 9769
+           |      }
+           |
+           |      des {
+           |        host = 127.0.0.1
+           |        port = 6666
+           |        env = Prod
+           |        token = DES-ABCD1234
+           |        environmentHeaders = ["Des-Accept", "Des-Gov-Test-Scenario", "Des-Content-Type"]
+           |      }
+           |
+           |      ifs {
+           |        enabled = true
+           |        host = 127.0.0.1
+           |        port = 7777
+           |        env = Prod
+           |        token = IFS-ABCD1234
+           |        environmentHeaders = ["IFS-Accept", "IFS-Gov-Test-Scenario", "IFS-Content-Type"]
+           |      }
+           |
+           |      hip {
+           |        host = 127.0.0.1
+           |        port = 9772
+           |        env = Prod
+           |        clientId = "HIP-ClientId"
+           |        clientSecret = "HIP-ClientSecret"
+           |        environmentHeaders = ["HIP-Accept", "HIP-Gov-Test-Scenario", "HIP-Location"]
+           |      }
+           |    }
+           |  }
+           |""".stripMargin
     )
 
     val configuration  = Configuration(conf)

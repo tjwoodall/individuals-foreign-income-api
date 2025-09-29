@@ -25,10 +25,24 @@ class TaxYearSpec extends UnitSpec {
 
   "TaxYear" when {
 
-    val taxYear = TaxYear.fromMtd("2023-24")
+    val taxYear         = TaxYear.fromMtd("2023-24")
+    val maybeTaxYear    = TaxYear.maybeFromMtd("2023-24")
+    val notMaybeTaxYear = TaxYear.maybeFromMtd("abc")
 
     "constructed from an MTD tax year" should {
-      "return the downstream tax value" in {
+      "return the year" in {
+        taxYear.year shouldBe 2024
+      }
+
+      "return the start date" in {
+        taxYear.startDate shouldBe LocalDate.parse("2023-04-06")
+      }
+
+      "return the end date" in {
+        taxYear.endDate shouldBe LocalDate.parse("2024-04-05")
+      }
+
+      "return the downstream tax year" in {
         taxYear.asDownstream shouldBe "2024"
       }
 
@@ -38,6 +52,66 @@ class TaxYearSpec extends UnitSpec {
 
       "return the tax year in the 'Tax Year Specific API' format" in {
         taxYear.asTysDownstream shouldBe "23-24"
+      }
+
+      "return the expected string representation" in {
+        taxYear.toString shouldBe "TaxYear(2024)"
+      }
+    }
+
+    "constructed from a valid maybe MTD tax year" should {
+      "return the year" in {
+        maybeTaxYear.get.year shouldBe 2024
+      }
+
+      "return the start date" in {
+        maybeTaxYear.get.startDate shouldBe LocalDate.parse("2023-04-06")
+      }
+
+      "return the end date" in {
+        maybeTaxYear.get.endDate shouldBe LocalDate.parse("2024-04-05")
+      }
+
+      "return the downstream tax year" in {
+        maybeTaxYear.get.asDownstream shouldBe "2024"
+      }
+
+      "return the MTD tax year" in {
+        maybeTaxYear.get.asMtd shouldBe "2023-24"
+      }
+
+      "return the tax year in the 'Tax Year Specific API' format" in {
+        maybeTaxYear.get.asTysDownstream shouldBe "23-24"
+      }
+
+      "return the expected string representation" in {
+        maybeTaxYear.get.toString shouldBe "TaxYear(2024)"
+      }
+    }
+
+    "constructed from an invalid maybe MTD tax year" should {
+      "return None" in {
+        notMaybeTaxYear shouldBe None
+      }
+    }
+
+    "constructed from a starting year" should {
+      "return the tax year that begins in that year and ends the following year" in {
+        val year: Int        = 2023
+        val taxYear: TaxYear = TaxYear.starting(year)
+        taxYear.year shouldBe 2024
+        taxYear.startYear shouldBe 2023
+        taxYear.asMtd shouldBe "2023-24"
+      }
+    }
+
+    "constructed from an ending year" should {
+      "return the tax year that ends in that year and started the previous year" in {
+        val year: Int        = 2024
+        val taxYear: TaxYear = TaxYear.ending(year)
+        taxYear.year shouldBe 2024
+        taxYear.startYear shouldBe 2023
+        taxYear.asMtd shouldBe "2023-24"
       }
     }
 
@@ -104,6 +178,22 @@ class TaxYearSpec extends UnitSpec {
 
         val result = TaxYear.now()
         result.year shouldBe expectedYear
+      }
+    }
+
+    "TaxYear.starting" should {
+      "return the correct tax year" in {
+        val taxYear         = TaxYear.starting(2023)
+        val expectedTaxYear = TaxYear.fromMtd("2023-24")
+        taxYear shouldBe expectedTaxYear
+      }
+    }
+
+    "TaxYear.ending" should {
+      "return the correct tax year" in {
+        val taxYear         = TaxYear.ending(2023)
+        val expectedTaxYear = TaxYear.fromMtd("2022-23")
+        taxYear shouldBe expectedTaxYear
       }
     }
 

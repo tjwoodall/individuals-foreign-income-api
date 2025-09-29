@@ -16,6 +16,7 @@
 
 package shared.definition
 
+import play.api.libs.json.{JsValue, Json}
 import shared.routing.Version3
 import shared.utils.UnitSpec
 
@@ -23,6 +24,30 @@ class ApiDefinitionSpec extends UnitSpec {
 
   private val apiVersion: APIVersion       = APIVersion(Version3, APIStatus.ALPHA, endpointsEnabled = true)
   private val apiDefinition: APIDefinition = APIDefinition("b", "c", "d", List("category"), List(apiVersion), Some(false))
+  private val definition                   = Definition(apiDefinition)
+
+  private val apiVersionJson: JsValue = Json.parse(s"""
+       |{
+       | "version": "3.0",
+       |"status": "ALPHA",
+       |"endpointsEnabled": true
+       |}
+       |""".stripMargin)
+
+  private val apiDefinitionJson: JsValue = Json.parse(s"""{
+       |"name": "b",
+       |"description": "c",
+       |"context": "d",
+       |"categories": ["category"],
+       |"versions": [$apiVersionJson],
+       |"requiresTrust": false
+       |}
+       |""".stripMargin)
+
+  private val definitionJson: JsValue = Json.parse(s"""{
+       |"api": $apiDefinitionJson
+       |}
+       |""".stripMargin)
 
   "APIDefinition" when {
     "the 'name' parameter is empty" should {
@@ -63,6 +88,20 @@ class ApiDefinitionSpec extends UnitSpec {
       assertThrows[IllegalArgumentException](
         apiDefinition.copy(versions = Nil)
       )
+    }
+  }
+
+  "Definition" when {
+    "the full model is present" should {
+      "correctly write the model to json" in {
+        Json.toJson(definition) shouldBe definitionJson
+      }
+    }
+
+    "the full Json is present" should {
+      "correctly read JSON to a model" in {
+        definitionJson.as[Definition] shouldBe definition
+      }
     }
   }
 

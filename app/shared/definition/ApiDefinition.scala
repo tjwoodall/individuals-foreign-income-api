@@ -36,6 +36,12 @@ object APIVersion {
   given OFormat[APIVersion] = Json.format[APIVersion]
 }
 
+case class Definition(api: APIDefinition)
+
+object Definition {
+  implicit val formatDefinition: OFormat[Definition] = Json.format[Definition]
+}
+
 case class APIDefinition(name: String,
                          description: String,
                          context: String,
