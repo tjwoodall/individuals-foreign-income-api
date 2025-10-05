@@ -1,5 +1,4 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Create And Amend Foreign Income Request",
   "description": "Create And Amend Foreign Income Request",
   "type": "object",

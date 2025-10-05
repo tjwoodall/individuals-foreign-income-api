@@ -1,5 +1,4 @@
 {
-  "$schema": "http://json-schema.org/draft-04/schema#",
   "title": "Retrieve Foreign Income Request",
   "description": "Retrieve Foreign Income Request",
   "type": "object",
