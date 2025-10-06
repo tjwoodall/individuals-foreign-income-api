@@ -39,8 +39,7 @@ responses:
         examples:
           default:
             description: Full Foreign Response
-            value:
-              $ref: './examples/retrieve_response.json'
+            externalValue: './examples/retrieve_response.json'
 
   "400":
     description: Bad request
