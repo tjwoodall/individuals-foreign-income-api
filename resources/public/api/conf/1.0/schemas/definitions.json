@@ -18,7 +18,7 @@
         "earningsNotTaxableUK": {
           "type": "number",
           "description": "The income received in a foreign country that could not be transferred to UK because of exchange controls. The value must be between 0 and 99999999999.99 up to 2 decimal places. The currency must be GBP.",
-          "example": "5000.99",
+          "example": 5000.99,
           "multipleOf": 0.01,
           "minimum": 0,
           "maximum": 99999999999.99
@@ -40,7 +40,7 @@
           "amountInForeignCurrency": {
             "type": "number",
             "description": "The total amount of foreign currency.\n\nThe amount should be in the local currency of the country for the income with the given countryCode field.\n\nThe value must be between 0 and 99999999999.99 up to 2 decimal places.  Fractional currency units are only supported up to 2 decimal places.",
-            "example": "5000.99",
+            "example": 5000.99,
             "multipleOf": 0.01,
             "minimum": 0,
             "maximum": 99999999999.99
@@ -48,7 +48,7 @@
           "amountTaxPaid": {
             "type": "number",
             "description": "The amount of tax paid on foreign income.\n\nThe amount should be in the local currency of the country for the income with the given countryCode field.\n\nThe value must be between 0 and 99999999999.99 up to 2 decimal places.  Fractional currency units are only supported up to 2 decimal places.",
-            "example": "5000.99",
+            "example": 5000.99,
             "multipleOf": 0.01,
             "minimum": 0,
             "maximum": 99999999999.99
