@@ -27,11 +27,11 @@ class MtdSourceEnumSpec extends UnitSpec with EnumJsonSpecSupport {
     ("latest", MtdSourceEnum.latest)
   )
 
-  "toDesViewString" must {
+  "toDownstreamViewString" must {
     "return the expected string" in {
-      MtdSourceEnum.hmrcHeld.toDesViewString shouldBe "HMRC-HELD"
-      MtdSourceEnum.latest.toDesViewString shouldBe "LATEST"
-      MtdSourceEnum.user.toDesViewString shouldBe "CUSTOMER"
+      MtdSourceEnum.hmrcHeld.toDownstreamViewString shouldBe "HMRC-HELD"
+      MtdSourceEnum.latest.toDownstreamViewString shouldBe "LATEST"
+      MtdSourceEnum.user.toDownstreamViewString shouldBe "CUSTOMER"
     }
   }
 

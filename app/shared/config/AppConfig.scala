@@ -65,7 +65,6 @@ class AppConfig @Inject() (config: ServicesConfig, protected[config] val configu
     BasicAuthDownstreamConfig(baseUrl, env, clientId, clientSecret, environmentHeaders)
   }
 
-  def desDownstreamConfig: DownstreamConfig          = downstreamConfig("des")
   def ifsDownstreamConfig: DownstreamConfig          = downstreamConfig("ifs")
   def hipDownstreamConfig: BasicAuthDownstreamConfig = basicAuthDownstreamConfig("hip")
 
