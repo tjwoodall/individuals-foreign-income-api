@@ -34,17 +34,14 @@ tags:
 paths:
   /individuals/foreign-income/{nino}/{taxYear}:
     get:
-      summary: Retrieve Foreign Income
       security:
       - User-Restricted:
         - read:self-assessment
     put:
-      summary: Create and Amend Foreign Income
       security:
       - User-Restricted:
         - write:self-assessment
     delete:
-      summary: Delete Foreign Income
       security:
       - User-Restricted:
         - write:self-assessment
