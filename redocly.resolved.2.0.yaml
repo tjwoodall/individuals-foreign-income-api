@@ -38,10 +38,10 @@ tags:
 paths:
   /individuals/foreign-income/{nino}/{taxYear}:
     put:
-      summary: Create and Amend Foreign Income
       security:
         - User-Restricted:
             - write:self-assessment
+      summary: Create and Amend Foreign Income
       description: |
         This endpoint enables you to create and amend foreign income:
         foreign earnings and unremittable foreign income.
@@ -178,16 +178,7 @@ paths:
             examples:
               Full Foreign Income Amendment for all tax years:
                 value:
-                  foreignEarnings:
-                    customerReference: FOREIGNINCME123A
-                    earningsNotTaxableUK: 1999.99
-                  unremittableForeignIncome:
-                    - countryCode: FRA
-                      amountInForeignCurrency: 1999.99
-                      amountTaxPaid: 1999.99
-                    - countryCode: IND
-                      amountInForeignCurrency: 2999.99
-                      amountTaxPaid: 2999.99
+                  $ref: ./examples/create_amend_request.json
       responses:
         '200':
           description: Success
@@ -336,10 +327,10 @@ paths:
                     code: RULE_REQUEST_CANNOT_BE_FULFILLED
                     message: Custom (will vary in production depending on the actual error)
     get:
-      summary: Retrieve Foreign Income
       security:
         - User-Restricted:
             - read:self-assessment
+      summary: Retrieve Foreign Income
       description: |
         This endpoint enables you to retrieve foreign income:
         foreign earnings and unremittable foreign income.
@@ -428,17 +419,7 @@ paths:
                 default:
                   description: Full Foreign Response
                   value:
-                    submittedOn: '2021-04-06T09:37:79.000Z'
-                    foreignEarnings:
-                      customerReference: FOREIGNINCME123A
-                      earningsNotTaxableUK: 1999.99
-                    unremittableForeignIncome:
-                      - countryCode: FRA
-                        amountInForeignCurrency: 1999.99
-                        amountTaxPaid: 1999.99
-                      - countryCode: IND
-                        amountInForeignCurrency: 2999.99
-                        amountTaxPaid: 2999.99
+                    $ref: ./examples/retrieve_response.json
         '400':
           description: Bad request
           headers:
@@ -546,10 +527,10 @@ paths:
                   description: Custom (will vary in production depending on the actual error)
                   value: *ref_16
     delete:
-      summary: Delete Foreign Income
       security:
         - User-Restricted:
             - write:self-assessment
+      summary: Delete Foreign Income
       description: |
         This endpoint enables you to delete foreign income:
         foreign earnings and unremittable foreign income.
