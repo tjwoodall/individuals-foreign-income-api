@@ -31,7 +31,7 @@ class CreateAmendForeignRequestBodySpec extends UnitSpec {
       |   },
       |   "unremittableForeignIncome": [
       |     {
-      |       "countryCode": "GBR",
+      |       "countryCode": "ITA",
       |       "amountInForeignCurrency": 222.22,
       |       "amountTaxPaid": 333.33
       |     },
@@ -52,7 +52,7 @@ class CreateAmendForeignRequestBodySpec extends UnitSpec {
 
   private val unremittableForeignIncomeModel = List(
     UnremittableForeignIncomeItem(
-      countryCode = "GBR",
+      countryCode = "ITA",
       amountInForeignCurrency = 222.22,
       amountTaxPaid = Some(333.33)
     ),

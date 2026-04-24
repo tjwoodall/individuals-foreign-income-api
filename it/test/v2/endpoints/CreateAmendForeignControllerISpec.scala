@@ -234,7 +234,7 @@ class CreateAmendForeignControllerISpec extends IntegrationBaseSpec {
           |       "amountTaxPaid":true
           |     },
           |     {
-          |       "countryCode":"GBR",
+          |       "countryCode":"ITA",
           |       "amountInForeignCurrency":"99999999999.99",
           |       "amountTaxPaid":false
           |     },

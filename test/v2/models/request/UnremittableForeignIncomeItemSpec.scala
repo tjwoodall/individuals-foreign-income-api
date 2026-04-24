@@ -25,7 +25,7 @@ class UnremittableForeignIncomeItemSpec extends UnitSpec {
   private val json = Json.parse(
     """
       |{
-      |  "countryCode": "GBR",
+      |  "countryCode": "ITA",
       |  "amountInForeignCurrency": 222.22,
       |  "amountTaxPaid": 333.33
       |}
@@ -33,7 +33,7 @@ class UnremittableForeignIncomeItemSpec extends UnitSpec {
   )
 
   private val model = UnremittableForeignIncomeItem(
-    countryCode = "GBR",
+    countryCode = "ITA",
     amountInForeignCurrency = 222.22,
     amountTaxPaid = Some(333.33)
   )
