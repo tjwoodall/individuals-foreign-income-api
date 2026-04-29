@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,24 +16,12 @@
 
 package v2.models.request.createAmend
 
-import play.api.libs.functional.syntax.*
-import play.api.libs.json.{JsPath, OWrites, Reads}
-import v2.utils.JsonUtils
+import play.api.libs.json.{Json, OFormat}
 
 case class CreateAmendForeignRequestBody(foreignEarnings: Option[ForeignEarnings],
                                          unremittableForeignIncome: Option[Seq[UnremittableForeignIncomeItem]])
+object CreateAmendForeignRequestBody {
+    given OFormat[CreateAmendForeignRequestBody] = Json.format[CreateAmendForeignRequestBody]
+  }
 
-object CreateAmendForeignRequestBody extends JsonUtils {
-  val empty: CreateAmendForeignRequestBody = CreateAmendForeignRequestBody(None, None)
 
-  implicit val reads: Reads[CreateAmendForeignRequestBody] = (
-    (JsPath \ "foreignEarnings").readNullable[ForeignEarnings] and
-      (JsPath \ "unremittableForeignIncome").readNullable[Seq[UnremittableForeignIncomeItem]].mapEmptySeqToNone
-  )(CreateAmendForeignRequestBody.apply)
-
-  implicit val writes: OWrites[CreateAmendForeignRequestBody] = (
-    (JsPath \ "foreignEarnings").writeNullable[ForeignEarnings] and
-      (JsPath \ "unremittableForeignIncome").writeNullable[Seq[UnremittableForeignIncomeItem]]
-  )(w => Tuple.fromProductTyped(w))
-
-}

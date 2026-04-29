@@ -223,6 +223,18 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
       |""".stripMargin
   )
 
+  private val emptyUnremittableForeignIncomeArrayRequestBodyJson: JsValue = Json.parse(
+    """
+      |{
+      |   "foreignEarnings": {
+      |     "customerReference":"FOREIGNINCME123A",
+      |     "earningsNotTaxableUK":"99999999999.99"
+      |   },
+      |   "unremittableForeignIncome": []
+      |}
+      |""".stripMargin
+  )
+
   private val invalidAmountTaxPaidRequestBodyJson: JsValue = Json.parse(
     """
       |{
@@ -242,6 +254,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
   )
 
   class Test extends MockForeignIncomeConfig {
+
     implicit val correlationId: String = "1234"
 
     implicit val appConfig: ForeignIncomeConfig = mockForeignIncomeConfig
@@ -261,7 +274,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
   "running a validation" should {
     "return no errors" when {
       "a valid request is supplied" in new Test {
-        val result = validator(validNino, validTaxYear, validRequestBodyJson).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, validRequestBodyJson).validateAndWrapResult()
         result shouldBe Right(createAmendForeignRequest)
       }
     }
@@ -269,38 +282,47 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
     "return NinoFormatError error" when {
       "an invalid nino is supplied" in new Test {
 
-        val result = validator("A12344A", validTaxYear, validRequestBodyJson).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator("A12344A", validTaxYear, validRequestBodyJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, NinoFormatError))
       }
     }
 
     "return TaxYearFormatError error" when {
       "an invalid tax year is supplied" in new Test {
-        val result = validator(validNino, "20178", validRequestBodyJson).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, "20178", validRequestBodyJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, TaxYearFormatError))
       }
     }
 
     "return RuleTaxYearNotSupported error" when {
       "an invalid tax year is supplied" in new Test {
-        val result = validator(validNino, "2017-18", validRequestBodyJson).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, "2017-18", validRequestBodyJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleTaxYearNotSupportedError))
       }
     }
 
     "return RuleIncorrectOrEmptyBodyError error" when {
       "an empty JSON body is submitted" in new Test {
-        val result = validator(validNino, validTaxYear, emptyRequestBodyJson).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, emptyRequestBodyJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
       }
 
       "a non-empty JSON body is submitted without any expected fields" in new Test {
-        val result = validator(validNino, validTaxYear, nonsenseRequestBodyJson).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, nonsenseRequestBodyJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, RuleIncorrectOrEmptyBodyError))
       }
 
+      "a JSON body is submitted containing an empty unremittableForeignIncome array " in new Test {
+        val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, emptyUnremittableForeignIncomeArrayRequestBodyJson).validateAndWrapResult()
+        result shouldBe Left(
+          ErrorWrapper(
+            correlationId,
+            RuleIncorrectOrEmptyBodyError.withPath("/unremittableForeignIncome"))
+          )
+      }
+
       "the submitted request body is not in the correct format" in new Test {
-        val result = validator(validNino, validTaxYear, nonValidRequestBodyJson).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, nonValidRequestBodyJson).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(
             correlationId,
@@ -312,7 +334,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
       }
 
       "the submitted request body has missing mandatory fields" in new Test {
-        val result = validator(validNino, validTaxYear, missingMandatoryFieldJson).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, missingMandatoryFieldJson).validateAndWrapResult()
         result shouldBe Left(
           ErrorWrapper(
             correlationId,
@@ -324,7 +346,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
 
     "return CustomerRefFormatError error" when {
       "an incorrectly formatted customer reference is submitted" in new Test {
-        val result = validator(validNino, validTaxYear, invalidCustomerReferenceRequestBodyJson).validateAndWrapResult()
+        val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, invalidCustomerReferenceRequestBodyJson).validateAndWrapResult()
         result shouldBe Left(ErrorWrapper(correlationId, CustomerRefFormatError.copy(paths = Some(List("/foreignEarnings/customerReference")))))
       }
     }
@@ -333,7 +355,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
       "an incorrectly formatted earningsNotTaxableUK is submitted" in new Test {
         object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be between 0 and 99999999999.99", BAD_REQUEST) {
 
-          val result = validator(validNino, validTaxYear, invalidEarningsNotTaxableUKRequestBodyJson).validateAndWrapResult()
+          val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, invalidEarningsNotTaxableUKRequestBodyJson).validateAndWrapResult()
           result shouldBe Left(
             ErrorWrapper(correlationId, ValueFormatError.withPath("/foreignEarnings/earningsNotTaxableUK"))
           )
@@ -342,7 +364,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
 
       "return ValueFormatError error (single failure)" when {
         "one field fails value validation (countryCode 3 digit)" in new Test {
-          val result = validator(validNino, validTaxYear, invalidCountryCodeRequestBodyJson).validateAndWrapResult()
+          val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, invalidCountryCodeRequestBodyJson).validateAndWrapResult()
           result shouldBe Left(
             ErrorWrapper(
               correlationId,
@@ -352,7 +374,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
         }
 
         "one field fails value validation (countryCode 4 digit)" in new Test {
-          val result = validator(validNino, validTaxYear, invalidCountryCodeFormatRequestBodyJson).validateAndWrapResult()
+          val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, invalidCountryCodeFormatRequestBodyJson).validateAndWrapResult()
           result shouldBe Left(
             ErrorWrapper(
               correlationId,
@@ -362,14 +384,14 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
         }
 
         "one field fails value validation (amountInForeignCurrency)" in new Test {
-          val result = validator(validNino, validTaxYear, invalidAmountInForeignCurrencyRequestBodyJson).validateAndWrapResult()
+          val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, invalidAmountInForeignCurrencyRequestBodyJson).validateAndWrapResult()
           result shouldBe Left(
             ErrorWrapper(correlationId, ValueFormatError.withPath("/unremittableForeignIncome/0/amountInForeignCurrency"))
           )
         }
 
         "one field fails value validation (AmountTaxPaid)" in new Test {
-          val result = validator(validNino, validTaxYear, invalidAmountTaxPaidRequestBodyJson).validateAndWrapResult()
+          val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, invalidAmountTaxPaidRequestBodyJson).validateAndWrapResult()
           result shouldBe Left(
             ErrorWrapper(correlationId, ValueFormatError.withPath("/unremittableForeignIncome/0/amountTaxPaid"))
           )
@@ -378,7 +400,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
 
       "return ValueFormatError error (multiple failures)" when {
         "multiple fields fail value validation" in new Test {
-          val result = validator(validNino, validTaxYear, allInvalidValueRawRequestBodyJson).validateAndWrapResult()
+          val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator(validNino, validTaxYear, allInvalidValueRawRequestBodyJson).validateAndWrapResult()
           result shouldBe Left(
             ErrorWrapper(
               correlationId,
@@ -409,7 +431,7 @@ class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeCon
 
       "return multiple errors" when {
         "request supplied has multiple errors (path parameters)" in new Test {
-          val result = validator("A12344A", "20178", validRequestBodyJson).validateAndWrapResult()
+          val result: Either[ErrorWrapper, CreateAmendForeignRequest] = validator("A12344A", "20178", validRequestBodyJson).validateAndWrapResult()
           result shouldBe Left(ErrorWrapper(correlationId, BadRequestError, Some(List(NinoFormatError, TaxYearFormatError))))
         }
       }
