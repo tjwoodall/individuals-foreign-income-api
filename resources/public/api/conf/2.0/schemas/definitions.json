@@ -12,7 +12,7 @@
       "properties": {
         "customerReference": {
           "type": "string",
-          "description": "A customer-supplied reference to identify the foreign income. Must be between 1 and 90 characters in length.",
+          "description": "A customer-supplied reference to identify the foreign income. Must be between 1 and 90 characters in length. Must not be empty or contain only whitespace.",
           "example": "FOREIGNINCME123A",
           "pattern": "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$"
         },
