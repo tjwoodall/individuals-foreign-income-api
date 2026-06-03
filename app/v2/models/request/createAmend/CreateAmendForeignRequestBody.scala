@@ -20,8 +20,7 @@ import play.api.libs.json.{Json, OFormat}
 
 case class CreateAmendForeignRequestBody(foreignEarnings: Option[ForeignEarnings],
                                          unremittableForeignIncome: Option[Seq[UnremittableForeignIncomeItem]])
+
 object CreateAmendForeignRequestBody {
-    given OFormat[CreateAmendForeignRequestBody] = Json.format[CreateAmendForeignRequestBody]
-  }
-
-
+  given OFormat[CreateAmendForeignRequestBody] = Json.format[CreateAmendForeignRequestBody]
+}
