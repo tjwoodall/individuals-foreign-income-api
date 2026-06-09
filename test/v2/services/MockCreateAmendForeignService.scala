@@ -19,8 +19,8 @@ package v2.services
 import org.scalamock.handlers.CallHandler
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.TestSuite
-import shared.controllers.RequestContext
-import shared.services.ServiceOutcome
+import api.controllers.RequestContext
+import api.services.ServiceOutcome
 import v2.models.request.createAmend.CreateAmendForeignRequest
 
 import scala.concurrent.{ExecutionContext, Future}

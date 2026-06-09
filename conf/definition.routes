@@ -1,3 +1,3 @@
 
-GET        /api/definition                                  shared.controllers.DocumentationController.definition()
-GET        /api/conf/:version/*file                         shared.controllers.DocumentationController.asset(version, file)
+GET        /api/definition                                  api.controllers.DocumentationController.definition()
+GET        /api/conf/:version/*file                         api.controllers.DocumentationController.asset(version, file)

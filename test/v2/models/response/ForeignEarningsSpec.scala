@@ -17,7 +17,7 @@
 package v2.models.response
 
 import play.api.libs.json.{JsError, JsValue, Json}
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 import v2.models.response.retrieve.ForeignEarnings
 
 class ForeignEarningsSpec extends UnitSpec {

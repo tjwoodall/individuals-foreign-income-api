@@ -19,10 +19,10 @@ package v2.controllers.validators
 import config.{ForeignIncomeConfig, MockForeignIncomeConfig}
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{JsValue, Json}
-import shared.controllers.validators.Validator
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
+import api.controllers.validators.Validator
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import v2.models.errors.CustomerRefFormatError
 import v2.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody, ForeignEarnings, UnremittableForeignIncomeItem}
 

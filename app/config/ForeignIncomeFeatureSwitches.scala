@@ -17,7 +17,7 @@
 package config
 
 import play.api.Configuration
-import shared.config.{AppConfig, FeatureSwitches}
+import api.config.{AppConfig, FeatureSwitches}
 
 case class ForeignIncomeFeatureSwitches private (protected val featureSwitchConfig: Configuration) extends FeatureSwitches {
 

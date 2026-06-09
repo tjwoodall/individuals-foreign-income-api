@@ -17,8 +17,8 @@
 package v2.controllers.validators.resolvers
 
 import cats.data.Validated
-import shared.controllers.validators.resolvers.{ResolveStringPattern, ResolverSupport}
-import shared.models.errors.MtdError
+import api.controllers.validators.resolvers.{ResolveStringPattern, ResolverSupport}
+import api.models.errors.MtdError
 import v2.models.domain.CustomerRef
 import v2.models.errors.CustomerRefFormatError
 

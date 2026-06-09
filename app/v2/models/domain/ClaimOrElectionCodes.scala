@@ -17,7 +17,7 @@
 package v2.models.domain
 
 import play.api.libs.json.*
-import shared.utils.enums.Enums
+import api.utils.enums.Enums
 
 enum ClaimOrElectionCodes {
   case PRR, LET, GHO, ROR, PRO, ESH, NVC, SIR, OTH, BAD, INV

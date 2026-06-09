@@ -18,11 +18,11 @@ package v2.controllers
 
 import play.api.Configuration
 import play.api.mvc.Result
-import shared.config.MockAppConfig
-import shared.controllers.{ControllerBaseSpec, ControllerTestRunner}
-import shared.models.domain.{Nino, TaxYear, Timestamp}
-import shared.models.errors.*
-import shared.models.outcomes.ResponseWrapper
+import api.config.MockAppConfig
+import api.controllers.{ControllerBaseSpec, ControllerTestRunner}
+import api.models.domain.{Nino, TaxYear, Timestamp}
+import api.models.errors.*
+import api.models.outcomes.ResponseWrapper
 import v2.controllers.validators.MockRetrieveForeignValidatorFactory
 import v2.fixtures.RetrieveForeignFixture.fullRetrieveForeignResponseJson
 import v2.models.request.retrieve

@@ -17,12 +17,12 @@
 package definition
 
 import cats.implicits.catsSyntaxValidatedId
-import shared.config.Deprecation.NotDeprecated
-import shared.config.MockAppConfig
-import shared.definition.APIStatus.BETA
-import shared.definition.{APIDefinition, APIVersion, Definition}
-import shared.routing.Version2
-import shared.utils.UnitSpec
+import api.config.Deprecation.NotDeprecated
+import api.config.MockAppConfig
+import api.definition.APIStatus.BETA
+import api.definition.{APIDefinition, APIVersion, Definition}
+import api.routing.Version2
+import api.utils.UnitSpec
 
 class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 

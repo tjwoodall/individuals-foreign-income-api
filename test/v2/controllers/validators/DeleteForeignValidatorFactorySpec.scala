@@ -17,10 +17,10 @@
 package v2.controllers.validators
 
 import config.{ForeignIncomeConfig, MockForeignIncomeConfig}
-import shared.controllers.validators.Validator
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
-import shared.utils.UnitSpec
+import api.controllers.validators.Validator
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.{BadRequestError, ErrorWrapper, NinoFormatError, TaxYearFormatError}
+import api.utils.UnitSpec
 import v2.models.request.delete.DeleteForeignRequest
 
 class DeleteForeignValidatorFactorySpec extends UnitSpec {

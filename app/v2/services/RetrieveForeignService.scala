@@ -17,9 +17,9 @@
 package v2.services
 
 import cats.implicits.*
-import shared.controllers.RequestContext
-import shared.models.errors.*
-import shared.services.{BaseService, ServiceOutcome}
+import api.controllers.RequestContext
+import api.models.errors.*
+import api.services.{BaseService, ServiceOutcome}
 import v2.connectors.RetrieveForeignConnector
 import v2.models.request.retrieve.RetrieveForeignRequest
 import v2.models.response.retrieve.RetrieveForeignResponse

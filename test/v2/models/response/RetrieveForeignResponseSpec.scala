@@ -17,8 +17,8 @@
 package v2.models.response
 
 import play.api.libs.json.{JsError, Json}
-import shared.models.domain.Timestamp
-import shared.utils.UnitSpec
+import api.models.domain.Timestamp
+import api.utils.UnitSpec
 import v2.models.response.retrieve.{ForeignEarnings, RetrieveForeignResponse, UnremittableForeignIncome}
 
 class RetrieveForeignResponseSpec extends UnitSpec {
