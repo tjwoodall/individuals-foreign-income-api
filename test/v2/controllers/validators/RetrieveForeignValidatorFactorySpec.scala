@@ -16,11 +16,11 @@
 
 package v2.controllers.validators
 
+import api.controllers.validators.Validator
+import api.models.domain.{Nino, TaxYear}
+import api.models.errors.*
+import api.utils.UnitSpec
 import config.{ForeignIncomeConfig, MockForeignIncomeConfig}
-import shared.controllers.validators.Validator
-import shared.models.domain.{Nino, TaxYear}
-import shared.models.errors.*
-import shared.utils.UnitSpec
 import v2.models.request.retrieve.RetrieveForeignRequest
 
 class RetrieveForeignValidatorFactorySpec extends UnitSpec {

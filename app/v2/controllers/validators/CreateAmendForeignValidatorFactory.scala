@@ -16,14 +16,14 @@
 
 package v2.controllers.validators
 
+import api.controllers.validators.Validator
+import api.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
+import api.models.domain.TaxYear
+import api.models.errors.MtdError
 import cats.data.Validated
 import cats.implicits.catsSyntaxTuple3Semigroupal
 import config.ForeignIncomeConfig
 import play.api.libs.json.JsValue
-import shared.controllers.validators.Validator
-import shared.controllers.validators.resolvers.{ResolveNino, ResolveNonEmptyJsonObject, ResolveTaxYearMinimum}
-import shared.models.domain.TaxYear
-import shared.models.errors.MtdError
 import v2.controllers.validators.CreateAmendForeignValidator.validateBusinessRules
 import v2.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody}
 

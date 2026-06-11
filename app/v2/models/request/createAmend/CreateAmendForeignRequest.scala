@@ -16,6 +16,6 @@
 
 package v2.models.request.createAmend
 
-import shared.models.domain.{Nino, TaxYear}
+import api.models.domain.{Nino, TaxYear}
 
 case class CreateAmendForeignRequest(nino: Nino, taxYear: TaxYear, body: CreateAmendForeignRequestBody)

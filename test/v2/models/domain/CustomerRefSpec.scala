@@ -16,7 +16,7 @@
 
 package v2.models.domain
 
-import shared.utils.UnitSpec
+import api.utils.UnitSpec
 
 class CustomerRefSpec extends UnitSpec {
 

@@ -16,8 +16,8 @@
 
 package v2.models.domain
 
+import api.utils.enums.Enums
 import play.api.libs.json.*
-import shared.utils.enums.Enums
 
 enum MtdSourceEnum(val toDownstreamViewString: String) {
   case hmrcHeld extends MtdSourceEnum("HMRC-HELD")

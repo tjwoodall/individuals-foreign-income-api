@@ -16,12 +16,12 @@
 
 package v2.controllers
 
+import api.config.AppConfig
+import api.controllers.*
+import api.routing.Version2
+import api.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
+import api.utils.IdGenerator
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
-import shared.config.AppConfig
-import shared.controllers.*
-import shared.routing.Version2
-import shared.services.{AuditService, EnrolmentsAuthService, MtdIdLookupService}
-import shared.utils.IdGenerator
 import v2.controllers.validators.DeleteForeignValidatorFactory
 import v2.services.DeleteForeignService
 
