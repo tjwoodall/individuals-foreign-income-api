@@ -16,9 +16,9 @@
 
 package api.config.rewriters
 
+import api.config.AppConfig
 import com.github.jknack.handlebars.Handlebars
 import com.github.jknack.handlebars.cache.ConcurrentMapTemplateCache
-import api.config.AppConfig
 
 trait HandlebarsRewriter {
   implicit val appConfig: AppConfig
@@ -28,7 +28,7 @@ trait HandlebarsRewriter {
       .`with`(new ConcurrentMapTemplateCache()) // so each file is only compiled once
 
   protected def rewrite(contents: String, context: AnyRef): String = {
-    if (contents.contains(("{{#"))) { // avoids every OAS file being cached as a Template
+    if (contents.contains("{{#")) { // avoids every OAS file being cached as a Template
       val template = hb.compileInline(contents)
       template.apply(context)
     } else {

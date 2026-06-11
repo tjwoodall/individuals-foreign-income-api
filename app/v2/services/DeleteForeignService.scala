@@ -16,10 +16,10 @@
 
 package v2.services
 
-import cats.implicits.*
 import api.controllers.RequestContext
 import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
+import cats.implicits.*
 import v2.connectors.DeleteForeignConnector
 import v2.models.errors.RuleOutsideAmendmentWindowError
 import v2.models.request.delete.DeleteForeignRequest

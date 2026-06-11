@@ -16,10 +16,10 @@
 
 package v2.connectors
 
-import org.scalamock.handlers.CallHandler
 import api.connectors.{ConnectorSpec, DownstreamOutcome}
 import api.models.domain.{Nino, TaxYear, Timestamp}
 import api.models.outcomes.ResponseWrapper
+import org.scalamock.handlers.CallHandler
 import uk.gov.hmrc.http.StringContextOps
 import v2.models.request.retrieve
 import v2.models.request.retrieve.RetrieveForeignRequest

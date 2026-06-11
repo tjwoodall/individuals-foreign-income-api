@@ -16,8 +16,8 @@
 
 package v2.models.request
 
-import play.api.libs.json.{JsError, JsObject, Json}
 import api.utils.UnitSpec
+import play.api.libs.json.{JsError, JsObject, Json}
 import v2.models.request.createAmend.UnremittableForeignIncomeItem
 
 class UnremittableForeignIncomeItemSpec extends UnitSpec {

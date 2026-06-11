@@ -16,12 +16,12 @@
 
 package api.config
 
+import api.config.Deprecation.{Deprecated, NotDeprecated}
+import api.routing.Version
 import cats.data.Validated
 import cats.implicits.catsSyntaxValidatedId
 import com.typesafe.config.Config
 import play.api.{ConfigLoader, Configuration}
-import api.config.Deprecation.{Deprecated, NotDeprecated}
-import api.routing.Version
 import uk.gov.hmrc.auth.core.ConfidenceLevel
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
@@ -52,7 +52,7 @@ class AppConfig @Inject() (config: ServicesConfig, protected[config] val configu
     DownstreamConfig(baseUrl, env, token, environmentHeaders)
   }
 
-  protected def basicAuthDownstreamConfig(serviceName: String): BasicAuthDownstreamConfig = {
+  private def basicAuthDownstreamConfig(serviceName: String): BasicAuthDownstreamConfig = {
     val baseUrl = config.baseUrl(serviceName)
 
     val serviceKey = serviceKeyFor(serviceName)

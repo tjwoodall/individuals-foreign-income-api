@@ -122,7 +122,7 @@ class RewriteableAssets @Inject() (errorHandler: HttpErrorHandler, meta: AssetsM
     (Iterator continually bufferedReader.readLine takeWhile (_ != null)).mkString("\n")
   }
 
-  protected def asEncodedResult(response: Result, acceptEncoding: AcceptEncoding, assetInfo: AssetInfo): Result = {
+  private def asEncodedResult(response: Result, acceptEncoding: AcceptEncoding, assetInfo: AssetInfo): Result = {
     assetInfo
       .bestEncoding(acceptEncoding)
       .map(enc => response.withHeaders(VARY -> ACCEPT_ENCODING, CONTENT_ENCODING -> enc))

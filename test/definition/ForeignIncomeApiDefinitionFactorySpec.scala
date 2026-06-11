@@ -16,13 +16,13 @@
 
 package definition
 
-import cats.implicits.catsSyntaxValidatedId
 import api.config.Deprecation.NotDeprecated
 import api.config.MockAppConfig
 import api.definition.APIStatus.BETA
 import api.definition.{APIDefinition, APIVersion, Definition}
 import api.routing.Version2
 import api.utils.UnitSpec
+import cats.implicits.catsSyntaxValidatedId
 
 class ForeignIncomeApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 

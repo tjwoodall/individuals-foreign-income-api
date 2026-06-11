@@ -16,12 +16,12 @@
 
 package v2.controllers.validators
 
-import cats.data.Validated
-import cats.data.Validated.Valid
-import cats.implicits.toFoldableOps
 import api.controllers.validators.RulesValidator
 import api.controllers.validators.resolvers.{ResolveParsedCountryCode, ResolveParsedNumber}
 import api.models.errors.MtdError
+import cats.data.Validated
+import cats.data.Validated.Valid
+import cats.implicits.toFoldableOps
 import v2.controllers.validators.resolvers.ResolveCustomerRef
 import v2.models.request.createAmend.{CreateAmendForeignRequest, ForeignEarnings, UnremittableForeignIncomeItem}
 

@@ -16,10 +16,10 @@
 
 package v2.services
 
-import cats.implicits.toBifunctorOps
 import api.controllers.RequestContext
 import api.models.errors.*
 import api.services.{BaseService, ServiceOutcome}
+import cats.implicits.toBifunctorOps
 import v2.connectors.CreateAmendForeignConnector
 import v2.models.errors.RuleOutsideAmendmentWindowError
 import v2.models.request.createAmend.CreateAmendForeignRequest

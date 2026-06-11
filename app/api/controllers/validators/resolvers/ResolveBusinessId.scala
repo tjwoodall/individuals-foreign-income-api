@@ -16,13 +16,13 @@
 
 package api.controllers.validators.resolvers
 
-import cats.data.Validated
 import api.models.domain.BusinessId
 import api.models.errors.{BusinessIdFormatError, MtdError}
+import cats.data.Validated
 
 object ResolveBusinessId extends ResolverSupport {
 
-  private val businessIdRegex = "^X[A-Z0-9]{1}IS[0-9]{11}$".r
+  private val businessIdRegex = "^X[A-Z0-9]IS[0-9]{11}$".r
 
   val resolver: Resolver[String, BusinessId] =
     ResolveStringPattern(businessIdRegex, BusinessIdFormatError).resolver.map(BusinessId.apply)

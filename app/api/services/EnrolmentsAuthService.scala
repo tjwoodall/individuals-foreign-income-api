@@ -20,12 +20,7 @@ import api.config.AppConfig
 import api.models.auth.UserDetails
 import api.models.errors.{InternalError, *}
 import api.models.outcomes.AuthOutcome
-import api.services.EnrolmentsAuthService.{
-  authorisationDisabledPredicate,
-  authorisationEnabledPredicate,
-  mtdEnrolmentPredicate,
-  supportingAgentAuthPredicate
-}
+import api.services.EnrolmentsAuthService.{authorisationDisabledPredicate, authorisationEnabledPredicate, mtdEnrolmentPredicate, supportingAgentAuthPredicate}
 import api.utils.Logging
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.AffinityGroup.{Agent, Individual, Organisation}

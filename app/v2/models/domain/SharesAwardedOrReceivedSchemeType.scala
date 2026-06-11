@@ -16,8 +16,8 @@
 
 package v2.models.domain
 
-import play.api.libs.json.Format
 import api.utils.enums.Enums
+import play.api.libs.json.Format
 
 enum SharesAwardedOrReceivedSchemeType {
   case SIP, Other
