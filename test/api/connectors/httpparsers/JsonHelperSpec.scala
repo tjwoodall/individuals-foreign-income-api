@@ -21,7 +21,7 @@ import play.api.libs.json.{Json, Reads}
 import uk.gov.hmrc.http.HttpResponse
 import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 
-class JsonHelperSpec extends UnitSpec with HttpParser with LogCapturing {
+class JsonResponseHelperSpec extends UnitSpec with HttpParser with LogCapturing {
 
   private case class TestModel(value: String)
   private implicit val testReads: Reads[TestModel] = Json.reads[TestModel]
