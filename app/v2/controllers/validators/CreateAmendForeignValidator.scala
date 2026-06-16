@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,17 @@
 package v2.controllers.validators
 
 import api.controllers.validators.RulesValidator
-import api.controllers.validators.resolvers.{ResolveParsedCountryCode, ResolveParsedNumber}
+import api.controllers.validators.resolvers.{ResolveParsedCountryCode, ResolveParsedNumber, ResolveStringPattern}
 import api.models.errors.MtdError
 import cats.data.Validated
 import cats.data.Validated.Valid
 import cats.implicits.toFoldableOps
-import v2.controllers.validators.resolvers.ResolveCustomerRef
+import v2.models.errors.CustomerRefFormatError
 import v2.models.request.createAmend.{CreateAmendForeignRequest, ForeignEarnings, UnremittableForeignIncomeItem}
 
 object CreateAmendForeignValidator extends RulesValidator[CreateAmendForeignRequest] {
+
+  private val customerRefRegex = "^[0-9a-zA-Z{À-˿’}\\- _&`():.'^]{1,90}$".r
 
   def validateBusinessRules(parsed: CreateAmendForeignRequest): Validated[Seq[MtdError], CreateAmendForeignRequest] = {
     import parsed.body
@@ -40,7 +42,7 @@ object CreateAmendForeignValidator extends RulesValidator[CreateAmendForeignRequ
     foreignEarnings match {
       case Some(earnings) =>
         combine(
-          ResolveCustomerRef(earnings.customerReference, s"/foreignEarnings/customerReference"),
+          ResolveStringPattern(earnings.customerReference, customerRefRegex, CustomerRefFormatError.withPath(s"/foreignEarnings/customerReference")),
           ResolveParsedNumber()(earnings.earningsNotTaxableUK, s"/foreignEarnings/earningsNotTaxableUK")
         )
       case None =>
