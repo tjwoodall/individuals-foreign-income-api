@@ -23,6 +23,8 @@ import api.definition.*
 import api.routing.{Version, Versions}
 import com.typesafe.config.ConfigFactory
 import controllers.{AssetsConfiguration, DefaultAssetsMetadata, RewriteableAssets}
+import org.apache.pekko.stream.Materializer
+import org.apache.pekko.stream.testkit.NoMaterializer
 import play.api.http.{DefaultFileMimeTypes, DefaultHttpErrorHandler, FileMimeTypesConfiguration, HttpConfiguration}
 import play.api.mvc.Result
 import play.api.{Configuration, Environment}
@@ -136,9 +138,9 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
         }
 
         result should startWith(s"""openapi: "3.0.3"
-                                  |
-                                  |info:
-                                  |  version: "$apiVersionName"""".stripMargin)
+                                   |
+                                   |info:
+                                   |  version: "$apiVersionName"""".stripMargin)
       }
     }
 
@@ -174,6 +176,8 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
     protected def numberOfTestOnlyOccurrences(str: String): Int = "\\[test only]".r.findAllIn(str).size
 
     MockedAppConfig.featureSwitchConfig returns Configuration("openApiFeatureTest.enabled" -> featureEnabled)
+
+    private implicit val materializer: Materializer = NoMaterializer
 
     private val apiFactory = new ApiDefinitionFactory {
       protected val appConfig: AppConfig = mockAppConfig
@@ -211,8 +215,9 @@ class DocumentationControllerSpec extends ControllerBaseSpec with MockAppConfig 
       new OasFeatureRewriter()(mockAppConfig)
     )
 
-    private val assets       = new RewriteableAssets(errorHandler, assetsMetadata, mock[Environment])
-    protected def controller = new DocumentationController(apiFactory, docRewriters, assets, cc)
+    private val assets = new RewriteableAssets(errorHandler, assetsMetadata, mock[Environment])
+
+    protected def controller = new DocumentationController(apiFactory, docRewriters, assets, config, cc)
   }
 
 }
