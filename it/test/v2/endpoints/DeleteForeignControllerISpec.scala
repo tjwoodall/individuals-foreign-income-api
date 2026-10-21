@@ -25,7 +25,6 @@ import play.api.libs.json.Json
 import play.api.libs.ws.WSBodyReadables.readableAsString
 import play.api.libs.ws.{WSRequest, WSResponse}
 import play.api.test.Helpers.AUTHORIZATION
-import v2.models.errors.RuleOutsideAmendmentWindowError
 
 class DeleteForeignControllerISpec extends IntegrationBaseSpec {
 

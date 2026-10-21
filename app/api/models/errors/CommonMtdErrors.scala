@@ -29,6 +29,8 @@ object DateFormatError extends MtdError(code = "FORMAT_DATE", message = "The sup
 
 object CountryCodeFormatError extends MtdError("FORMAT_COUNTRY_CODE", "The provided Country code is invalid", BAD_REQUEST)
 
+object CustomerRefFormatError extends MtdError("FORMAT_CUSTOMER_REF", "The provided customer reference is invalid", BAD_REQUEST)
+
 object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be between 0 and 99999999999.99", BAD_REQUEST) {
 
   def forPathAndRange(path: String, min: String, max: String): MtdError =
@@ -36,7 +38,7 @@ object ValueFormatError extends MtdError("FORMAT_VALUE", "The value must be betw
 
 }
 
-//Standard Errors
+// Standard Errors
 object NotFoundError extends MtdError("MATCHING_RESOURCE_NOT_FOUND", "Matching resource not found", NOT_FOUND)
 
 object InternalError extends MtdError("INTERNAL_SERVER_ERROR", "An internal server error occurred", INTERNAL_SERVER_ERROR)
@@ -51,11 +53,7 @@ object InvalidHttpMethodError extends MtdError("INVALID_HTTP_METHOD", "Invalid H
 
 object InvalidBodyTypeError extends MtdError("INVALID_BODY_TYPE", "Expecting text/json or application/json body", UNSUPPORTED_MEDIA_TYPE)
 
-object InvalidTaxYearParameterError
-    extends MtdError(code = "INVALID_TAX_YEAR_PARAMETER", message = "A tax year before 2023-24 was supplied", BAD_REQUEST)
-
-//Authentication/Authorisation errors
-
+// Authentication/Authorisation errors
 /** Authentication OK but not allowed access to the requested resource
   */
 object ClientOrAgentNotAuthorisedError extends MtdError("CLIENT_OR_AGENT_NOT_AUTHORISED", "The client or agent is not authorised", FORBIDDEN) {
@@ -85,6 +83,8 @@ object RuleTaxYearNotEndedError extends MtdError("RULE_TAX_YEAR_NOT_ENDED", "The
 
 object RuleCountryCodeError extends MtdError("RULE_COUNTRY_CODE", "The country code is not a permitted ISO 3166-1 alpha-3 country code", BAD_REQUEST)
 
-//Stub Errors
+object RuleOutsideAmendmentWindowError extends MtdError("RULE_OUTSIDE_AMENDMENT_WINDOW", "You are outside the amendment window", BAD_REQUEST)
+
+// Stub Errors
 object RuleIncorrectGovTestScenarioError
     extends MtdError("RULE_INCORRECT_GOV_TEST_SCENARIO", "The supplied Gov-Test-Scenario is not valid", BAD_REQUEST)

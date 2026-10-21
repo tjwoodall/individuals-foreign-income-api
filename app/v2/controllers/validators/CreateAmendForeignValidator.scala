@@ -18,11 +18,10 @@ package v2.controllers.validators
 
 import api.controllers.validators.RulesValidator
 import api.controllers.validators.resolvers.{ResolveParsedCountryCode, ResolveParsedNumber, ResolveStringPattern}
-import api.models.errors.MtdError
+import api.models.errors.{MtdError, CustomerRefFormatError}
 import cats.data.Validated
 import cats.data.Validated.Valid
 import cats.implicits.toFoldableOps
-import v2.models.errors.CustomerRefFormatError
 import v2.models.request.createAmend.{CreateAmendForeignRequest, ForeignEarnings, UnremittableForeignIncomeItem}
 
 object CreateAmendForeignValidator extends RulesValidator[CreateAmendForeignRequest] {
