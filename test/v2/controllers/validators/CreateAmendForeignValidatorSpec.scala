@@ -23,7 +23,6 @@ import api.utils.UnitSpec
 import config.{ForeignIncomeConfig, MockForeignIncomeConfig}
 import play.api.http.Status.BAD_REQUEST
 import play.api.libs.json.{JsValue, Json}
-import v2.models.errors.CustomerRefFormatError
 import v2.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody, ForeignEarnings, UnremittableForeignIncomeItem}
 
 class CreateAmendForeignValidatorSpec extends UnitSpec with MockForeignIncomeConfig {

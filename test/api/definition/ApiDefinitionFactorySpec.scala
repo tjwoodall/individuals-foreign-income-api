@@ -17,76 +17,122 @@
 package api.definition
 
 import api.config.Deprecation.NotDeprecated
-import api.config.{AppConfig, MockAppConfig}
+import api.config.MockAppConfig
 import api.definition.APIStatus.{ALPHA, BETA}
 import api.mocks.MockHttpClient
-import api.routing.*
+import api.routing.{Version, Version2}
 import api.utils.UnitSpec
 import cats.implicits.catsSyntaxValidatedId
 
 import scala.language.reflectiveCalls
 
-class ApiDefinitionFactorySpec extends UnitSpec {
+class ApiDefinitionFactorySpec extends UnitSpec with MockAppConfig {
 
   "buildAPIStatus" when {
     "the 'apiStatus' parameter is present and valid" should {
+      "return the expected status" in new Test {
+        setupMockConfig(Version2)
+        MockedAppConfig.apiStatus(Version2) returns "BETA"
 
-      s"return the expected status" in new Test {
-        setupMockConfig(Version9)
-        MockedAppConfig.apiStatus(Version9) returns "BETA"
-
-        val result: APIStatus = checkBuildApiStatus(Version9)
+        val result: APIStatus = checkBuildApiStatus(Version2)
         result shouldBe BETA
       }
-
     }
 
     "the 'apiStatus' parameter is present but invalid" should {
-      s"default to alpha" in new Test {
-        setupMockConfig(Version9)
-        MockedAppConfig.apiStatus(Version9) returns "not-a-status"
+      "default to alpha" in new Test {
+        setupMockConfig(Version2)
+        MockedAppConfig.apiStatus(Version2) returns "not-a-status"
 
-        checkBuildApiStatus(Version9) shouldBe ALPHA
+        checkBuildApiStatus(Version2) shouldBe ALPHA
       }
     }
 
     "the 'deprecatedOn' parameter is missing for a deprecated version" should {
       "throw an exception" in new Test {
-        MockedAppConfig.apiStatus(Version9) returns "DEPRECATED"
+        MockedAppConfig.apiStatus(Version2) returns "DEPRECATED"
 
         MockedAppConfig
-          .deprecationFor(Version9)
+          .deprecationFor(Version2)
           .returns("deprecatedOn date is required for a deprecated version".invalid)
           .anyNumberOfTimes()
 
         val exception: Exception = intercept[Exception] {
-          checkBuildApiStatus(Version9)
+          checkBuildApiStatus(Version2)
         }
 
-        val exceptionMessage: String = exception.getMessage
-        exceptionMessage shouldBe "deprecatedOn date is required for a deprecated version"
+        exception.getMessage shouldBe "deprecatedOn date is required for a deprecated version"
+      }
+    }
+  }
+
+  "definition" when {
+    "called" should {
+      "return a valid Definition case class" in {
+        MockedAppConfig.apiGatewayContext returns "individuals/foreign-income"
+        MockedAppConfig.apiStatus(Version2) returns "BETA"
+        MockedAppConfig.endpointsEnabled(Version2).returns(true).anyNumberOfTimes()
+        MockedAppConfig.deprecationFor(Version2).returns(NotDeprecated.valid).anyNumberOfTimes()
+        MockedAppConfig.controlledAccessEnabled returns false
+
+        val apiDefinitionFactory = new ApiDefinitionFactory(mockAppConfig)
+
+        apiDefinitionFactory.definition shouldBe
+          Definition(
+            api = APIDefinition(
+              name = "Individuals Foreign Income (MTD)",
+              description = "An API for providing individual foreign income data",
+              context = "individuals/foreign-income",
+              categories = List("INCOME_TAX_MTD"),
+              versions = List(
+                APIVersion(
+                  version = Version2,
+                  status = BETA,
+                  access = APIAccessType.PUBLIC,
+                  endpointsEnabled = true
+                )
+              ),
+              requiresTrust = None
+            )
+          )
+      }
+    }
+  }
+
+  "access" when {
+    "the controlled access flag is enabled" should {
+      "return CONTROLLED" in {
+        MockedAppConfig.apiGatewayContext returns "individuals/foreign-income"
+        MockedAppConfig.apiStatus(Version2) returns "BETA"
+        MockedAppConfig.endpointsEnabled(Version2).returns(true).anyNumberOfTimes()
+        MockedAppConfig.deprecationFor(Version2).returns(NotDeprecated.valid).anyNumberOfTimes()
+        MockedAppConfig.controlledAccessEnabled returns true
+
+        val definition: Definition = new ApiDefinitionFactory(mockAppConfig).definition
+
+        definition.api.versions.head.access shouldBe APIAccessType.CONTROLLED
+      }
+    }
+
+    "the controlled access flag is disabled" should {
+      "return PUBLIC" in {
+        MockedAppConfig.apiGatewayContext returns "individuals/foreign-income"
+        MockedAppConfig.apiStatus(Version2) returns "BETA"
+        MockedAppConfig.endpointsEnabled(Version2).returns(true).anyNumberOfTimes()
+        MockedAppConfig.deprecationFor(Version2).returns(NotDeprecated.valid).anyNumberOfTimes()
+        MockedAppConfig.controlledAccessEnabled returns false
+
+        val definition: Definition = new ApiDefinitionFactory(mockAppConfig).definition
+
+        definition.api.versions.head.access shouldBe APIAccessType.PUBLIC
       }
     }
   }
 
   trait Test extends UnitSpec with MockHttpClient with MockAppConfig {
-    MockedAppConfig.apiGatewayContext returns "individuals/self-assessment/adjustable-summary"
+    MockedAppConfig.apiGatewayContext returns "individuals/foreign-income"
 
-    val apiDefinitionFactory: ApiDefinitionFactory = new ApiDefinitionFactory {
-      protected val appConfig: AppConfig = mockAppConfig
-
-      val definition: Definition = Definition(
-        APIDefinition(
-          "test API definition",
-          "description",
-          "context",
-          List("category"),
-          List(APIVersion(Version1, APIStatus.BETA, APIAccessType.PUBLIC, endpointsEnabled = true)),
-          None
-        )
-      )
-
-    }
+    val apiDefinitionFactory: ApiDefinitionFactory = new ApiDefinitionFactory(mockAppConfig)
 
     def checkBuildApiStatus(version: Version): APIStatus = apiDefinitionFactory.buildAPIStatus(version)
 

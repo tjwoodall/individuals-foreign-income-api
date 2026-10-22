@@ -22,7 +22,6 @@ import api.models.errors.*
 import api.models.outcomes.ResponseWrapper
 import api.services.ServiceSpec
 import v2.connectors.MockCreateAmendForeignConnector
-import v2.models.errors.RuleOutsideAmendmentWindowError
 import v2.models.request.createAmend.{CreateAmendForeignRequest, CreateAmendForeignRequestBody, ForeignEarnings, UnremittableForeignIncomeItem}
 
 import scala.concurrent.Future
