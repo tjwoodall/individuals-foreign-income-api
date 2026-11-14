@@ -36,8 +36,7 @@ requestBody:
         $ref: './schemas/create_amend_request.json'
       examples:
         "Full Foreign Income Amendment for all tax years":
-          value:
-            $ref: './examples/create_amend_request.json'
+          externalValue: './examples/create_amend_request.json'
 
 responses:
   "200":
